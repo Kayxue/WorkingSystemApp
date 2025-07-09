@@ -42,7 +42,7 @@ class _MyHomePageState extends State<MyHomePage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: const <Widget>[Schedule(), Findworks(), Personal()][currentIndex],
+      body: const <Widget>[Findworks(), Schedule(), Personal()][currentIndex],
       bottomNavigationBar: Bottombar(
         currentIndex: currentIndex,
         updateIndex: updateIndex,
