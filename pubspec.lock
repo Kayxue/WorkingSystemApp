@@ -131,6 +131,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "1.16.0"
+  niku:
+    dependency: "direct main"
+    description:
+      name: niku
+      sha256: "1557e22a91bfc1bf92f4f9d6d00514739f31f41e32b92c4580dd7cf6798036f2"
+      url: "https://pub.dev"
+    source: hosted
+    version: "2.4.2"
   path:
     dependency: transitive
     description:
