@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:working_system_app/Pages/FindWorks.dart';
 import 'package:working_system_app/Pages/Personal.dart';
 import 'package:working_system_app/Pages/Schedule.dart';
@@ -32,10 +33,40 @@ class MyHomePage extends StatefulWidget {
 
 class _MyHomePageState extends State<MyHomePage> {
   int currentIndex = 0;
+  String sessionKey = "";
+  final Future<SharedPreferences> prefs = SharedPreferences.getInstance();
 
   void updateIndex(int index) {
     setState(() {
       currentIndex = index;
+    });
+  }
+
+  void setSessionKey(String key) {
+    setState(() {
+      sessionKey = key;
+    });
+    prefs.then((SharedPreferences preferences) {
+      preferences.setString('sessionKey', key);
+    });
+  }
+
+  void clearSessionKey() {
+    setState(() {
+      sessionKey = '';
+    });
+    prefs.then((SharedPreferences preferences) {
+      preferences.remove('sessionKey');
+    });
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    prefs.then((SharedPreferences preferences) {
+      setState(() {
+        sessionKey = preferences.getString('sessionKey') ?? '';
+      });
     });
   }
 
