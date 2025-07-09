@@ -19,19 +19,19 @@ class MyApp extends StatelessWidget {
       theme: ThemeData(
         colorScheme: ColorScheme.fromSeed(seedColor: Colors.blue),
       ),
-      home: const MyHomePage(),
+      home: const ApplicationBase(),
     );
   }
 }
 
-class MyHomePage extends StatefulWidget {
-  const MyHomePage({super.key});
+class ApplicationBase extends StatefulWidget {
+  const ApplicationBase({super.key});
 
   @override
-  State<MyHomePage> createState() => _MyHomePageState();
+  State<ApplicationBase> createState() => _ApplicationBaseState();
 }
 
-class _MyHomePageState extends State<MyHomePage> {
+class _ApplicationBaseState extends State<ApplicationBase> {
   int currentIndex = 0;
   String sessionKey = "";
   final Future<SharedPreferences> prefs = SharedPreferences.getInstance();
