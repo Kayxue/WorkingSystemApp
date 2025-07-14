@@ -74,12 +74,18 @@ class _ApplicationBaseState extends State<ApplicationBase> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: (sessionKey.isEmpty
-          ? <Widget>[
-              Findworks(),
-              Login(setSessionKey: setSessionKey, updateIndex: updateIndex),
-            ]
-          : const <Widget>[Findworks(), Schedule(), Personal()])[currentIndex],
+      body: SafeArea(
+        child: (sessionKey.isEmpty
+            ? <Widget>[
+                Findworks(),
+                Login(setSessionKey: setSessionKey, updateIndex: updateIndex),
+              ]
+            : const <Widget>[
+                Findworks(),
+                Schedule(),
+                Personal(),
+              ])[currentIndex],
+      ),
       bottomNavigationBar: Bottombar(
         currentIndex: currentIndex,
         updateIndex: updateIndex,
