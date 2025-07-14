@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:http/http.dart' as http;
 
 class Login extends StatefulWidget {
   final Function(String key) setSessionKey;
@@ -19,6 +20,39 @@ class _LoginState extends State<Login> {
   String password = "";
 
   _LoginState();
+
+  void login() async {
+    if (email.isNotEmpty && password.isNotEmpty) {
+      Map<String, String> body = {"email": email, "password": password};
+      final response = await http.post(
+        Uri.parse(
+          "http://0.0.0.0:3000/user/login",
+        ),
+        headers: {"platform": "mobile"},
+        body: body,
+      );
+      if (!mounted) return;
+      if (response.statusCode != 200) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text("Login failed. Please try again.")),
+        );
+        return;
+      }
+      var cookie = response.headers["set-cookie"];
+      if (cookie != null) {
+        widget.updateIndex(0);
+        widget.setSessionKey(cookie);
+      } else {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text("Login failed. No session cookie received.")),
+        );
+      }
+    } else {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text("Please enter both email and password.")),
+      );
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -58,7 +92,7 @@ class _LoginState extends State<Login> {
             obscureText: true,
           ),
           SizedBox(height: 16),
-          ElevatedButton(onPressed: () {}, child: Text("Login")),
+          ElevatedButton(onPressed: () {login();}, child: Text("Login")),
         ],
       ),
     );

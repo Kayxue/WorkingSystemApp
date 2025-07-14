@@ -5,6 +5,7 @@ import 'package:working_system_app/Pages/Login.dart';
 import 'package:working_system_app/Pages/Personal.dart';
 import 'package:working_system_app/Pages/Schedule.dart';
 import 'package:working_system_app/Widget/bottomBar.dart';
+import 'package:http/http.dart' as http;
 
 void main() {
   runApp(const MyApp());
@@ -64,10 +65,26 @@ class _ApplicationBaseState extends State<ApplicationBase> {
   @override
   void initState() {
     super.initState();
-    prefs.then((SharedPreferences preferences) {
-      setState(() {
-        sessionKey = preferences.getString('sessionKey') ?? '';
-      });
+    prefs.then((SharedPreferences preferences) async {
+      String? storedSessionKey = preferences.getString('sessionKey');
+      if (storedSessionKey != null && storedSessionKey.isNotEmpty) {
+        final response = await http.get(
+          Uri.parse("http://0.0.0.0:3000/user/profile"),
+          headers: {
+            "platform": "mobile",
+            "cookie": storedSessionKey,
+          },
+        );
+        if (response.statusCode != 200) {
+          clearSessionKey();
+          return;
+        }
+        setState(() {
+          sessionKey = storedSessionKey;
+        });
+      } else {
+        clearSessionKey();
+      }
     });
   }
 
