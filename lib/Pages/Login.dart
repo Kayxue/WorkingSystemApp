@@ -20,13 +20,35 @@ class _LoginState extends State<Login> {
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: EdgeInsets.only(left: 16, right: 16, top: 16),
+      padding: EdgeInsets.only(left: 24, right: 24, top: 16),
       child: Column(
         children: [
-          Text(
-            "Login",
-            style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Text(
+                "Login",
+                style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
+              ),
+            ],
           ),
+          SizedBox(height: 16),
+          TextField(
+            decoration: InputDecoration(
+              labelText: "Email",
+              border: OutlineInputBorder(),
+            ),
+          ),
+          SizedBox(height: 16),
+          TextField(
+            decoration: InputDecoration(
+              labelText: "Password",
+              border: OutlineInputBorder(),
+            ),
+            obscureText: true,
+          ),
+          SizedBox(height: 16),
+          TextButton(onPressed: () {}, child: Text("Login")),
         ],
       ),
     );
