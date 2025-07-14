@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:working_system_app/Pages/FindWorks.dart';
+import 'package:working_system_app/Pages/Login.dart';
 import 'package:working_system_app/Pages/Personal.dart';
 import 'package:working_system_app/Pages/Schedule.dart';
 import 'package:working_system_app/Widget/bottomBar.dart';
@@ -73,10 +74,16 @@ class _ApplicationBaseState extends State<ApplicationBase> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: const <Widget>[Findworks(), Schedule(), Personal()][currentIndex],
+      body: (sessionKey.isEmpty
+          ? <Widget>[
+              Findworks(),
+              Login(setSessionKey: setSessionKey, updateIndex: updateIndex),
+            ]
+          : const <Widget>[Findworks(), Schedule(), Personal()])[currentIndex],
       bottomNavigationBar: Bottombar(
         currentIndex: currentIndex,
         updateIndex: updateIndex,
+        sessionKey: sessionKey,
       ),
     );
   }

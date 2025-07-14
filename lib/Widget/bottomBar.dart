@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 
 class Bottombar extends StatelessWidget {
   final int currentIndex;
+  final String sessionKey;
   //Function to update currentIndex
   final Function(int index) updateIndex;
 
@@ -9,6 +10,7 @@ class Bottombar extends StatelessWidget {
     super.key,
     required this.currentIndex,
     required this.updateIndex,
+    required this.sessionKey,
   });
 
   @override
@@ -16,14 +18,22 @@ class Bottombar extends StatelessWidget {
     return NavigationBar(
       onDestinationSelected: (value) => updateIndex(value),
       selectedIndex: currentIndex,
-      destinations: const <NavigationDestination>[
-        NavigationDestination(icon: Icon(Icons.search), label: 'Find'),
-        NavigationDestination(
-          icon: Icon(Icons.calendar_month),
-          label: 'Schedule',
-        ),
-        NavigationDestination(icon: Icon(Icons.person), label: 'Personal'),
-      ],
+      destinations: (sessionKey.isEmpty
+          ? const <NavigationDestination>[
+              NavigationDestination(icon: Icon(Icons.search), label: 'Find'),
+              NavigationDestination(icon: Icon(Icons.login), label: 'Login'),
+            ]
+          : const <NavigationDestination>[
+              NavigationDestination(icon: Icon(Icons.search), label: 'Find'),
+              NavigationDestination(
+                icon: Icon(Icons.calendar_month),
+                label: 'Schedule',
+              ),
+              NavigationDestination(
+                icon: Icon(Icons.person),
+                label: 'Personal',
+              ),
+            ]),
     );
   }
 }
