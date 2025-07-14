@@ -15,6 +15,9 @@ class Login extends StatefulWidget {
 }
 
 class _LoginState extends State<Login> {
+  String email = "";
+  String password = "";
+
   _LoginState();
 
   @override
@@ -38,6 +41,10 @@ class _LoginState extends State<Login> {
               labelText: "Email",
               border: OutlineInputBorder(),
             ),
+            onChanged: (value) => setState(() {
+              email = value;
+            }),
+            keyboardType: TextInputType.emailAddress,
           ),
           SizedBox(height: 16),
           TextField(
@@ -45,10 +52,13 @@ class _LoginState extends State<Login> {
               labelText: "Password",
               border: OutlineInputBorder(),
             ),
+            onChanged: (value) => setState(() {
+              password = value;
+            }),
             obscureText: true,
           ),
           SizedBox(height: 16),
-          TextButton(onPressed: () {}, child: Text("Login")),
+          ElevatedButton(onPressed: () {}, child: Text("Login")),
         ],
       ),
     );
