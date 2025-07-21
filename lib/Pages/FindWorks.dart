@@ -104,8 +104,8 @@ class _FindworksState extends State<Findworks> {
                             },
                             child: ListTile(
                               title: Text(work.title),
-                              subtitle: Text("${work.city} ${work.district}"),
                               trailing: Text("\$${work.hourlyRate}"),
+                              subtitle: Text("${work.city} ${work.district}")
                             ),
                           ),
                         );
