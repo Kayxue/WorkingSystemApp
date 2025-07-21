@@ -10,7 +10,7 @@ Gigs _$GigsFromJson(Map<String, dynamic> json) => Gigs(
   updatedAt: DateTime.parse(json['updatedAt'] as String),
   gigId: json['gigId'] as String,
   title: json['title'] as String,
-  hourlyRate: json['hourlyRate'] as String,
+  hourlyRate: (json['hourlyRate'] as num).toInt(),
   city: json['city'] as String,
   district: json['district'] as String,
 );

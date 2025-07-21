@@ -6,7 +6,7 @@ class Gigs {
   DateTime updatedAt;
   String gigId;
   String title;
-  String hourlyRate;
+  int hourlyRate;
   String city;
   String district;
 
