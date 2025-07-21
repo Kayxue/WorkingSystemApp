@@ -9,7 +9,7 @@ part of 'GigPagination.dart';
 Gigpagination _$GigpaginationFromJson(Map<String, dynamic> json) =>
     Gigpagination(
       limit: (json['limit'] as num).toInt(),
-      offset: (json['offset'] as num).toInt(),
+      page: (json['page'] as num).toInt(),
       hasMore: json['hasMore'] as bool,
       returned: (json['returned'] as num).toInt(),
     );
@@ -17,7 +17,7 @@ Gigpagination _$GigpaginationFromJson(Map<String, dynamic> json) =>
 Map<String, dynamic> _$GigpaginationToJson(Gigpagination instance) =>
     <String, dynamic>{
       'limit': instance.limit,
-      'offset': instance.offset,
+      'page': instance.page,
       'hasMore': instance.hasMore,
       'returned': instance.returned,
     };

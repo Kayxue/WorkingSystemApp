@@ -4,13 +4,13 @@ part 'GigPagination.g.dart';
 @JsonSerializable(explicitToJson: true)
 class Gigpagination {
   int limit;
-  int offset;
+  int page;
   bool hasMore;
   int returned;
 
   Gigpagination({
     required this.limit,
-    required this.offset,
+    required this.page,
     required this.hasMore,
     required this.returned,
   });

@@ -11,10 +11,9 @@ Gigfilters _$GigfiltersFromJson(Map<String, dynamic> json) => Gigfilters(
   district: json['district'] as String?,
   minRate: (json['minRate'] as num?)?.toInt(),
   maxRate: (json['maxRate'] as num?)?.toInt(),
-  dateStart: DateTime.parse(json['dateStart'] as String),
-  dateEnd: json['dateEnd'] == null
+  dateStart: json['dateStart'] == null
       ? null
-      : DateTime.parse(json['dateEnd'] as String),
+      : DateTime.parse(json['dateStart'] as String),
 );
 
 Map<String, dynamic> _$GigfiltersToJson(Gigfilters instance) =>
@@ -23,6 +22,5 @@ Map<String, dynamic> _$GigfiltersToJson(Gigfilters instance) =>
       'district': instance.district,
       'minRate': instance.minRate,
       'maxRate': instance.maxRate,
-      'dateStart': instance.dateStart.toIso8601String(),
-      'dateEnd': instance.dateEnd?.toIso8601String(),
+      'dateStart': instance.dateStart?.toIso8601String(),
     };

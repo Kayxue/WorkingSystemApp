@@ -20,7 +20,7 @@ class _FindworksState extends State<Findworks> {
 
   Future<void> fetchInitialWorks() async {
     final response = await http.get(
-      Uri.parse("http://0.0.0.0:3000/gig/public?dateStart=2025-01-01"),
+      Uri.parse("http://0.0.0.0:3000/gig/public"),
       headers: {"platform": "mobile"},
     );
     if (!mounted) return;
@@ -87,20 +87,26 @@ class _FindworksState extends State<Findworks> {
                     child: ListView.builder(
                       itemCount: gigs.length,
                       itemBuilder: (context, index) {
-                        final work= gigs[index];
+                        final work = gigs[index];
                         return Card(
-                          child: ListTile(
-                            title: Text(work.title),
-                            subtitle: Text("${work.city} ${work.district}"),
-                            trailing: Text(work.hourlyRate.toString()),
+                          clipBehavior: Clip.hardEdge,
+                          child: InkWell(
+                            splashColor: Colors.grey.withAlpha(30),
                             onTap: () {
-                              // Handle tap
+                              //TODO: Show gig details
                               ScaffoldMessenger.of(context).showSnackBar(
                                 SnackBar(
-                                  content: Text("Tapped on Work Title ${work.title}"),
+                                  content: Text(
+                                    "Tapped on Work Title ${work.title}",
+                                  ),
                                 ),
                               );
                             },
+                            child: ListTile(
+                              title: Text(work.title),
+                              subtitle: Text("${work.city} ${work.district}"),
+                              trailing: Text("\$${work.hourlyRate}"),
+                            ),
                           ),
                         );
                       },

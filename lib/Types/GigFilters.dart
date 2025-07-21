@@ -7,16 +7,14 @@ class Gigfilters {
   String? district;
   int? minRate;
   int? maxRate;
-  DateTime dateStart;
-  DateTime? dateEnd;
+  DateTime? dateStart;
 
   Gigfilters({
     this.city,
     this.district,
     this.minRate,
     this.maxRate,
-    required this.dateStart,
-    this.dateEnd,
+    this.dateStart,
   });
   factory Gigfilters.fromJson(Map<String, dynamic> json) => _$GigfiltersFromJson(json);
   Map<String, dynamic> toJson() => _$GigfiltersToJson(this);
