@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:working_system_app/Constant/Constant.dart';
 import 'package:working_system_app/Pages/FindWorks.dart';
 import 'package:working_system_app/Pages/Login.dart';
 import 'package:working_system_app/Pages/Personal.dart';
@@ -70,11 +71,8 @@ class _ApplicationBaseState extends State<ApplicationBase> {
       String? storedSessionKey = preferences.getString('sessionKey');
       if (storedSessionKey != null && storedSessionKey.isNotEmpty) {
         final response = await http.get(
-          Uri.parse("http://0.0.0.0:3000/user/profile"),
-          headers: {
-            "platform": "mobile",
-            "cookie": storedSessionKey,
-          },
+          Uri.parse("http://${Constant.ip}/user/profile"),
+          headers: {"platform": "mobile", "cookie": storedSessionKey},
         );
         if (response.statusCode != 200) {
           clearSessionKey();

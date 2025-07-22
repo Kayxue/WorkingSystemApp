@@ -3,6 +3,7 @@ import 'package:infinite_scroll_pagination/infinite_scroll_pagination.dart';
 import 'dart:convert';
 
 import 'package:http/http.dart' as http;
+import 'package:working_system_app/Constant/Constant.dart';
 import 'package:working_system_app/Types/Gigs.dart';
 import 'package:working_system_app/Types/PublicGigsReturn.dart';
 
@@ -27,7 +28,7 @@ class _FindworksState extends State<Findworks> {
   Future<List<Gigs>> fetchWorks({int page = 1}) async {
     final response = await http.get(
       Uri.parse(
-        "http://0.0.0.0:3000/gig/public?page=$page${searchQuery.isNotEmpty ? "&search=$searchQuery" : ""}",
+        "http://${Constant.ip}/gig/public?page=$page${searchQuery.isNotEmpty ? "&search=$searchQuery" : ""}",
       ),
       headers: {"platform": "mobile"},
     );
@@ -52,7 +53,7 @@ class _FindworksState extends State<Findworks> {
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: EdgeInsetsGeometry.only(top: 16, right: 16, left: 16, bottom: 8),
+      padding: EdgeInsets.only(top: 16, right: 16, left: 16, bottom: 8),
       child: Column(
         children: [
           TextField(
