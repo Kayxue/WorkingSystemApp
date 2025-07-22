@@ -3,7 +3,7 @@ import 'package:infinite_scroll_pagination/infinite_scroll_pagination.dart';
 import 'dart:convert';
 
 import 'package:http/http.dart' as http;
-import 'package:working_system_app/Constant/Constant.dart';
+import 'package:working_system_app/Others/Constant.dart';
 import 'package:working_system_app/Types/Gigs.dart';
 import 'package:working_system_app/Types/PublicGigsReturn.dart';
 
