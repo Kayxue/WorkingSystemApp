@@ -1,12 +1,16 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:working_system_app/Constant/Constant.dart';
+import 'package:working_system_app/Others/Constant.dart';
+import 'package:working_system_app/Others/Utils.dart';
 import 'package:working_system_app/Pages/FindWorks.dart';
 import 'package:working_system_app/Pages/Login.dart';
 import 'package:working_system_app/Pages/Personal.dart';
 import 'package:working_system_app/Pages/Schedule.dart';
 import 'package:working_system_app/Widget/bottomBar.dart';
 import 'package:http/http.dart' as http;
+import 'package:flutter/services.dart';
 
 void main() {
   runApp(const MyApp());
@@ -39,6 +43,7 @@ class _ApplicationBaseState extends State<ApplicationBase> {
   int currentIndex = 0;
   String sessionKey = "";
   final Future<SharedPreferences> prefs = SharedPreferences.getInstance();
+  late final Map<String, List<String>> cityDistrictMap;
 
   void updateIndex(int index) {
     setState(() {
@@ -68,6 +73,8 @@ class _ApplicationBaseState extends State<ApplicationBase> {
   void initState() {
     super.initState();
     prefs.then((SharedPreferences preferences) async {
+      cityDistrictMap = await Utils.loadCityDistrictMap();
+
       String? storedSessionKey = preferences.getString('sessionKey');
       if (storedSessionKey != null && storedSessionKey.isNotEmpty) {
         final response = await http.get(
