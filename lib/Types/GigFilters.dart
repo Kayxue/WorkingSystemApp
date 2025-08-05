@@ -16,6 +16,7 @@ class Gigfilters {
     this.maxRate,
     this.dateStart,
   });
-  factory Gigfilters.fromJson(Map<String, dynamic> json) => _$GigfiltersFromJson(json);
+  factory Gigfilters.fromJson(Map<String, dynamic> json) =>
+      _$GigfiltersFromJson(json);
   Map<String, dynamic> toJson() => _$GigfiltersToJson(this);
 }

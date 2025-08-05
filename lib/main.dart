@@ -74,9 +74,12 @@ class _ApplicationBaseState extends State<ApplicationBase> {
 
       String? storedSessionKey = preferences.getString('sessionKey');
       if (storedSessionKey != null && storedSessionKey.isNotEmpty) {
-        final response = await Utils.client .get(
+        final response = await Utils.client.get(
           "/user/profile",
-          headers: HttpHeaders.rawMap({"platform": "mobile", "cookie": storedSessionKey}),
+          headers: HttpHeaders.rawMap({
+            "platform": "mobile",
+            "cookie": storedSessionKey,
+          }),
         );
         if (response.statusCode != 200) {
           clearSessionKey();

@@ -55,7 +55,7 @@ class _FindworksState extends State<Findworks> {
     setState(() {
       selectedCity = city;
       selectedDistrict = "";
-      districtController.value = TextEditingValue(text: "無");
+      districtController.value = TextEditingValue(text: "無指定區");
       _pagingController.refresh();
     });
   }
