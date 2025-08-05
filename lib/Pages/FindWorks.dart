@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:infinite_scroll_pagination/infinite_scroll_pagination.dart';
 import 'package:rhttp/rhttp.dart';
+import 'package:rxdart/rxdart.dart';
 import 'dart:convert';
 
 import 'package:working_system_app/Others/Utils.dart';
@@ -22,6 +23,7 @@ class _FindworksState extends State<Findworks> {
   String selectedCity = "";
   String selectedDistrict = "";
   final TextEditingController districtController = TextEditingController();
+  final textSearchObservable = PublishSubject<String>();
 
   late final _pagingController = PagingController<int, Gigs>(
     getNextPageKey: (state) =>
@@ -68,7 +70,15 @@ class _FindworksState extends State<Findworks> {
   @override
   void initState() {
     super.initState();
-    // TODO: Initialize rxdart and start listening to search queries
+    textSearchObservable
+        .debounceTime(Duration(milliseconds: 500))
+        .distinct()
+        .listen((query) {
+          setState(() {
+            searchQuery = query;
+            _pagingController.refresh();
+          });
+        });
   }
 
   @override
@@ -90,6 +100,7 @@ class _FindworksState extends State<Findworks> {
             selectedCity: selectedCity,
             selectedDistrict: selectedDistrict,
             districtController: districtController,
+            textSearchObservable: textSearchObservable,
           ),
           SizedBox(height: 16),
           PagingListener(

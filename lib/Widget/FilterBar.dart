@@ -8,6 +8,7 @@ class Filterbar extends StatefulWidget {
   final String selectedDistrict;
   final Function(String) setCity;
   final Function(String) setDistrict;
+  final PublishSubject<String> textSearchObservable;
 
   const Filterbar({
     super.key,
@@ -17,6 +18,7 @@ class Filterbar extends StatefulWidget {
     required this.selectedCity,
     required this.selectedDistrict,
     required this.districtController,
+    required this.textSearchObservable,
   });
 
   @override
@@ -48,7 +50,7 @@ class _FilterbarState extends State<Filterbar> {
             hint: Text("Search works", style: TextStyle(color: Colors.grey)),
             border: OutlineInputBorder(),
           ),
-          onChanged: (value) => cityObservable.add(value),
+          onChanged: (value) => widget.textSearchObservable.add(value),
         ),
         SizedBox(height: 10),
         Row(
