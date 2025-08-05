@@ -1,3 +1,3 @@
 class Constant {
-  static const ip = "0.0.0.0:3000";
+  static const url = "http://0.0.0.0:3000";
 }

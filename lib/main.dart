@@ -1,18 +1,15 @@
-import 'dart:convert';
-
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:working_system_app/Others/Constant.dart';
 import 'package:working_system_app/Others/Utils.dart';
 import 'package:working_system_app/Pages/FindWorks.dart';
 import 'package:working_system_app/Pages/Login.dart';
 import 'package:working_system_app/Pages/Personal.dart';
 import 'package:working_system_app/Pages/Schedule.dart';
 import 'package:working_system_app/Widget/bottomBar.dart';
-import 'package:http/http.dart' as http;
-import 'package:flutter/services.dart';
+import 'package:rhttp/rhttp.dart';
 
-void main() {
+void main() async {
+  await Rhttp.init();
   runApp(const MyApp());
 }
 
@@ -43,7 +40,7 @@ class _ApplicationBaseState extends State<ApplicationBase> {
   int currentIndex = 0;
   String sessionKey = "";
   final Future<SharedPreferences> prefs = SharedPreferences.getInstance();
-  late final Map<String, List<String>> cityDistrictMap;
+  Map<String, List<String>>? cityDistrictMap;
 
   void updateIndex(int index) {
     setState(() {
@@ -77,9 +74,9 @@ class _ApplicationBaseState extends State<ApplicationBase> {
 
       String? storedSessionKey = preferences.getString('sessionKey');
       if (storedSessionKey != null && storedSessionKey.isNotEmpty) {
-        final response = await http.get(
-          Uri.parse("http://${Constant.ip}/user/profile"),
-          headers: {"platform": "mobile", "cookie": storedSessionKey},
+        final response = await Utils.client .get(
+          "/user/profile",
+          headers: HttpHeaders.rawMap({"platform": "mobile", "cookie": storedSessionKey}),
         );
         if (response.statusCode != 200) {
           clearSessionKey();
@@ -100,11 +97,11 @@ class _ApplicationBaseState extends State<ApplicationBase> {
       body: SafeArea(
         child: (sessionKey.isEmpty
             ? <Widget>[
-                Findworks(),
+                Findworks(cityDistrictMap: cityDistrictMap),
                 Login(setSessionKey: setSessionKey, updateIndex: updateIndex),
               ]
-            : const <Widget>[
-                Findworks(),
+            : <Widget>[
+                Findworks(cityDistrictMap: cityDistrictMap),
                 Schedule(),
                 Personal(),
               ])[currentIndex],

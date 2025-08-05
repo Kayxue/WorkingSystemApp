@@ -1,14 +1,17 @@
 import 'package:flutter/material.dart';
 import 'package:infinite_scroll_pagination/infinite_scroll_pagination.dart';
+import 'package:rhttp/rhttp.dart';
 import 'dart:convert';
 
-import 'package:http/http.dart' as http;
-import 'package:working_system_app/Others/Constant.dart';
+import 'package:working_system_app/Others/Utils.dart';
 import 'package:working_system_app/Types/Gigs.dart';
 import 'package:working_system_app/Types/PublicGigsReturn.dart';
+import 'package:working_system_app/Widget/FilterBar.dart';
 
 class Findworks extends StatefulWidget {
-  const Findworks({super.key});
+  final Map<String, List<String>>? cityDistrictMap;
+
+  const Findworks({super.key, required this.cityDistrictMap});
 
   @override
   State<Findworks> createState() => _FindworksState();
@@ -16,6 +19,10 @@ class Findworks extends StatefulWidget {
 
 class _FindworksState extends State<Findworks> {
   String searchQuery = "";
+  String selectedCity = "";
+  String selectedDistrict = "";
+  final TextEditingController districtController = TextEditingController();
+
   late final _pagingController = PagingController<int, Gigs>(
     getNextPageKey: (state) =>
         state.lastPageIsEmpty ? null : state.nextIntPageKey,
@@ -26,11 +33,9 @@ class _FindworksState extends State<Findworks> {
   );
 
   Future<List<Gigs>> fetchWorks({int page = 1}) async {
-    final response = await http.get(
-      Uri.parse(
-        "http://${Constant.ip}/gig/public?page=$page${searchQuery.isNotEmpty ? "&search=$searchQuery" : ""}",
-      ),
-      headers: {"platform": "mobile"},
+    final response = await Utils.client.get(
+      "/gig/public?page=$page${searchQuery.isNotEmpty ? "&search=$searchQuery" : ""}${selectedCity.isNotEmpty ? "&city=$selectedCity" : ""}${selectedDistrict.isNotEmpty ? "&district=$selectedDistrict" : ""}",
+      headers: HttpHeaders.rawMap({"platform": "mobile"}),
     );
     if (!mounted) return [];
     if (response.statusCode != 200) {
@@ -42,6 +47,28 @@ class _FindworksState extends State<Findworks> {
     final respond = jsonDecode(response.body) as Map<String, dynamic>;
     final parsed = Publicgigsreturn.fromJson(respond);
     return parsed.gigs;
+  }
+
+  void setCity(String city) {
+    setState(() {
+      selectedCity = city;
+      selectedDistrict = "";
+      districtController.value = TextEditingValue(text: "無");
+      _pagingController.refresh();
+    });
+  }
+
+  void setDistrict(String district) {
+    setState(() {
+      selectedDistrict = district;
+      _pagingController.refresh();
+    });
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    // TODO: Initialize rxdart and start listening to search queries
   }
 
   @override
@@ -56,11 +83,13 @@ class _FindworksState extends State<Findworks> {
       padding: EdgeInsets.only(top: 16, right: 16, left: 16, bottom: 8),
       child: Column(
         children: [
-          TextField(
-            decoration: InputDecoration(
-              hint: Text("Search works", style: TextStyle(color: Colors.grey)),
-              border: OutlineInputBorder(),
-            ),
+          Filterbar(
+            cityDistrictMap: widget.cityDistrictMap,
+            setCity: setCity,
+            setDistrict: setDistrict,
+            selectedCity: selectedCity,
+            selectedDistrict: selectedDistrict,
+            districtController: districtController,
           ),
           SizedBox(height: 16),
           PagingListener(

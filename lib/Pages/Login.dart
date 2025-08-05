@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:http/http.dart' as http;
-import 'package:working_system_app/Others/Constant.dart';
+import 'package:rhttp/rhttp.dart';
+import 'package:working_system_app/Others/Utils.dart';
 
 class Login extends StatefulWidget {
   final Function(String key) setSessionKey;
@@ -22,15 +22,18 @@ class _LoginState extends State<Login> {
 
   _LoginState();
 
+  @override
+  void initState() {
+    super.initState();
+  }
+
   void login() async {
     if (email.isNotEmpty && password.isNotEmpty) {
       Map<String, String> body = {"email": email, "password": password};
-      final response = await http.post(
-        Uri.parse(
-          "http://${Constant.ip}/user/login",
-        ),
-        headers: {"platform": "mobile"},
-        body: body,
+      final response = await Utils.client.post(
+        "/user/login",
+        headers: const HttpHeaders.rawMap({"platform": "mobile"}),
+        body: HttpBody.json(body),
       );
       if (!mounted) return;
       if (response.statusCode != 200) {
@@ -39,7 +42,7 @@ class _LoginState extends State<Login> {
         );
         return;
       }
-      var cookie = response.headers["set-cookie"];
+      var cookie = response.headerMap["set-cookie"];
       if (cookie != null) {
         widget.updateIndex(0);
         widget.setSessionKey(cookie);
@@ -93,7 +96,12 @@ class _LoginState extends State<Login> {
             obscureText: true,
           ),
           SizedBox(height: 16),
-          ElevatedButton(onPressed: () {login();}, child: Text("Login")),
+          ElevatedButton(
+            onPressed: () {
+              login();
+            },
+            child: Text("Login"),
+          ),
         ],
       ),
     );
