@@ -16,6 +16,7 @@ class Publicgigsreturn {
     required this.pagination,
     required this.filters,
   });
-  factory Publicgigsreturn.fromJson(Map<String, dynamic> json) => _$PublicgigsreturnFromJson(json);
+  factory Publicgigsreturn.fromJson(Map<String, dynamic> json) =>
+      _$PublicgigsreturnFromJson(json);
   Map<String, dynamic> toJson() => _$PublicgigsreturnToJson(this);
 }

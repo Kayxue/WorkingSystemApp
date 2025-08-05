@@ -15,6 +15,7 @@ class Gigpagination {
     required this.returned,
   });
 
-  factory Gigpagination.fromJson(Map<String, dynamic> json) => _$GigpaginationFromJson(json);
+  factory Gigpagination.fromJson(Map<String, dynamic> json) =>
+      _$GigpaginationFromJson(json);
   Map<String, dynamic> toJson() => _$GigpaginationToJson(this);
 }
