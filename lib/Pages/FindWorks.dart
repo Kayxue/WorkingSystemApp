@@ -102,7 +102,7 @@ class _FindworksState extends State<Findworks> {
             districtController: districtController,
             textSearchObservable: textSearchObservable,
           ),
-          SizedBox(height: 16),
+          const SizedBox(height: 16),
           PagingListener(
             controller: _pagingController,
             builder: (context, state, fetchNextPage) => Expanded(
