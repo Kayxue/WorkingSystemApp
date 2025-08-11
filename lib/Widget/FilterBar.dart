@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:rxdart/rxdart.dart';
-import 'package:collection/collection.dart';
 
 class Filterbar extends StatefulWidget {
   final Map<String, List<String>>? cityDistrictMap;
@@ -85,22 +84,17 @@ class _FilterbarState extends State<Filterbar> {
                 child: DropdownMenu(
                   expandedInsets: EdgeInsets.zero,
                   initialSelection: "",
+                  enabled: widget.selectedCity.isNotEmpty,
                   dropdownMenuEntries: [
                     DropdownMenuEntry<String>(value: "", label: "無指定區"),
-                    if (widget.cityDistrictMap != null)
-                      ...(widget.selectedCity.isEmpty
-                          ? (widget.cityDistrictMap!.values.flattenedToSet.map(
-                              (district) => DropdownMenuEntry<String>(
-                                value: district,
-                                label: district,
-                              ),
-                            ))
-                          : widget.cityDistrictMap![widget.selectedCity]!.map(
-                              (district) => DropdownMenuEntry<String>(
-                                value: district,
-                                label: district,
-                              ),
-                            )),
+                    if (widget.cityDistrictMap != null &&
+                        widget.selectedCity.isNotEmpty)
+                      ...widget.cityDistrictMap![widget.selectedCity]!.map(
+                        (district) => DropdownMenuEntry<String>(
+                          value: district,
+                          label: district,
+                        ),
+                      ),
                   ],
                   controller: widget.districtController,
                   onSelected: (value) {

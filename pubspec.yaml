@@ -41,7 +41,6 @@ dependencies:
   rxdart: ^0.28.0
   rhttp: ^0.13.0
   http: ^1.4.0
-  collection: ^1.19.1
 
 dev_dependencies:
   flutter_test:
