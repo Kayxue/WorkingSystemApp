@@ -1,4 +1,5 @@
 import 'package:json_annotation/json_annotation.dart';
+import 'package:working_system_app/Types/DescriptionType.dart';
 import 'package:working_system_app/Types/Employer.dart';
 import 'package:working_system_app/Types/EnvironmentPhoto.dart';
 part 'GigDetails.g.dart';
@@ -7,8 +8,7 @@ part 'GigDetails.g.dart';
 class Gigdetails {
   String gigId;
   String employerId;
-  //TODO: Use freezed for accurate type handling
-  dynamic description;
+  DescriptionType description;
   DateTime dateStart;
   DateTime dateEnd;
   String timeStart;

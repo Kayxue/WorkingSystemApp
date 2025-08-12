@@ -9,7 +9,9 @@ part of 'GigDetails.dart';
 Gigdetails _$GigdetailsFromJson(Map<String, dynamic> json) => Gigdetails(
   gigId: json['gigId'] as String,
   employerId: json['employerId'] as String,
-  description: json['description'],
+  description: DescriptionType.fromJson(
+    json['description'] as Map<String, dynamic>,
+  ),
   dateStart: DateTime.parse(json['dateStart'] as String),
   dateEnd: DateTime.parse(json['dateEnd'] as String),
   timeStart: json['timeStart'] as String,
@@ -37,7 +39,7 @@ Map<String, dynamic> _$GigdetailsToJson(Gigdetails instance) =>
     <String, dynamic>{
       'gigId': instance.gigId,
       'employerId': instance.employerId,
-      'description': instance.description,
+      'description': instance.description.toJson(),
       'dateStart': instance.dateStart.toIso8601String(),
       'dateEnd': instance.dateEnd.toIso8601String(),
       'timeStart': instance.timeStart,
