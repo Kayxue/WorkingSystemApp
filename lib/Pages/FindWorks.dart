@@ -5,6 +5,7 @@ import 'package:rxdart/rxdart.dart';
 import 'dart:convert';
 
 import 'package:working_system_app/Others/Utils.dart';
+import 'package:working_system_app/Pages/GigDetail.dart';
 import 'package:working_system_app/Types/Gigs.dart';
 import 'package:working_system_app/Types/PublicGigsReturn.dart';
 import 'package:working_system_app/Widget/FilterBar.dart';
@@ -117,12 +118,9 @@ class _FindworksState extends State<Findworks> {
                       child: InkWell(
                         splashColor: Colors.grey.withAlpha(30),
                         onTap: () {
-                          //TODO: Show gig details
-                          ScaffoldMessenger.of(context).showSnackBar(
-                            SnackBar(
-                              content: Text(
-                                "Tapped on Work Title ${item.title}",
-                              ),
+                          Navigator.of(context).push(
+                            MaterialPageRoute(
+                              builder: (context) => Gigdetail(gigId: item.gigId),
                             ),
                           );
                         },

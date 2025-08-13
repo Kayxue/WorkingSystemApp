@@ -1,5 +1,4 @@
 import 'package:json_annotation/json_annotation.dart';
-import 'package:working_system_app/Types/DescriptionType.dart';
 import 'package:working_system_app/Types/Employer.dart';
 import 'package:working_system_app/Types/EnvironmentPhoto.dart';
 part 'GigDetails.g.dart';
@@ -8,45 +7,47 @@ part 'GigDetails.g.dart';
 class Gigdetails {
   String gigId;
   String employerId;
-  DescriptionType description;
+  String title;
+  String description;
   DateTime dateStart;
   DateTime dateEnd;
   String timeStart;
   String timeEnd;
-  Map<String, dynamic>? requirements;
+  Map<String,dynamic> requirements;
   int hourlyRate;
   String city;
   String district;
   String address;
-  List<Environmentphoto>? environmentPhotos;
+  List<Environmentphoto> environmentPhotos;
   String contactPerson;
-  String ?contactPhone;
+  String? contactPhone;
   String? contactEmail;
-  DateTime publishAt;
+  DateTime publishedAt;
   DateTime? unlistedAt;
-  DateTime updateAt;
+  DateTime updatedAt;
   Employer employer;
 
   Gigdetails({
     required this.gigId,
     required this.employerId,
+    required this.title,
     required this.description,
     required this.dateStart,
     required this.dateEnd,
     required this.timeStart,
     required this.timeEnd,
-    this.requirements,
+    required this.requirements,
     required this.hourlyRate,
     required this.city,
     required this.district,
     required this.address,
-    this.environmentPhotos,
+    required this.environmentPhotos,
     required this.contactPerson,
     this.contactPhone,
     this.contactEmail,
-    required this.publishAt,
+    required this.publishedAt,
     this.unlistedAt,
-    required this.updateAt,
+    required this.updatedAt,
     required this.employer,
   });
 
