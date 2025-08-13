@@ -37,7 +37,7 @@ class _FindworksState extends State<Findworks> {
 
   Future<List<Gigs>> fetchWorks({int page = 1}) async {
     final response = await Utils.client.get(
-      "/gig/public?page=$page${searchQuery.isNotEmpty ? "&search=$searchQuery" : ""}${selectedCity.isNotEmpty ? "&city=$selectedCity" : ""}${selectedDistrict.isNotEmpty ? "&district=$selectedDistrict" : ""}",
+      "/gig/public?page=$page${searchQuery.isNotEmpty ? "&searchQuery=$searchQuery" : ""}${selectedCity.isNotEmpty ? "&city=$selectedCity" : ""}${selectedDistrict.isNotEmpty ? "&district=$selectedDistrict" : ""}",
       headers: HttpHeaders.rawMap({"platform": "mobile"}),
     );
     if (!mounted) return [];

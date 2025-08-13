@@ -20,8 +20,8 @@ Gigdetails _$GigdetailsFromJson(Map<String, dynamic> json) => Gigdetails(
   city: json['city'] as String,
   district: json['district'] as String,
   address: json['address'] as String,
-  environmentPhotos: (json['environmentPhotos'] as List<dynamic>)
-      .map((e) => Environmentphoto.fromJson(e as Map<String, dynamic>))
+  environmentPhotos: (json['environmentPhotos'] as List<dynamic>?)
+      ?.map((e) => Environmentphoto.fromJson(e as Map<String, dynamic>))
       .toList(),
   contactPerson: json['contactPerson'] as String,
   contactPhone: json['contactPhone'] as String?,
@@ -50,7 +50,7 @@ Map<String, dynamic> _$GigdetailsToJson(Gigdetails instance) =>
       'district': instance.district,
       'address': instance.address,
       'environmentPhotos': instance.environmentPhotos
-          .map((e) => e.toJson())
+          ?.map((e) => e.toJson())
           .toList(),
       'contactPerson': instance.contactPerson,
       'contactPhone': instance.contactPhone,

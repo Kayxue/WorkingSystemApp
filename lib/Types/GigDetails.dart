@@ -18,7 +18,7 @@ class Gigdetails {
   String city;
   String district;
   String address;
-  List<Environmentphoto> environmentPhotos;
+  List<Environmentphoto>? environmentPhotos;
   String contactPerson;
   String? contactPhone;
   String? contactEmail;
