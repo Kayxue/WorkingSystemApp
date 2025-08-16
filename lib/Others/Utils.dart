@@ -16,7 +16,7 @@ class Utils {
   static var client = RhttpClient.createSync(
     settings: const ClientSettings(
       throwOnStatusCode: false,
-      baseUrl: Constant.url,
+      baseUrl: Constant.backendUrl,
     ),
   );
 }
