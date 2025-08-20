@@ -6,9 +6,9 @@ import 'package:working_system_app/Others/Utils.dart';
 import 'package:working_system_app/Types/GigDetails.dart';
 
 class Gigdetail extends StatefulWidget {
-  String gigId;
+  final String gigId;
 
-  Gigdetail({super.key, required this.gigId});
+  const Gigdetail({super.key, required this.gigId});
 
   @override
   State<Gigdetail> createState() => _GigdetailState();
@@ -47,8 +47,16 @@ class _GigdetailState extends State<Gigdetail> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: Text(isLoading? "Loading..." : gigdetail!.title)),
-      body: Center(child: Text(isLoading? "Loading gig details..." : (gigdetail!.description is Map?gigdetail!.description.toString():gigdetail!.description))),
+      appBar: AppBar(title: Text(isLoading ? "Loading..." : gigdetail!.title)),
+      body: Center(
+        child: Text(
+          isLoading
+              ? "Loading gig details..."
+              : (gigdetail!.description is Map
+                    ? gigdetail!.description.toString()
+                    : gigdetail!.description),
+        ),
+      ),
     );
   }
 }
