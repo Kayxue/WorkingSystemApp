@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:rhttp/rhttp.dart';
 import 'package:working_system_app/Others/Utils.dart';
 import 'package:working_system_app/Types/GigDetails.dart';
+import 'package:animated_read_more_text/animated_read_more_text.dart';
 
 class Gigdetail extends StatefulWidget {
   final String gigId;
@@ -48,16 +49,62 @@ class _GigdetailState extends State<Gigdetail> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: Text(isLoading ? "Loading..." : gigdetail!.title)),
-      body: Center(
-        child: Text(
-          isLoading
-              ? "Loading gig details..."
-              : (gigdetail!.description is Map
-                    ? gigdetail!.description.toString()
-                    : gigdetail!.description),
-        ),
-      ),
+      appBar: AppBar(title: Text(widget.title)),
+      body: isLoading
+          ? Center(
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: [
+                  CircularProgressIndicator(),
+                  SizedBox(height: 8),
+                  Text("Loading", style: TextStyle(fontSize: 12)),
+                ],
+              ),
+            )
+          : Padding(
+              padding: const EdgeInsets.only(left: 16, right: 16),
+              child: Column(
+                children: [
+                  Expanded(
+                    child: SingleChildScrollView(
+                      child: Column(
+                        children: [
+                          Center(
+                            child: Text(
+                              "Details",
+                              style: TextStyle(
+                                fontSize: 32,
+                                fontWeight: FontWeight.bold,
+                              ),
+                            ),
+                          ),
+                          SizedBox(height: 8),
+                          Card(
+                            child: ListTile(
+                              title: Text("Description",style: TextStyle(fontWeight: FontWeight.w500),),
+                              subtitle: AnimatedReadMoreText(
+                                gigdetail!.description,
+                                maxLines: 2,
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ),
+                  SizedBox(height: 16),
+                  SizedBox(
+                    width: double.infinity,
+                    child: ElevatedButton(
+                      onPressed: () {},
+                      child: Text("Apply"),
+                    ),
+                  ),
+                  SizedBox(height: 32),
+                ],
+              ),
+            ),
     );
   }
 }
