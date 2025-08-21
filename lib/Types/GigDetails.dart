@@ -1,6 +1,7 @@
 import 'package:json_annotation/json_annotation.dart';
 import 'package:working_system_app/Types/Employer.dart';
 import 'package:working_system_app/Types/EnvironmentPhoto.dart';
+
 part 'GigDetails.g.dart';
 
 @JsonSerializable(explicitToJson: true)
@@ -13,7 +14,7 @@ class Gigdetails {
   DateTime dateEnd;
   String timeStart;
   String timeEnd;
-  Map<String,dynamic> requirements;
+  Map<String, dynamic> requirements;
   int hourlyRate;
   String city;
   String district;
@@ -53,5 +54,6 @@ class Gigdetails {
 
   factory Gigdetails.fromJson(Map<String, dynamic> json) =>
       _$GigdetailsFromJson(json);
+
   Map<String, dynamic> toJson() => _$GigdetailsToJson(this);
 }

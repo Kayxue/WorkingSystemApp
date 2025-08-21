@@ -1,4 +1,5 @@
 import 'package:json_annotation/json_annotation.dart';
+
 part 'GigPagination.g.dart';
 
 @JsonSerializable(explicitToJson: true)
@@ -17,5 +18,6 @@ class Gigpagination {
 
   factory Gigpagination.fromJson(Map<String, dynamic> json) =>
       _$GigpaginationFromJson(json);
+
   Map<String, dynamic> toJson() => _$GigpaginationToJson(this);
 }

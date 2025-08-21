@@ -1,4 +1,5 @@
 import 'package:json_annotation/json_annotation.dart';
+
 part 'Gigs.g.dart';
 
 @JsonSerializable(explicitToJson: true)
@@ -20,5 +21,6 @@ class Gigs {
   });
 
   factory Gigs.fromJson(Map<String, dynamic> json) => _$GigsFromJson(json);
+
   Map<String, dynamic> toJson() => _$GigsToJson(this);
 }

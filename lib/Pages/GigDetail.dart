@@ -7,8 +7,9 @@ import 'package:working_system_app/Types/GigDetails.dart';
 
 class Gigdetail extends StatefulWidget {
   final String gigId;
+  final String title;
 
-  const Gigdetail({super.key, required this.gigId});
+  const Gigdetail({super.key, required this.gigId, required this.title});
 
   @override
   State<Gigdetail> createState() => _GigdetailState();

@@ -1,4 +1,5 @@
 import 'package:json_annotation/json_annotation.dart';
+
 part 'GigFilters.g.dart';
 
 @JsonSerializable(explicitToJson: true)
@@ -16,7 +17,9 @@ class Gigfilters {
     this.maxRate,
     this.dateStart,
   });
+
   factory Gigfilters.fromJson(Map<String, dynamic> json) =>
       _$GigfiltersFromJson(json);
+
   Map<String, dynamic> toJson() => _$GigfiltersToJson(this);
 }

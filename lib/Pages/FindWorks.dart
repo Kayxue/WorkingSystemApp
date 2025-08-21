@@ -120,7 +120,10 @@ class _FindworksState extends State<Findworks> {
                         onTap: () {
                           Navigator.of(context).push(
                             MaterialPageRoute(
-                              builder: (context) => Gigdetail(gigId: item.gigId),
+                              builder: (context) => Gigdetail(
+                                gigId: item.gigId,
+                                title: item.title,
+                              ),
                             ),
                           );
                         },

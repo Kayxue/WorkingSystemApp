@@ -1,4 +1,5 @@
 import 'package:json_annotation/json_annotation.dart';
+
 part 'EnvironmentPhoto.g.dart';
 
 @JsonSerializable(explicitToJson: true)
@@ -17,5 +18,6 @@ class Environmentphoto {
 
   factory Environmentphoto.fromJson(Map<String, dynamic> json) =>
       _$EnvironmentphotoFromJson(json);
+
   Map<String, dynamic> toJson() => _$EnvironmentphotoToJson(this);
 }

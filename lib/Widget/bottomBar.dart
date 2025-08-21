@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 class Bottombar extends StatelessWidget {
   final int currentIndex;
   final String sessionKey;
+
   //Function to update currentIndex
   final Function(int index) updateIndex;
 
