@@ -158,7 +158,7 @@ class _GigDetailState extends State<GigDetail> {
                             },
                       child: Text(
                         widget.sessionKey.isEmpty
-                            ? "Please login to apply this gig"
+                            ? "Please login to apply to this gig"
                             : "Apply",
                       ),
                     ),
