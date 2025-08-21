@@ -100,11 +100,17 @@ class _ApplicationBaseState extends State<ApplicationBase> {
       body: SafeArea(
         child: (sessionKey.isEmpty
             ? <Widget>[
-                Findworks(cityDistrictMap: cityDistrictMap),
+                Findworks(
+                  cityDistrictMap: cityDistrictMap,
+                  sessionKey: sessionKey,
+                ),
                 Login(setSessionKey: setSessionKey, updateIndex: updateIndex),
               ]
             : <Widget>[
-                Findworks(cityDistrictMap: cityDistrictMap),
+                Findworks(
+                  cityDistrictMap: cityDistrictMap,
+                  sessionKey: sessionKey,
+                ),
                 Schedule(),
                 Personal(),
               ])[currentIndex],

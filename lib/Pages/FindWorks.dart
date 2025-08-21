@@ -12,8 +12,9 @@ import 'package:working_system_app/Widget/FilterBar.dart';
 
 class Findworks extends StatefulWidget {
   final Map<String, List<String>>? cityDistrictMap;
+  final String sessionKey;
 
-  const Findworks({super.key, required this.cityDistrictMap});
+  const Findworks({super.key, required this.cityDistrictMap, required this.sessionKey});
 
   @override
   State<Findworks> createState() => _FindworksState();
@@ -123,6 +124,7 @@ class _FindworksState extends State<Findworks> {
                               builder: (context) => Gigdetail(
                                 gigId: item.gigId,
                                 title: item.title,
+                                sessionKey: widget.sessionKey,
                               ),
                             ),
                           );
