@@ -6,7 +6,7 @@ part of 'GigFilters.dart';
 // JsonSerializableGenerator
 // **************************************************************************
 
-Gigfilters _$GigfiltersFromJson(Map<String, dynamic> json) => Gigfilters(
+GigFilters _$GigFiltersFromJson(Map<String, dynamic> json) => GigFilters(
   city: json['city'] as String?,
   district: json['district'] as String?,
   minRate: (json['minRate'] as num?)?.toInt(),
@@ -16,7 +16,7 @@ Gigfilters _$GigfiltersFromJson(Map<String, dynamic> json) => Gigfilters(
       : DateTime.parse(json['dateStart'] as String),
 );
 
-Map<String, dynamic> _$GigfiltersToJson(Gigfilters instance) =>
+Map<String, dynamic> _$GigFiltersToJson(GigFilters instance) =>
     <String, dynamic>{
       'city': instance.city,
       'district': instance.district,

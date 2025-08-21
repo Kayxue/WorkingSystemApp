@@ -6,18 +6,18 @@ part of 'PublicGigsReturn.dart';
 // JsonSerializableGenerator
 // **************************************************************************
 
-Publicgigsreturn _$PublicgigsreturnFromJson(Map<String, dynamic> json) =>
-    Publicgigsreturn(
+PublicGigsReturn _$PublicGigsReturnFromJson(Map<String, dynamic> json) =>
+    PublicGigsReturn(
       gigs: (json['gigs'] as List<dynamic>)
           .map((e) => Gigs.fromJson(e as Map<String, dynamic>))
           .toList(),
-      pagination: Gigpagination.fromJson(
+      pagination: GigPagination.fromJson(
         json['pagination'] as Map<String, dynamic>,
       ),
-      filters: Gigfilters.fromJson(json['filters'] as Map<String, dynamic>),
+      filters: GigFilters.fromJson(json['filters'] as Map<String, dynamic>),
     );
 
-Map<String, dynamic> _$PublicgigsreturnToJson(Publicgigsreturn instance) =>
+Map<String, dynamic> _$PublicGigsReturnToJson(PublicGigsReturn instance) =>
     <String, dynamic>{
       'gigs': instance.gigs.map((e) => e.toJson()).toList(),
       'pagination': instance.pagination.toJson(),

@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:rxdart/rxdart.dart';
 
-class Filterbar extends StatefulWidget {
+class FilterBar extends StatefulWidget {
   final Map<String, List<String>>? cityDistrictMap;
   final TextEditingController districtController;
   final String selectedCity;
@@ -10,7 +10,7 @@ class Filterbar extends StatefulWidget {
   final Function(String) setDistrict;
   final PublishSubject<String> textSearchObservable;
 
-  const Filterbar({
+  const FilterBar({
     super.key,
     required this.cityDistrictMap,
     required this.setCity,
@@ -22,10 +22,10 @@ class Filterbar extends StatefulWidget {
   });
 
   @override
-  State<Filterbar> createState() => _FilterbarState();
+  State<FilterBar> createState() => _FilterBarState();
 }
 
-class _FilterbarState extends State<Filterbar> {
+class _FilterBarState extends State<FilterBar> {
   var cityObservable = PublishSubject<String>();
   var districtObservable = PublishSubject<String>();
 

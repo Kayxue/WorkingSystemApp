@@ -3,21 +3,21 @@ import 'package:json_annotation/json_annotation.dart';
 part 'EnvironmentPhoto.g.dart';
 
 @JsonSerializable(explicitToJson: true)
-class Environmentphoto {
+class EnvironmentPhoto {
   String url;
   String originalName;
   String type;
   String filename;
 
-  Environmentphoto({
+  EnvironmentPhoto({
     required this.url,
     required this.originalName,
     required this.type,
     required this.filename,
   });
 
-  factory Environmentphoto.fromJson(Map<String, dynamic> json) =>
-      _$EnvironmentphotoFromJson(json);
+  factory EnvironmentPhoto.fromJson(Map<String, dynamic> json) =>
+      _$EnvironmentPhotoFromJson(json);
 
-  Map<String, dynamic> toJson() => _$EnvironmentphotoToJson(this);
+  Map<String, dynamic> toJson() => _$EnvironmentPhotoToJson(this);
 }

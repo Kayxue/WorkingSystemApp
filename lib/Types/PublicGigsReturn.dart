@@ -6,19 +6,19 @@ import 'Gigs.dart';
 part 'PublicGigsReturn.g.dart';
 
 @JsonSerializable(explicitToJson: true)
-class Publicgigsreturn {
+class PublicGigsReturn {
   List<Gigs> gigs;
-  Gigpagination pagination;
-  Gigfilters filters;
+  GigPagination pagination;
+  GigFilters filters;
 
-  Publicgigsreturn({
+  PublicGigsReturn({
     required this.gigs,
     required this.pagination,
     required this.filters,
   });
 
-  factory Publicgigsreturn.fromJson(Map<String, dynamic> json) =>
-      _$PublicgigsreturnFromJson(json);
+  factory PublicGigsReturn.fromJson(Map<String, dynamic> json) =>
+      _$PublicGigsReturnFromJson(json);
 
-  Map<String, dynamic> toJson() => _$PublicgigsreturnToJson(this);
+  Map<String, dynamic> toJson() => _$PublicGigsReturnToJson(this);
 }

@@ -3,14 +3,14 @@ import 'package:json_annotation/json_annotation.dart';
 part 'GigFilters.g.dart';
 
 @JsonSerializable(explicitToJson: true)
-class Gigfilters {
+class GigFilters {
   String? city;
   String? district;
   int? minRate;
   int? maxRate;
   DateTime? dateStart;
 
-  Gigfilters({
+  GigFilters({
     this.city,
     this.district,
     this.minRate,
@@ -18,8 +18,8 @@ class Gigfilters {
     this.dateStart,
   });
 
-  factory Gigfilters.fromJson(Map<String, dynamic> json) =>
-      _$GigfiltersFromJson(json);
+  factory GigFilters.fromJson(Map<String, dynamic> json) =>
+      _$GigFiltersFromJson(json);
 
-  Map<String, dynamic> toJson() => _$GigfiltersToJson(this);
+  Map<String, dynamic> toJson() => _$GigFiltersToJson(this);
 }

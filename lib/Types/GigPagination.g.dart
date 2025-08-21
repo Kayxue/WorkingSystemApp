@@ -6,15 +6,15 @@ part of 'GigPagination.dart';
 // JsonSerializableGenerator
 // **************************************************************************
 
-Gigpagination _$GigpaginationFromJson(Map<String, dynamic> json) =>
-    Gigpagination(
+GigPagination _$GigPaginationFromJson(Map<String, dynamic> json) =>
+    GigPagination(
       limit: (json['limit'] as num).toInt(),
       page: (json['page'] as num).toInt(),
       hasMore: json['hasMore'] as bool,
       returned: (json['returned'] as num).toInt(),
     );
 
-Map<String, dynamic> _$GigpaginationToJson(Gigpagination instance) =>
+Map<String, dynamic> _$GigPaginationToJson(GigPagination instance) =>
     <String, dynamic>{
       'limit': instance.limit,
       'page': instance.page,

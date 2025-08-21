@@ -1,13 +1,13 @@
 import 'package:flutter/material.dart';
 
-class Bottombar extends StatelessWidget {
+class BottomBar extends StatelessWidget {
   final int currentIndex;
   final String sessionKey;
 
   //Function to update currentIndex
   final Function(int index) updateIndex;
 
-  const Bottombar({
+  const BottomBar({
     super.key,
     required this.currentIndex,
     required this.updateIndex,

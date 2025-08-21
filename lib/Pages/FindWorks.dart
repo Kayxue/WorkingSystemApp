@@ -10,18 +10,18 @@ import 'package:working_system_app/Types/Gigs.dart';
 import 'package:working_system_app/Types/PublicGigsReturn.dart';
 import 'package:working_system_app/Widget/FilterBar.dart';
 
-class Findworks extends StatefulWidget {
+class FindWorks extends StatefulWidget {
   final Map<String, List<String>>? cityDistrictMap;
   final String sessionKey;
   final Function() clearSessionKey;
 
-  const Findworks({super.key, required this.cityDistrictMap, required this.sessionKey, required this.clearSessionKey});
+  const FindWorks({super.key, required this.cityDistrictMap, required this.sessionKey, required this.clearSessionKey});
 
   @override
-  State<Findworks> createState() => _FindworksState();
+  State<FindWorks> createState() => _FindWorksState();
 }
 
-class _FindworksState extends State<Findworks> {
+class _FindWorksState extends State<FindWorks> {
   String searchQuery = "";
   String selectedCity = "";
   String selectedDistrict = "";
@@ -50,7 +50,7 @@ class _FindworksState extends State<Findworks> {
       return [];
     }
     final respond = jsonDecode(response.body) as Map<String, dynamic>;
-    final parsed = Publicgigsreturn.fromJson(respond);
+    final parsed = PublicGigsReturn.fromJson(respond);
     return parsed.gigs;
   }
 
@@ -96,7 +96,7 @@ class _FindworksState extends State<Findworks> {
       padding: EdgeInsets.only(top: 16, right: 16, left: 16, bottom: 8),
       child: Column(
         children: [
-          Filterbar(
+          FilterBar(
             cityDistrictMap: widget.cityDistrictMap,
             setCity: setCity,
             setDistrict: setDistrict,
@@ -122,7 +122,7 @@ class _FindworksState extends State<Findworks> {
                         onTap: () {
                           Navigator.of(context).push(
                             MaterialPageRoute(
-                              builder: (context) => Gigdetail(
+                              builder: (context) => GigDetail(
                                 gigId: item.gigId,
                                 title: item.title,
                                 sessionKey: widget.sessionKey,

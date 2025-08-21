@@ -5,7 +5,7 @@ import 'package:working_system_app/Types/EnvironmentPhoto.dart';
 part 'GigDetails.g.dart';
 
 @JsonSerializable(explicitToJson: true)
-class Gigdetails {
+class GigDetails {
   String gigId;
   String employerId;
   String title;
@@ -19,7 +19,7 @@ class Gigdetails {
   String city;
   String district;
   String address;
-  List<Environmentphoto>? environmentPhotos;
+  List<EnvironmentPhoto>? environmentPhotos;
   String contactPerson;
   String? contactPhone;
   String? contactEmail;
@@ -28,7 +28,7 @@ class Gigdetails {
   DateTime updatedAt;
   Employer employer;
 
-  Gigdetails({
+  GigDetails({
     required this.gigId,
     required this.employerId,
     required this.title,
@@ -52,8 +52,8 @@ class Gigdetails {
     required this.employer,
   });
 
-  factory Gigdetails.fromJson(Map<String, dynamic> json) =>
-      _$GigdetailsFromJson(json);
+  factory GigDetails.fromJson(Map<String, dynamic> json) =>
+      _$GigDetailsFromJson(json);
 
-  Map<String, dynamic> toJson() => _$GigdetailsToJson(this);
+  Map<String, dynamic> toJson() => _$GigDetailsToJson(this);
 }

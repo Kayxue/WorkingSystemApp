@@ -6,7 +6,7 @@ part of 'GigDetails.dart';
 // JsonSerializableGenerator
 // **************************************************************************
 
-Gigdetails _$GigdetailsFromJson(Map<String, dynamic> json) => Gigdetails(
+GigDetails _$GigDetailsFromJson(Map<String, dynamic> json) => GigDetails(
   gigId: json['gigId'] as String,
   employerId: json['employerId'] as String,
   title: json['title'] as String,
@@ -21,7 +21,7 @@ Gigdetails _$GigdetailsFromJson(Map<String, dynamic> json) => Gigdetails(
   district: json['district'] as String,
   address: json['address'] as String,
   environmentPhotos: (json['environmentPhotos'] as List<dynamic>?)
-      ?.map((e) => Environmentphoto.fromJson(e as Map<String, dynamic>))
+      ?.map((e) => EnvironmentPhoto.fromJson(e as Map<String, dynamic>))
       .toList(),
   contactPerson: json['contactPerson'] as String,
   contactPhone: json['contactPhone'] as String?,
@@ -34,7 +34,7 @@ Gigdetails _$GigdetailsFromJson(Map<String, dynamic> json) => Gigdetails(
   employer: Employer.fromJson(json['employer'] as Map<String, dynamic>),
 );
 
-Map<String, dynamic> _$GigdetailsToJson(Gigdetails instance) =>
+Map<String, dynamic> _$GigDetailsToJson(GigDetails instance) =>
     <String, dynamic>{
       'gigId': instance.gigId,
       'employerId': instance.employerId,

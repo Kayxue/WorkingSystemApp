@@ -5,7 +5,7 @@ import 'package:working_system_app/Pages/FindWorks.dart';
 import 'package:working_system_app/Pages/Login.dart';
 import 'package:working_system_app/Pages/Personal.dart';
 import 'package:working_system_app/Pages/Schedule.dart';
-import 'package:working_system_app/Widget/bottomBar.dart';
+import 'package:working_system_app/Widget/BottomBar.dart';
 import 'package:rhttp/rhttp.dart';
 
 void main() async {
@@ -100,7 +100,7 @@ class _ApplicationBaseState extends State<ApplicationBase> {
       body: SafeArea(
         child: (sessionKey.isEmpty
             ? <Widget>[
-                Findworks(
+                FindWorks(
                   cityDistrictMap: cityDistrictMap,
                   sessionKey: sessionKey,
                   clearSessionKey: clearSessionKey,
@@ -108,7 +108,7 @@ class _ApplicationBaseState extends State<ApplicationBase> {
                 Login(setSessionKey: setSessionKey, updateIndex: updateIndex),
               ]
             : <Widget>[
-                Findworks(
+                FindWorks(
                   cityDistrictMap: cityDistrictMap,
                   sessionKey: sessionKey,
                   clearSessionKey: clearSessionKey,
@@ -117,7 +117,7 @@ class _ApplicationBaseState extends State<ApplicationBase> {
                 Personal(),
               ])[currentIndex],
       ),
-      bottomNavigationBar: Bottombar(
+      bottomNavigationBar: BottomBar(
         currentIndex: currentIndex,
         updateIndex: updateIndex,
         sessionKey: sessionKey,
