@@ -10,12 +10,14 @@ class Gigdetail extends StatefulWidget {
   final String gigId;
   final String title;
   final String sessionKey;
+  final Function clearSessionKey;
 
   const Gigdetail({
     super.key,
     required this.gigId,
     required this.title,
     required this.sessionKey,
+    required this.clearSessionKey,
   });
 
   @override
@@ -40,7 +42,7 @@ class _GigdetailState extends State<Gigdetail> {
     return parsed;
   }
 
-  Future<bool> sendApplication() async {
+  Future<void> sendApplication() async {
     final response = await Utils.client.post(
       "/application/apply/${widget.gigId}",
       headers: HttpHeaders.rawMap({
@@ -48,13 +50,12 @@ class _GigdetailState extends State<Gigdetail> {
         "cookie": widget.sessionKey,
       }),
     );
-    if (!mounted) return false;
+    if (!mounted) return;
     bool succeed = true;
     switch (response.statusCode) {
       case 404:
         succeed = false;
         await showStatusDialog(
-          succeed,
           title: "Gig Not Exist",
           description:
               "Seems that this gig is not exist, or has expired, or has been deactivated",
@@ -62,32 +63,32 @@ class _GigdetailState extends State<Gigdetail> {
       case 400:
         succeed = false;
         await showStatusDialog(
-          succeed,
           title: "Already Applied",
           description: "You have already applied for this gig.",
         );
       case 500:
         succeed = false;
         await showStatusDialog(
-          succeed,
           title: "Unknown Error",
           description: "Unknown error, please report to developer.",
         );
       case 401:
-        //TODO: Handle 401
-        print("Error 401");
+        succeed = false;
+        widget.clearSessionKey();
+        await showStatusDialog(
+          title: "Please login first",
+          description: "Your session has expired, please login first.",
+        );
     }
-    if (!succeed) return false;
+    if (!succeed) return;
     await showStatusDialog(
-      succeed,
       title: "Succeed",
       description: "Application has been sent",
     );
-    return true;
+    return;
   }
 
-  Future<void> showStatusDialog(
-    bool succeed, {
+  Future<void> showStatusDialog({
     required String title,
     required String description,
   }) async {
@@ -180,10 +181,9 @@ class _GigdetailState extends State<Gigdetail> {
                       onPressed: widget.sessionKey.isEmpty
                           ? null
                           : () async {
-                              if (await sendApplication()) {
-                                if (!mounted) return;
-                                Navigator.of(context).pop();
-                              }
+                              await sendApplication();
+                              if (!mounted) return;
+                              Navigator.of(context).pop();
                             },
                       child: Text(
                         widget.sessionKey.isEmpty

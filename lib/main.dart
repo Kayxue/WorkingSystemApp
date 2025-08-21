@@ -103,6 +103,7 @@ class _ApplicationBaseState extends State<ApplicationBase> {
                 Findworks(
                   cityDistrictMap: cityDistrictMap,
                   sessionKey: sessionKey,
+                  clearSessionKey: clearSessionKey,
                 ),
                 Login(setSessionKey: setSessionKey, updateIndex: updateIndex),
               ]
@@ -110,6 +111,7 @@ class _ApplicationBaseState extends State<ApplicationBase> {
                 Findworks(
                   cityDistrictMap: cityDistrictMap,
                   sessionKey: sessionKey,
+                  clearSessionKey: clearSessionKey,
                 ),
                 Schedule(),
                 Personal(),
