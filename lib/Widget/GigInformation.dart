@@ -27,7 +27,7 @@ class GigInformation extends StatelessWidget{
                     ),
                   ),
                   Text(
-                    "Updated: ${DateFormat.yMd().format(gigdetail!.updatedAt)} ${DateFormat.Hms().format(gigdetail!.updatedAt)}",
+                    "Updated: ${DateFormat.yMd().format(gigdetail.updatedAt)} ${DateFormat.Hms().format(gigdetail.updatedAt)}",
                     style: TextStyle(
                       fontSize: 12,
                       color: Colors.grey,
@@ -44,7 +44,7 @@ class GigInformation extends StatelessWidget{
                   style: TextStyle(fontWeight: FontWeight.w500),
                 ),
                 subtitle: AnimatedReadMoreText(
-                  gigdetail!.description,
+                  gigdetail.description,
                   maxLines: 2,
                 ),
               ),
@@ -57,7 +57,7 @@ class GigInformation extends StatelessWidget{
                   style: TextStyle(fontWeight: FontWeight.w500),
                 ),
                 subtitle: Text(
-                  "${DateFormat.yMd().format(gigdetail!.dateStart)} ～ ${DateFormat.yMd().format(gigdetail!.dateEnd)}",
+                  "${DateFormat.yMd().format(gigdetail.dateStart)} ～ ${DateFormat.yMd().format(gigdetail.dateEnd)}",
                 ),
               ),
             ),
@@ -76,7 +76,7 @@ class GigInformation extends StatelessWidget{
                           ),
                         ),
                         subtitle: Text(
-                          "${gigdetail!.timeStart} ～ ${gigdetail!.timeEnd}",
+                          "${gigdetail.timeStart} ～ ${gigdetail.timeEnd}",
                         ),
                       ),
                     ),
@@ -95,7 +95,7 @@ class GigInformation extends StatelessWidget{
                           ),
                         ),
                         subtitle: Text(
-                          "${gigdetail!.hourlyRate} NTD/hr",
+                          "${gigdetail.hourlyRate} NTD/hr",
                         ),
                       ),
                     ),
