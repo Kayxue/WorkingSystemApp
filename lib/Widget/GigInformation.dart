@@ -6,7 +6,7 @@ import 'package:working_system_app/Types/GigDetails.dart';
 class GigInformation extends StatelessWidget{
   final GigDetails gigdetail;
 
-  const GigInformation({Key? key, required this.gigdetail});
+  const GigInformation({super.key, required this.gigdetail});
 
   @override
   Widget build(BuildContext context) {
