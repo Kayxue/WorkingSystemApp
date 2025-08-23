@@ -93,6 +93,86 @@ class GigInformation extends StatelessWidget {
                 ),
               ),
             ),
+            SizedBox(height: 4),
+            Card(
+              child: ListTile(
+                title: Text(
+                  "Requirements",
+                  style: TextStyle(fontWeight: FontWeight.w500),
+                ),
+                subtitle: Table(
+                  border: TableBorder.all(style: BorderStyle.none),
+                  defaultVerticalAlignment: TableCellVerticalAlignment.top,
+                  columnWidths: const <int, TableColumnWidth>{
+                    0: IntrinsicColumnWidth(),
+                    1: FixedColumnWidth(15),
+                    2: FlexColumnWidth(),
+                  },
+                  children: <TableRow>[
+                    const TableRow(
+                      children: [SizedBox(height: 4), SizedBox(), SizedBox()],
+                    ),
+                    TableRow(
+                      children: [
+                        Align(
+                          alignment: AlignmentGeometry.centerRight,
+                          child: const Text(
+                            "Skills",
+                            style: TextStyle(fontWeight: FontWeight.w500),
+                          ),
+                        ),
+                        SizedBox(),
+                        Text(gigdetail.requirements.skills.join(", ")),
+                      ],
+                    ),
+                    const TableRow(
+                      children: [SizedBox(height: 4), SizedBox(), SizedBox()],
+                    ),
+                    TableRow(
+                      children: [
+                        Align(
+                          alignment: AlignmentGeometry.centerRight,
+                          child: const Text(
+                            "Experience",
+                            style: TextStyle(fontWeight: FontWeight.w500),
+                          ),
+                        ),
+                        SizedBox(),
+                        Text(gigdetail.requirements.experience),
+                      ],
+                    ),
+                  ],
+                ),
+              ),
+            ),
+            //TODO: Add environment photos
+            Card(
+              child: ListTile(
+                title: Text(
+                  "Contact",
+                  style: TextStyle(fontWeight: FontWeight.w500),
+                ),
+                subtitle: Column(
+                  children: [
+                    ListTile(
+                      leading: Icon(Icons.person),
+                      title: Text("Name"),
+                      subtitle: Text(gigdetail.contactPerson),
+                    ),
+                    ListTile(
+                      leading: Icon(Icons.phone),
+                      title: Text("Phone"),
+                      subtitle: Text(gigdetail.contactPhone ?? "Not provided"),
+                    ),
+                    ListTile(
+                      leading: Icon(Icons.email),
+                      title: Text("Email"),
+                      subtitle: Text(gigdetail.contactEmail?? "Not provided"),
+                    )
+                  ],
+                ),
+              ),
+            ),
             SizedBox(height: 16),
             Column(
               mainAxisAlignment: MainAxisAlignment.center,
