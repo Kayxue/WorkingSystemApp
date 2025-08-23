@@ -145,20 +145,33 @@ class GigInformation extends StatelessWidget {
                 ),
               ),
             ),
-            //TODO: Add environment photos
+            SizedBox(height: 8),
             if (gigdetail.environmentPhotos != null &&
                 gigdetail.environmentPhotos!.isNotEmpty)
-              SizedBox(
-                height: 64,
-                child: SingleChildScrollView(
-                  child: Row(
-                    children: gigdetail.environmentPhotos!
-                        .map((e) => Image.network(e.url))
-                        .toList(),
+              Card(
+                child: ListTile(
+                  title: Text(
+                    "Environment Photos",
+                    style: TextStyle(fontWeight: FontWeight.w500),
                   ),
+                  subtitle: Padding(padding: EdgeInsets.only(top: 4),child:SizedBox(
+                    height: 256,
+                    child: SingleChildScrollView(
+                      child: Row(
+                        children: gigdetail.environmentPhotos!
+                            .map(
+                              (e) => ClipRRect(
+                                borderRadius: BorderRadiusGeometry.circular(20),
+                                child: Image.network(e.url, height: 256),
+                              ),
+                            )
+                            .toList(),
+                      ),
+                    ),
+                  )),
                 ),
               ),
-            SizedBox(height: 4),
+            SizedBox(height: 8),
             Card(
               child: ListTile(
                 title: Text(
