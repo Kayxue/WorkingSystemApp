@@ -146,6 +146,19 @@ class GigInformation extends StatelessWidget {
               ),
             ),
             //TODO: Add environment photos
+            if (gigdetail.environmentPhotos != null &&
+                gigdetail.environmentPhotos!.isNotEmpty)
+              SizedBox(
+                height: 64,
+                child: SingleChildScrollView(
+                  child: Row(
+                    children: gigdetail.environmentPhotos!
+                        .map((e) => Image.network(e.url))
+                        .toList(),
+                  ),
+                ),
+              ),
+            SizedBox(height: 4),
             Card(
               child: ListTile(
                 title: Text(
@@ -167,8 +180,8 @@ class GigInformation extends StatelessWidget {
                     ListTile(
                       leading: Icon(Icons.email),
                       title: Text("Email"),
-                      subtitle: Text(gigdetail.contactEmail?? "Not provided"),
-                    )
+                      subtitle: Text(gigdetail.contactEmail ?? "Not provided"),
+                    ),
                   ],
                 ),
               ),
