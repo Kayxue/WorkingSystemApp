@@ -1,6 +1,7 @@
 import 'package:json_annotation/json_annotation.dart';
 import 'package:working_system_app/Types/Employer.dart';
 import 'package:working_system_app/Types/EnvironmentPhoto.dart';
+import 'package:working_system_app/Types/Requirements.dart';
 
 part 'GigDetails.g.dart';
 
@@ -14,7 +15,7 @@ class GigDetails {
   DateTime dateEnd;
   String timeStart;
   String timeEnd;
-  Map<String, dynamic> requirements;
+  Requirements requirements;
   int hourlyRate;
   String city;
   String district;
