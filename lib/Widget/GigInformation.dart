@@ -81,6 +81,18 @@ class GigInformation extends StatelessWidget {
                 ),
               ],
             ),
+            SizedBox(height: 4),
+            Card(
+              child: ListTile(
+                title: Text(
+                  "Address",
+                  style: TextStyle(fontWeight: FontWeight.w500),
+                ),
+                subtitle: Text(
+                  "${gigdetail.city}${gigdetail.district}${gigdetail.address}",
+                ),
+              ),
+            ),
             SizedBox(height: 16),
             Column(
               mainAxisAlignment: MainAxisAlignment.center,
