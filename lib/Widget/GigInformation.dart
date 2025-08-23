@@ -1,6 +1,8 @@
 import 'package:animated_read_more_text/animated_read_more_text.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
+import 'package:photo_view/photo_view.dart';
+import 'package:photo_view/photo_view_gallery.dart';
 import 'package:working_system_app/Types/GigDetails.dart';
 
 class GigInformation extends StatelessWidget {
@@ -147,31 +149,71 @@ class GigInformation extends StatelessWidget {
             ),
             SizedBox(height: 8),
             if (gigdetail.environmentPhotos != null &&
-                gigdetail.environmentPhotos!.isNotEmpty)
+                gigdetail.environmentPhotos!.isNotEmpty) ...[
               Card(
                 child: ListTile(
                   title: Text(
                     "Environment Photos",
                     style: TextStyle(fontWeight: FontWeight.w500),
                   ),
-                  subtitle: Padding(padding: EdgeInsets.only(top: 4),child:SizedBox(
-                    height: 256,
-                    child: SingleChildScrollView(
-                      child: Row(
-                        children: gigdetail.environmentPhotos!
-                            .map(
-                              (e) => ClipRRect(
-                                borderRadius: BorderRadiusGeometry.circular(20),
-                                child: Image.network(e.url, height: 256),
-                              ),
-                            )
-                            .toList(),
+                  subtitle: Padding(
+                    padding: EdgeInsets.only(top: 4),
+                    child: SizedBox(
+                      height: 256,
+                      child: PhotoViewGallery.builder(
+                        scrollPhysics: const BouncingScrollPhysics(),
+                        builder: (BuildContext context, int index) {
+                          final photo = gigdetail.environmentPhotos![index];
+                          return PhotoViewGalleryPageOptions(
+                            imageProvider: NetworkImage(photo.url),
+                            initialScale: PhotoViewComputedScale.contained,
+                            heroAttributes: PhotoViewHeroAttributes(
+                              tag: photo.originalName,
+                            ),
+                            onTapUp: (context, details, controllerValue) {
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                  builder: (context) => Scaffold(
+                                    extendBodyBehindAppBar: true,
+                                    appBar: AppBar(
+                                      backgroundColor: Colors.transparent,
+                                      foregroundColor: Colors.white,
+                                      elevation: 0,
+                                    ),
+                                    body: PhotoView(
+                                      imageProvider: NetworkImage(photo.url),
+                                      minScale: PhotoViewComputedScale.contained,
+                                      heroAttributes: PhotoViewHeroAttributes(
+                                        tag: photo.originalName,
+                                      ),
+                                    ),
+                                  ),
+                                ),
+                              );
+                            },
+                          );
+                        },
+                        itemCount: gigdetail.environmentPhotos!.length,
+                        loadingBuilder: (context, event) => Center(
+                          child: CircularProgressIndicator(
+                            value: event == null
+                                ? 0
+                                : event.cumulativeBytesLoaded /
+                                      (event.expectedTotalBytes ?? 1),
+                          ),
+                        ),
+                        backgroundDecoration: BoxDecoration(
+                          color: Colors.transparent,
+                        ),
+                        scrollDirection: Axis.horizontal,
                       ),
                     ),
-                  )),
+                  ),
                 ),
               ),
-            SizedBox(height: 8),
+              SizedBox(height: 8),
+            ],
             Card(
               child: ListTile(
                 title: Text(
