@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:working_system_app/Types/GigDetails.dart';
 
-class GigInformation extends StatelessWidget{
+class GigInformation extends StatelessWidget {
   final GigDetails gigdetail;
 
   const GigInformation({super.key, required this.gigdetail});
@@ -14,26 +14,10 @@ class GigInformation extends StatelessWidget{
       child: SingleChildScrollView(
         child: Column(
           children: [
-            Padding(
-              padding: EdgeInsets.only(left: 4, right: 4),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  Text(
-                    "Details",
-                    style: TextStyle(
-                      fontSize: 32,
-                      fontWeight: FontWeight.bold,
-                    ),
-                  ),
-                  Text(
-                    "Updated: ${DateFormat.yMd().format(gigdetail.updatedAt)} ${DateFormat.Hms().format(gigdetail.updatedAt)}",
-                    style: TextStyle(
-                      fontSize: 12,
-                      color: Colors.grey,
-                    ),
-                  ),
-                ],
+            Center(
+              child: Text(
+                "Details",
+                style: TextStyle(fontSize: 32, fontWeight: FontWeight.bold),
               ),
             ),
             SizedBox(height: 8),
@@ -71,9 +55,7 @@ class GigInformation extends StatelessWidget{
                       child: ListTile(
                         title: Text(
                           "Time",
-                          style: TextStyle(
-                            fontWeight: FontWeight.w500,
-                          ),
+                          style: TextStyle(fontWeight: FontWeight.w500),
                         ),
                         subtitle: Text(
                           "${gigdetail.timeStart} ～ ${gigdetail.timeEnd}",
@@ -90,16 +72,26 @@ class GigInformation extends StatelessWidget{
                       child: ListTile(
                         title: Text(
                           "Hourly Rate",
-                          style: TextStyle(
-                            fontWeight: FontWeight.w500,
-                          ),
+                          style: TextStyle(fontWeight: FontWeight.w500),
                         ),
-                        subtitle: Text(
-                          "${gigdetail.hourlyRate} NTD/hr",
-                        ),
+                        subtitle: Text("${gigdetail.hourlyRate} NTD/hr"),
                       ),
                     ),
                   ),
+                ),
+              ],
+            ),
+            SizedBox(height: 16),
+            Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Text(
+                  "Updated: ${DateFormat.yMd().format(gigdetail.updatedAt)} ${DateFormat.Hms().format(gigdetail.updatedAt)}",
+                  style: TextStyle(fontSize: 12, color: Colors.grey),
+                ),
+                Text(
+                  "Published: ${DateFormat.yMd().format(gigdetail.publishedAt)} ${DateFormat.Hms().format(gigdetail.publishedAt)}",
+                  style: TextStyle(fontSize: 12, color: Colors.grey),
                 ),
               ],
             ),
