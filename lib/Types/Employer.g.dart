@@ -12,7 +12,9 @@ Employer _$EmployerFromJson(Map<String, dynamic> json) => Employer(
   branchName: json['branchName'] as String,
   industryType: json['industryType'] as String,
   address: json['address'] as String,
-  employerPhoto: json['employerPhoto'],
+  employerPhoto: json['employerPhoto'] == null
+      ? null
+      : EmployerPhoto.fromJson(json['employerPhoto'] as Map<String, dynamic>),
 );
 
 Map<String, dynamic> _$EmployerToJson(Employer instance) => <String, dynamic>{
@@ -21,5 +23,5 @@ Map<String, dynamic> _$EmployerToJson(Employer instance) => <String, dynamic>{
   'branchName': instance.branchName,
   'industryType': instance.industryType,
   'address': instance.address,
-  'employerPhoto': instance.employerPhoto,
+  'employerPhoto': instance.employerPhoto?.toJson(),
 };
