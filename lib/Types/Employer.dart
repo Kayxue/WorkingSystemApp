@@ -10,7 +10,7 @@ class Employer {
   String branchName;
   String industryType;
   String address;
-  EmployerPhoto? employerPhoto;
+  dynamic employerPhoto;
 
   Employer({
     required this.employerId,
