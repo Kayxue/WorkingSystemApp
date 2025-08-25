@@ -2,8 +2,8 @@ import 'package:animated_read_more_text/animated_read_more_text.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:photo_view/photo_view.dart';
-import 'package:photo_view/photo_view_gallery.dart';
 import 'package:working_system_app/Types/GigDetails.dart';
+import 'package:maps_launcher/maps_launcher.dart';
 
 class GigInformation extends StatelessWidget {
   final GigDetails gigdetail;
@@ -85,13 +85,19 @@ class GigInformation extends StatelessWidget {
             ),
             SizedBox(height: 4),
             Card(
-              child: ListTile(
-                title: Text(
-                  "Address",
-                  style: TextStyle(fontWeight: FontWeight.w500),
-                ),
-                subtitle: Text(
+              clipBehavior: Clip.hardEdge,
+              child: InkWell(
+                onTap: () => MapsLauncher.launchQuery(
                   "${gigdetail.city}${gigdetail.district}${gigdetail.address}",
+                ),
+                child: ListTile(
+                  title: Text(
+                    "Address",
+                    style: TextStyle(fontWeight: FontWeight.w500),
+                  ),
+                  subtitle: Text(
+                    "${gigdetail.city}${gigdetail.district}${gigdetail.address}",
+                  ),
                 ),
               ),
             ),

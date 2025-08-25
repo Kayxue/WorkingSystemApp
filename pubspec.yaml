@@ -43,6 +43,7 @@ dependencies:
   animated_read_more_text: ^0.0.6
   intl: ^0.20.2
   photo_view: ^0.15.0
+  maps_launcher: ^3.0.0+1
 
 dev_dependencies:
   flutter_test:
