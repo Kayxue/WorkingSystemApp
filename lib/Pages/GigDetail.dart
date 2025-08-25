@@ -153,7 +153,7 @@ class _GigDetailState extends State<GigDetail> {
                           ? null
                           : () async {
                               await sendApplication();
-                              if (!mounted) return;
+                              if (!context.mounted) return;
                               Navigator.of(context).pop();
                             },
                       child: Text(
