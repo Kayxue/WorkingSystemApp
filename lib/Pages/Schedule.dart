@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:syncfusion_flutter_calendar/calendar.dart';
 
 class Schedule extends StatefulWidget {
-  Schedule({super.key});
+  const Schedule({super.key});
 
   @override
   State<Schedule> createState() => _ScheduleState();
@@ -34,8 +34,9 @@ class _ScheduleState extends State<Schedule> {
                 dataSource: _getCalendarDataSource(),
                 monthViewSettings: MonthViewSettings(showAgenda: true),
                 onTap: (CalendarTapDetails details) {
-                  if (details.targetElement != CalendarElement.appointment)
+                  if (details.targetElement != CalendarElement.appointment) {
                     return;
+                  }
                   if (details.appointments != null) {
                     // This condition ensures the tap was on an appointment
                     if (details.appointments!.isNotEmpty) {
