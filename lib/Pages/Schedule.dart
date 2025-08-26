@@ -153,7 +153,6 @@ class _ScheduleState extends State<Schedule> {
                             currentDate.month,
                           );
                           calendarController.selectedDate = currentDate;
-                          print(currentDate);
                           fetchApplication();
                         }
                       },
