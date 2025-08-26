@@ -6,7 +6,6 @@ import 'package:syncfusion_flutter_calendar/calendar.dart';
 import 'package:working_system_app/Others/Utils.dart';
 import 'package:working_system_app/Types/ApplicationGig.dart';
 import 'package:working_system_app/Types/CustomAppointment.dart';
-import 'package:working_system_app/Types/GigDetails.dart';
 
 class Schedule extends StatefulWidget {
   final String sessionKey;
@@ -124,9 +123,9 @@ class _ScheduleState extends State<Schedule> {
                           return;
                         }
                         if (details.appointments != null) {
-                          // This condition ensures the tap was on an appointment
                           if (details.appointments!.isNotEmpty) {
                             final appointment = details.appointments!.first;
+                            //TODO: Take action when taping on appointment
                             ScaffoldMessenger.of(context).showSnackBar(
                               SnackBar(
                                 content: Text(
@@ -138,6 +137,8 @@ class _ScheduleState extends State<Schedule> {
                           }
                         }
                       },
+                      //TODO: Change application data when scroll to next or previous month
+                      onViewChanged: (viewChangedDetails) {},
                     ),
                   ),
                 ],
@@ -147,34 +148,38 @@ class _ScheduleState extends State<Schedule> {
   }
 
   _DataSource _getCalendarDataSource() {
-    final List<CustomAppointment> appointments = <CustomAppointment>[];
-    appointments.add(
-      CustomAppointment(
-        startTime: DateTime.now().add(const Duration(hours: 9)),
-        endTime: DateTime.now().add(const Duration(hours: 10)),
-        subject: 'Morning Meeting',
-        color: Colors.blue,
-        gigId: "jkweoaejf",
-      ),
-    );
-    appointments.add(
-      CustomAppointment(
-        startTime: DateTime.now().add(const Duration(hours: 14)),
-        endTime: DateTime.now().add(const Duration(hours: 15)),
-        subject: 'Lunch with John',
-        color: Colors.green,
-        gigId: "jkweoaejf",
-      ),
-    );
-    appointments.add(
-      CustomAppointment(
-        startTime: DateTime.now().add(const Duration(hours: 16)),
-        endTime: DateTime.now().add(const Duration(hours: 17)),
-        subject: 'Project Review',
-        color: Colors.purple,
-        gigId: "jkweoaejf",
-      ),
-    );
+    List<ApplicationGig> allApplications = {
+      ...?previousMonth,
+      ...?thisMonth,
+      ...?nextMonth,
+    }.toList();
+    final List<CustomAppointment> appointments = <CustomAppointment>[
+      ...allApplications.map((e) {
+        var [startHour, startMin, ..._] = e.timeStart.split(":");
+        var [endHour, endMin, ..._] = e.timeStart.split(":");
+        DateTime startDatetime = DateTime(
+          e.dateStart.year,
+          e.dateStart.month,
+          e.dateStart.day,
+          int.parse(startHour),
+          int.parse(startMin),
+        );
+        DateTime endDatetime = DateTime(
+          e.dateEnd.year,
+          e.dateEnd.month,
+          e.dateEnd.day,
+          int.parse(endHour),
+          int.parse(endMin),
+        );
+        return CustomAppointment(
+          startTime: startDatetime,
+          endTime: endDatetime,
+          subject: "${e.title} ${e.gigId}",
+          color: Colors.blue,
+          gigId: e.gigId,
+        );
+      }),
+    ];
     return _DataSource(appointments);
   }
 }
