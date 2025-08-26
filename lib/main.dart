@@ -113,7 +113,7 @@ class _ApplicationBaseState extends State<ApplicationBase> {
                   sessionKey: sessionKey,
                   clearSessionKey: clearSessionKey,
                 ),
-                Schedule(),
+                Schedule(sessionKey: sessionKey,),
                 Personal(),
               ])[currentIndex],
       ),
