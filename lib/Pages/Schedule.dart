@@ -17,20 +17,26 @@ class Schedule extends StatefulWidget {
 }
 
 class _ScheduleState extends State<Schedule> {
-  (int, int) currentYearMonth = (DateTime.now().year, DateTime.now().month);
+  late (int, int) currentYearMonth;
   List<ApplicationGig>? previousMonth;
   List<ApplicationGig>? thisMonth;
   List<ApplicationGig>? nextMonth;
   late ((int, int), (int, int), (int, int)) recentThreeMonth;
   bool isLoading = true;
+  CalendarController calendarController = CalendarController();
 
   _ScheduleState() {
     DateTime now = DateTime.now();
-    DateTime previousM = DateTime(now.year, now.month - 1, now.day);
-    DateTime nextM = DateTime(now.year, now.month + 1, now.day);
+    setNewCurrentYearMonth(now.year, now.month);
+  }
+
+  void setNewCurrentYearMonth(int year, int month) {
+    currentYearMonth = (year, month);
+    DateTime previousM = DateTime(year, month - 1);
+    DateTime nextM = DateTime(year, month + 1);
     recentThreeMonth = (
       (previousM.year, previousM.month),
-      (now.year, now.month),
+      (year, month),
       (nextM.year, nextM.month),
     );
   }
@@ -117,6 +123,7 @@ class _ScheduleState extends State<Schedule> {
                       initialSelectedDate: DateTime.now(),
                       dataSource: _getCalendarDataSource(),
                       monthViewSettings: MonthViewSettings(showAgenda: true),
+                      controller: calendarController,
                       onTap: (CalendarTapDetails details) {
                         if (details.targetElement !=
                             CalendarElement.appointment) {
@@ -137,8 +144,19 @@ class _ScheduleState extends State<Schedule> {
                           }
                         }
                       },
-                      //TODO: Change application data when scroll to next or previous month
-                      onViewChanged: (viewChangedDetails) {},
+                      onViewChanged: (details) {
+                        DateTime currentDate = details.visibleDates[15];
+                        if (currentDate.year != currentYearMonth.$1 ||
+                            currentDate.month != currentYearMonth.$2) {
+                          setNewCurrentYearMonth(
+                            currentDate.year,
+                            currentDate.month,
+                          );
+                          calendarController.selectedDate = currentDate;
+                          print(currentDate);
+                          fetchApplication();
+                        }
+                      },
                     ),
                   ),
                 ],
