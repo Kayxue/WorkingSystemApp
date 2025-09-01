@@ -145,7 +145,8 @@ class _ScheduleState extends State<Schedule> {
                         }
                       },
                       onViewChanged: (details) {
-                        DateTime currentDate = details.visibleDates[15];
+                        DateTime currentDate = details
+                            .visibleDates[details.visibleDates.length >> 1];
                         if (currentDate.year != currentYearMonth.$1 ||
                             currentDate.month != currentYearMonth.$2) {
                           setNewCurrentYearMonth(
