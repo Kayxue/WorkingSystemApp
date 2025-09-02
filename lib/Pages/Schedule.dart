@@ -17,21 +17,19 @@ class Schedule extends StatefulWidget {
 }
 
 class _ScheduleState extends State<Schedule> {
-  late (int, int) currentYearMonth;
   List<ApplicationGig>? previousMonth;
   List<ApplicationGig>? thisMonth;
   List<ApplicationGig>? nextMonth;
   late ((int, int), (int, int), (int, int)) recentThreeMonth;
   bool isLoading = true;
   CalendarController calendarController = CalendarController();
+  DateTime currentSelectedDate = DateTime.now();
 
   _ScheduleState() {
-    DateTime now = DateTime.now();
-    setNewCurrentYearMonth(now.year, now.month);
+    updateRecentThreeMonths(currentSelectedDate.year, currentSelectedDate.month);
   }
 
-  void setNewCurrentYearMonth(int year, int month) {
-    currentYearMonth = (year, month);
+  void updateRecentThreeMonths(int year, int month) {
     DateTime previousM = DateTime(year, month - 1);
     DateTime nextM = DateTime(year, month + 1);
     recentThreeMonth = (
@@ -41,27 +39,28 @@ class _ScheduleState extends State<Schedule> {
     );
   }
 
+  /// 處理日期邊界問題
+  DateTime adjustDateForMonth(DateTime baseDate, int targetYear, int targetMonth) {
+    DateTime lastDayOfTargetMonth = DateTime(targetYear, targetMonth + 1, 0);
+    int maxDayInTargetMonth = lastDayOfTargetMonth.day;
+    int adjustedDay = baseDate.day <= maxDayInTargetMonth ? baseDate.day : maxDayInTargetMonth;
+    return DateTime(targetYear, targetMonth, adjustedDay);
+  }
+
   Future<void> fetchApplication() async {
     var (previousM, cur, nextM) = recentThreeMonth;
-    final thisMonthApplications = await fetchApplicationForAMonth(
-      cur.$1,
-      cur.$2,
-    );
+    
+    final results = await Future.wait([
+      fetchApplicationForAMonth(previousM.$1, previousM.$2),
+      fetchApplicationForAMonth(cur.$1, cur.$2),
+      fetchApplicationForAMonth(nextM.$1, nextM.$2),
+    ]);
+
     setState(() {
-      thisMonth = thisMonthApplications;
+      previousMonth = results[0];
+      thisMonth = results[1];
+      nextMonth = results[2];
       isLoading = false;
-    });
-    final previousMonthApplication = await fetchApplicationForAMonth(
-      previousM.$1,
-      previousM.$2,
-    );
-    final nextMonthApplication = await fetchApplicationForAMonth(
-      nextM.$1,
-      nextM.$2,
-    );
-    setState(() {
-      previousMonth = previousMonthApplication;
-      nextMonth = nextMonthApplication;
     });
   }
 
@@ -69,19 +68,19 @@ class _ScheduleState extends State<Schedule> {
     int year,
     int month,
   ) async {
-    final thisMonthresponse = await Utils.client.get(
+    final response = await Utils.client.get(
       "/application/worker/calendar?year=$year&month=$month",
       headers: HttpHeaders.rawMap({
         "platform": "mobile",
         "cookie": widget.sessionKey,
       }),
     );
-    if (thisMonthresponse.statusCode != 200) {
+    if (response.statusCode != 200) {
       //TODO: Handle when error
     }
-    Map<String, dynamic> thisMonthData =
-        (jsonDecode(thisMonthresponse.body) as Map<String, dynamic>)["data"];
-    return (thisMonthData["gigs"] as List<dynamic>)
+    Map<String, dynamic> responseData =
+        (jsonDecode(response.body) as Map<String, dynamic>)["data"];
+    return (responseData["gigs"] as List<dynamic>)
         .map((e) => ApplicationGig.fromJson(e))
         .toList();
   }
@@ -90,6 +89,9 @@ class _ScheduleState extends State<Schedule> {
   void initState() {
     super.initState();
     fetchApplication();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      calendarController.selectedDate = currentSelectedDate;
+    });
   }
 
   @override
@@ -120,10 +122,19 @@ class _ScheduleState extends State<Schedule> {
                   Expanded(
                     child: SfCalendar(
                       view: CalendarView.month,
-                      initialSelectedDate: DateTime.now(),
+                      initialSelectedDate: currentSelectedDate,
                       dataSource: _getCalendarDataSource(),
                       monthViewSettings: MonthViewSettings(showAgenda: true),
                       controller: calendarController,
+                      onSelectionChanged: (CalendarSelectionDetails details) {
+                        if (details.date != null) {
+                          WidgetsBinding.instance.addPostFrameCallback((_) {
+                            setState(() {
+                              currentSelectedDate = details.date!;
+                            });
+                          });
+                        }
+                      },
                       onTap: (CalendarTapDetails details) {
                         if (details.targetElement !=
                             CalendarElement.appointment) {
@@ -145,16 +156,24 @@ class _ScheduleState extends State<Schedule> {
                         }
                       },
                       onViewChanged: (details) {
-                        DateTime currentDate = details
+                        DateTime viewDate = details
                             .visibleDates[details.visibleDates.length >> 1];
-                        if (currentDate.year != currentYearMonth.$1 ||
-                            currentDate.month != currentYearMonth.$2) {
-                          setNewCurrentYearMonth(
-                            currentDate.year,
-                            currentDate.month,
-                          );
-                          calendarController.selectedDate = currentDate;
+
+                        if (viewDate.year != currentSelectedDate.year ||
+                            viewDate.month != currentSelectedDate.month) {
+                          updateRecentThreeMonths(viewDate.year, viewDate.month);
                           fetchApplication();
+                          WidgetsBinding.instance.addPostFrameCallback((_) {
+                            DateTime adjustedDate = adjustDateForMonth(
+                              currentSelectedDate,
+                              viewDate.year,
+                              viewDate.month,
+                            );
+                            setState(() {
+                              currentSelectedDate = adjustedDate;
+                              calendarController.selectedDate = adjustedDate;
+                            });
+                          });
                         }
                       },
                     ),
@@ -174,7 +193,7 @@ class _ScheduleState extends State<Schedule> {
     final List<CustomAppointment> appointments = <CustomAppointment>[
       ...allApplications.map((e) {
         var [startHour, startMin, ..._] = e.timeStart.split(":");
-        var [endHour, endMin, ..._] = e.timeStart.split(":");
+        var [endHour, endMin, ..._] = e.timeEnd.split(":");
         DateTime startDatetime = DateTime(
           e.dateStart.year,
           e.dateStart.month,
