@@ -116,19 +116,27 @@ class _PersonalState extends State<Personal> {
                                     SizedBox(width: 4),
                                     RatingBarIndicator(
                                       rating: profile.ratingStats.averageRating,
-                                      itemBuilder: (context, index) => Icon(
-                                        Icons.star,
-                                        color: Colors.amber,
-                                      ),
+                                      itemBuilder: (context, index) =>
+                                          Icon(Icons.star, color: Colors.amber),
                                       itemCount: 5,
                                       itemSize: 16.0,
                                       direction: Axis.horizontal,
-                                    )
+                                    ),
                                   ],
                                 ),
                               ],
                             ),
                           ),
+                          if (profile.profilePhoto != null)
+                            Padding(
+                              padding: const EdgeInsets.only(right: 16.0),
+                              child: CircleAvatar(
+                                radius: 35,
+                                backgroundImage: NetworkImage(
+                                  profile.profilePhoto!.url,
+                                ),
+                              ),
+                            ),
                         ],
                       ),
                     ),
