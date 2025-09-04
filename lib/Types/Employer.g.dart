@@ -14,7 +14,7 @@ Employer _$EmployerFromJson(Map<String, dynamic> json) => Employer(
   address: json['address'] as String,
   employerPhoto: json['employerPhoto'] == null
       ? null
-      : EmployerPhoto.fromJson(json['employerPhoto'] as Map<String, dynamic>),
+      : ProfilePhoto.fromJson(json['employerPhoto'] as Map<String, dynamic>),
 );
 
 Map<String, dynamic> _$EmployerToJson(Employer instance) => <String, dynamic>{

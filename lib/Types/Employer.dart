@@ -1,5 +1,5 @@
 import 'package:json_annotation/json_annotation.dart';
-import 'package:working_system_app/Types/EmployerPhoto.dart';
+import 'package:working_system_app/Types/ProfilePhoto.dart';
 
 part 'Employer.g.dart';
 
@@ -10,7 +10,7 @@ class Employer {
   String branchName;
   String industryType;
   String address;
-  EmployerPhoto? employerPhoto;
+  ProfilePhoto? employerPhoto;
 
   Employer({
     required this.employerId,

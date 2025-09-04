@@ -1,20 +1,20 @@
 import 'package:json_annotation/json_annotation.dart';
 
-part 'EmployerPhoto.g.dart';
+part 'ProfilePhoto.g.dart';
 
 @JsonSerializable(explicitToJson: true)
-class EmployerPhoto {
+class ProfilePhoto {
   String url;
   String originalName;
   String type;
   
-  EmployerPhoto({
+  ProfilePhoto({
     required this.url,
     required this.originalName,
     required this.type,
   });
 
-  factory EmployerPhoto.fromJson(Map<String, dynamic> json) =>
-      _$EmployerPhotoFromJson(json);
-  Map<String, dynamic> toJson() => _$EmployerPhotoToJson(this);
+  factory ProfilePhoto.fromJson(Map<String, dynamic> json) =>
+      _$ProfilePhotoFromJson(json);
+  Map<String, dynamic> toJson() => _$ProfilePhotoToJson(this);
 }
