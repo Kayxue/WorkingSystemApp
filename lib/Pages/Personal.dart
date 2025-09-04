@@ -122,6 +122,14 @@ class _PersonalState extends State<Personal> {
                                       itemSize: 16.0,
                                       direction: Axis.horizontal,
                                     ),
+                                    SizedBox(width: 4),
+                                    Text(
+                                      "(${profile.ratingStats.totalRatings})",
+                                      style: TextStyle(
+                                        color: Colors.white,
+                                        fontSize: 16,
+                                      ),
+                                    ),
                                   ],
                                 ),
                               ],
