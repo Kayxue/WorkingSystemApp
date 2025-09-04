@@ -26,7 +26,10 @@ class _ScheduleState extends State<Schedule> {
   DateTime currentSelectedDate = DateTime.now();
 
   _ScheduleState() {
-    updateRecentThreeMonths(currentSelectedDate.year, currentSelectedDate.month);
+    updateRecentThreeMonths(
+      currentSelectedDate.year,
+      currentSelectedDate.month,
+    );
   }
 
   void updateRecentThreeMonths(int year, int month) {
@@ -40,16 +43,22 @@ class _ScheduleState extends State<Schedule> {
   }
 
   /// 處理日期邊界問題
-  DateTime adjustDateForMonth(DateTime baseDate, int targetYear, int targetMonth) {
+  DateTime adjustDateForMonth(
+    DateTime baseDate,
+    int targetYear,
+    int targetMonth,
+  ) {
     DateTime lastDayOfTargetMonth = DateTime(targetYear, targetMonth + 1, 0);
     int maxDayInTargetMonth = lastDayOfTargetMonth.day;
-    int adjustedDay = baseDate.day <= maxDayInTargetMonth ? baseDate.day : maxDayInTargetMonth;
+    int adjustedDay = baseDate.day <= maxDayInTargetMonth
+        ? baseDate.day
+        : maxDayInTargetMonth;
     return DateTime(targetYear, targetMonth, adjustedDay);
   }
 
   Future<void> fetchApplication() async {
     var (previousM, cur, nextM) = recentThreeMonth;
-    
+
     final results = await Future.wait([
       fetchApplicationForAMonth(previousM.$1, previousM.$2),
       fetchApplicationForAMonth(cur.$1, cur.$2),
@@ -89,7 +98,7 @@ class _ScheduleState extends State<Schedule> {
   void initState() {
     super.initState();
     fetchApplication();
-    WidgetsBinding.instance.addPostFrameCallback((_) {
+    setState(() {
       calendarController.selectedDate = currentSelectedDate;
     });
   }
@@ -155,24 +164,25 @@ class _ScheduleState extends State<Schedule> {
                           }
                         }
                       },
-                      onViewChanged: (details) {
+                      onViewChanged: (details) async {
                         DateTime viewDate = details
                             .visibleDates[details.visibleDates.length >> 1];
 
                         if (viewDate.year != currentSelectedDate.year ||
                             viewDate.month != currentSelectedDate.month) {
-                          updateRecentThreeMonths(viewDate.year, viewDate.month);
-                          fetchApplication();
-                          WidgetsBinding.instance.addPostFrameCallback((_) {
-                            DateTime adjustedDate = adjustDateForMonth(
-                              currentSelectedDate,
-                              viewDate.year,
-                              viewDate.month,
-                            );
-                            setState(() {
-                              currentSelectedDate = adjustedDate;
-                              calendarController.selectedDate = adjustedDate;
-                            });
+                          updateRecentThreeMonths(
+                            viewDate.year,
+                            viewDate.month,
+                          );
+                          await fetchApplication();
+                          DateTime adjustedDate = adjustDateForMonth(
+                            currentSelectedDate,
+                            viewDate.year,
+                            viewDate.month,
+                          );
+                          setState(() {
+                            currentSelectedDate = adjustedDate;
+                            calendarController.selectedDate = adjustedDate;
                           });
                         }
                       },
