@@ -7,7 +7,7 @@ class Requirements {
   List<String> skills;
   String experience;
 
-  Requirements({required this.skills,required this.experience});
+  Requirements({required this.skills, required this.experience});
 
   factory Requirements.fromJson(Map<String, dynamic> json) =>
       _$RequirementsFromJson(json);

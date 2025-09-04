@@ -15,7 +15,12 @@ class FindWorks extends StatefulWidget {
   final String sessionKey;
   final Function() clearSessionKey;
 
-  const FindWorks({super.key, required this.cityDistrictMap, required this.sessionKey, required this.clearSessionKey});
+  const FindWorks({
+    super.key,
+    required this.cityDistrictMap,
+    required this.sessionKey,
+    required this.clearSessionKey,
+  });
 
   @override
   State<FindWorks> createState() => _FindWorksState();

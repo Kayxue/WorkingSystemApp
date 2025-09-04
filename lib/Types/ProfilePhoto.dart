@@ -7,7 +7,7 @@ class ProfilePhoto {
   String url;
   String originalName;
   String type;
-  
+
   ProfilePhoto({
     required this.url,
     required this.originalName,
