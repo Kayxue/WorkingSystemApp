@@ -113,8 +113,12 @@ class _ApplicationBaseState extends State<ApplicationBase> {
                   sessionKey: sessionKey,
                   clearSessionKey: clearSessionKey,
                 ),
-                Schedule(sessionKey: sessionKey,),
-                Personal(),
+                Schedule(sessionKey: sessionKey),
+                Personal(
+                  sessionKey: sessionKey,
+                  clearSessionKey: clearSessionKey,
+                  updateIndex: updateIndex,
+                ),
               ])[currentIndex],
       ),
       bottomNavigationBar: BottomBar(

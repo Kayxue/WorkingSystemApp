@@ -1,10 +1,45 @@
 import 'package:flutter/material.dart';
+import 'package:rhttp/rhttp.dart';
+import 'package:working_system_app/Others/Utils.dart';
+import 'package:working_system_app/Types/WorkerProfile.dart';
 
-class Personal extends StatelessWidget {
-  
-  
-  Personal({super.key}){
+class Personal extends StatefulWidget {
+  final String sessionKey;
+  final Function clearSessionKey;
+  final Function(int) updateIndex;
 
+  const Personal({
+    super.key,
+    required this.sessionKey,
+    required this.clearSessionKey,
+    required this.updateIndex,
+  });
+
+  @override
+  State<Personal> createState() => _PersonalState();
+}
+
+class _PersonalState extends State<Personal> {
+  late WorkerProfile profile;
+  bool isLoading = true;
+
+  Future<void> loadUserProfile() async {
+    final response = await Utils.client.get(
+      "/user/profile",
+      headers: HttpHeaders.rawMap({
+        "platform": "mobile",
+        "cookie": widget.sessionKey,
+      }),
+    );
+    if (response.statusCode != 200) {
+      widget.updateIndex(1);
+      widget.clearSessionKey();
+    }
+    final Map<String, dynamic> respond = response.bodyToJson();
+    setState(() {
+      profile = WorkerProfile.fromJson(respond);
+      isLoading = false;
+    });
   }
 
   @override
