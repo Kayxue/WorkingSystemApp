@@ -221,7 +221,7 @@ class _ScheduleState extends State<Schedule> {
         return CustomAppointment(
           startTime: startDatetime,
           endTime: endDatetime,
-          subject: "${e.title} ${e.gigId}",
+          subject: e.title,
           color: Colors.blue,
           gigId: e.gigId,
         );
