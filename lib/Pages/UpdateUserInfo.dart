@@ -18,16 +18,22 @@ class UpdateUserInfo extends StatefulWidget {
 
 class _UpdateUserInfoState extends State<UpdateUserInfo> {
   @override
+  void initState() {
+    super.initState();
+  }
+
+  @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(title: const Text('Update Information')),
-      body: Padding(padding: const EdgeInsets.all(16.0), child: Column(
-        children: [
-          TextField(
-            decoration: const InputDecoration(labelText: 'Uername'),
-          ),
-        ],
-      )),
+      body: Padding(
+        padding: const EdgeInsets.all(16.0),
+        child: Column(
+          children: [
+            TextField(decoration: const InputDecoration(labelText: 'Uername')),
+          ],
+        ),
+      ),
     );
   }
 }
