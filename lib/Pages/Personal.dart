@@ -151,90 +151,106 @@ class _PersonalState extends State<Personal> {
                     ),
                   ),
                   SizedBox(height: 8),
-                  Card(
-                    child: Padding(
-                      padding: EdgeInsets.all(8),
+                  Expanded(
+                    child: SingleChildScrollView(
                       child: Column(
                         children: [
-                          InkWell(
-                            onTap: () async {
-                              await Clipboard.setData(
-                                ClipboardData(text: profile.email),
-                              );
-                              if (!context.mounted) return;
-                              ScaffoldMessenger.of(context).showSnackBar(
-                                SnackBar(
-                                  content: Text("Email copied to clipboard"),
-                                ),
-                              );
-                            },
-                            splashColor: Colors.grey.withAlpha(70),
-                            child: ListTile(
-                              leading: Icon(Icons.email),
-                              title: Text("Email"),
-                              subtitle: Text(profile.email),
-                            ),
-                          ),
-                          InkWell(
-                            onTap: () {
-                              Clipboard.setData(
-                                ClipboardData(text: profile.phoneNumber),
-                              );
-                              if (!context.mounted) return;
-                              ScaffoldMessenger.of(context).showSnackBar(
-                                SnackBar(
-                                  content: Text(
-                                    "Phone number copied to clipboard",
+                          Card(
+                            child: Padding(
+                              padding: EdgeInsets.all(8),
+                              child: Column(
+                                children: [
+                                  InkWell(
+                                    onTap: () async {
+                                      await Clipboard.setData(
+                                        ClipboardData(text: profile.email),
+                                      );
+                                      if (!context.mounted) return;
+                                      ScaffoldMessenger.of(
+                                        context,
+                                      ).showSnackBar(
+                                        SnackBar(
+                                          content: Text(
+                                            "Email copied to clipboard",
+                                          ),
+                                        ),
+                                      );
+                                    },
+                                    splashColor: Colors.grey.withAlpha(70),
+                                    child: ListTile(
+                                      leading: Icon(Icons.email),
+                                      title: Text("Email"),
+                                      subtitle: Text(profile.email),
+                                    ),
                                   ),
-                                ),
-                              );
-                            },
-                            splashColor: Colors.grey.withAlpha(70),
-                            child: ListTile(
-                              leading: Icon(Icons.phone),
-                              title: Text("Phone"),
-                              subtitle: Text(profile.phoneNumber),
+                                  InkWell(
+                                    onTap: () {
+                                      Clipboard.setData(
+                                        ClipboardData(
+                                          text: profile.phoneNumber,
+                                        ),
+                                      );
+                                      if (!context.mounted) return;
+                                      ScaffoldMessenger.of(
+                                        context,
+                                      ).showSnackBar(
+                                        SnackBar(
+                                          content: Text(
+                                            "Phone number copied to clipboard",
+                                          ),
+                                        ),
+                                      );
+                                    },
+                                    splashColor: Colors.grey.withAlpha(70),
+                                    child: ListTile(
+                                      leading: Icon(Icons.phone),
+                                      title: Text("Phone"),
+                                      subtitle: Text(profile.phoneNumber),
+                                    ),
+                                  ),
+                                ],
+                              ),
                             ),
                           ),
-                        ],
-                      ),
-                    ),
-                  ),
-                  SizedBox(height: 8),
-                  Card(
-                    child: Padding(
-                      padding: EdgeInsets.all(8),
-                      child: Column(
-                        children: [
-                          ListTile(
-                            leading: Icon(Icons.school),
-                            title: Text("Education"),
-                            subtitle: Text(
-                              "${profile.schoolName?.isNotEmpty == true ? profile.schoolName : ""}${profile.major?.isNotEmpty == true ? profile.major : ""}${profile.schoolName?.endsWith(profile.highestEducation) == true ? "" : profile.highestEducation}",
-                            ),
-                          ),
-                          ListTile(
-                            leading: Icon(Icons.badge),
-                            title: Text("Status"),
-                            subtitle: Text(profile.studyStatus),
-                          ),
-                          ListTile(
-                            leading: Icon(Icons.check_circle),
-                            title: Text("Certificates"),
-                            subtitle: Text(
-                              profile.certificates != null &&
-                                      profile.certificates!.isNotEmpty
-                                  ? profile.certificates!.join("、")
-                                  : "No certificates",
-                            ),
-                          ),
-                          ListTile(
-                            leading: Icon(Icons.description),
-                            title: Text("Experience"),
-                            subtitle: Text(
-                              profile.jobExperience.isEmpty
-                                  ? "No experience"
-                                  : profile.jobExperience.join("、"),
+                          SizedBox(height: 8),
+                          Card(
+                            child: Padding(
+                              padding: EdgeInsets.all(8),
+                              child: Column(
+                                children: [
+                                  ListTile(
+                                    leading: Icon(Icons.school),
+                                    title: Text("Education"),
+                                    subtitle: Text(
+                                      "${profile.schoolName?.isNotEmpty == true ? profile.schoolName : ""}${profile.major?.isNotEmpty == true ? profile.major : ""}${profile.schoolName?.endsWith(profile.highestEducation) == true ? "" : profile.highestEducation}",
+                                    ),
+                                  ),
+                                  ListTile(
+                                    leading: Icon(Icons.badge),
+                                    title: Text("Status"),
+                                    subtitle: Text(profile.studyStatus),
+                                  ),
+                                  ListTile(
+                                    leading: Icon(Icons.check_circle),
+                                    title: Text("Certificates"),
+                                    subtitle: Text(
+                                      profile.certificates != null &&
+                                              profile.certificates!.isNotEmpty
+                                          ? profile.certificates!.join("、")
+                                          : "No certificates",
+                                    ),
+                                  ),
+                                  ListTile(
+                                    leading: Icon(Icons.description),
+                                    title: Text("Experience"),
+                                    subtitle: Text(
+                                      profile.jobExperience.isEmpty
+                                          ? "No experience"
+                                          : profile.jobExperience.join("、"),
+                                    ),
+                                  ),
+                                ],
+                              ),
                             ),
                           ),
                         ],
