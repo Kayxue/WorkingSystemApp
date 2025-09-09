@@ -151,7 +151,8 @@ class _ScheduleState extends State<Schedule> {
                         }
                         if (details.appointments != null) {
                           if (details.appointments!.isNotEmpty) {
-                            final appointment = details.appointments!.first;
+                            final CustomAppointment appointment =
+                                details.appointments!.first;
                             //TODO: Take action when taping on appointment
                             ScaffoldMessenger.of(context).showSnackBar(
                               SnackBar(
