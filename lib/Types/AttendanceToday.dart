@@ -7,12 +7,12 @@ part 'AttendanceToday.g.dart';
 class AttendanceToday {
   String date;
   List<AttendanceGigInfo> jobs;
-  int totals;
+  int total;
 
   AttendanceToday({
     required this.date,
     required this.jobs,
-    required this.totals,
+    required this.total,
   });
 
   factory AttendanceToday.fromJson(Map<String, dynamic> json) =>

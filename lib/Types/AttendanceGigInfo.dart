@@ -11,6 +11,8 @@ class AttendanceGigInfo {
   String city;
   String district;
   String address;
+  String checkedIn;
+  String checkedOut;
 
   AttendanceGigInfo({
     required this.gigId,
@@ -20,6 +22,8 @@ class AttendanceGigInfo {
     required this.city,
     required this.district,
     required this.address,
+    required this.checkedIn,
+    required this.checkedOut,
   });
 
   factory AttendanceGigInfo.fromJson(Map<String, dynamic> json) =>
