@@ -26,6 +26,7 @@ class _UpdateUserInfoState extends State<UpdateUserInfo> {
   TextEditingController phoneNumberController = TextEditingController();
   TextEditingController schoolNameController = TextEditingController();
   TextEditingController majorController = TextEditingController();
+  MultiSelectController certificatesController = MultiSelectController();
 
   @override
   void initState() {
@@ -35,104 +36,178 @@ class _UpdateUserInfoState extends State<UpdateUserInfo> {
     phoneNumberController.text = widget.workerProfile.phoneNumber;
     schoolNameController.text = widget.workerProfile.schoolName ?? "";
     majorController.text = widget.workerProfile.major ?? "";
+    if (widget.workerProfile.certificates != null) {
+      certificatesController.selectWhere(
+        (item) => widget.workerProfile.certificates!.contains(item.value),
+      );
+    }
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(title: const Text('Update Information')),
-      body: Expanded(
-        child: SingleChildScrollView(
-          child: Padding(
-            padding: const EdgeInsets.only(left: 16, right: 16, top: 16),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
+      body: Padding(
+        padding: const EdgeInsets.only(left: 16, right: 16),
+        child: Column(
+          children: [
+            Expanded(
+              child: SingleChildScrollView(
+                child: Padding(
+                  padding: const EdgeInsets.only(top: 16),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      TextField(
+                        decoration: const InputDecoration(
+                          labelText: 'First name',
+                        ),
+                        controller: firstNameController,
+                      ),
+                      SizedBox(height: 16),
+                      TextField(
+                        decoration: const InputDecoration(
+                          labelText: 'Last name',
+                        ),
+                        controller: lastNameController,
+                      ),
+                      SizedBox(height: 16),
+                      TextField(
+                        decoration: const InputDecoration(
+                          labelText: 'Phone number',
+                        ),
+                        controller: phoneNumberController,
+                      ),
+                      SizedBox(height: 16),
+                      Text('Highest education', style: TextStyle(fontSize: 16)),
+                      SizedBox(height: 4),
+                      Row(
+                        children: [
+                          Expanded(
+                            child: DropdownMenu(
+                              expandedInsets: EdgeInsets.zero,
+                              requestFocusOnTap: false,
+                              initialSelection:
+                                  widget.workerProfile.highestEducation,
+                              dropdownMenuEntries: const [
+                                DropdownMenuEntry(value: "高中", label: "高中"),
+                                DropdownMenuEntry(value: "大學", label: "大學"),
+                                DropdownMenuEntry(value: "碩士", label: "碩士"),
+                                DropdownMenuEntry(value: "博士", label: "博士"),
+                                DropdownMenuEntry(value: "其他", label: "其他"),
+                              ],
+                              onSelected: (String? value) {
+                                if (value != null) {
+                                  setState(() {
+                                    widget.workerProfile.highestEducation =
+                                        value;
+                                  });
+                                }
+                              },
+                              inputDecorationTheme: InputDecorationTheme(
+                                border: OutlineInputBorder(
+                                  borderRadius: BorderRadius.circular(12),
+                                  borderSide: BorderSide(color: Colors.black),
+                                ),
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
+                      SizedBox(height: 16),
+                      TextField(
+                        decoration: const InputDecoration(
+                          labelText: 'School name',
+                        ),
+                        controller: schoolNameController,
+                      ),
+                      SizedBox(height: 16),
+                      TextField(
+                        decoration: const InputDecoration(labelText: 'Major'),
+                        controller: majorController,
+                      ),
+                      SizedBox(height: 16),
+                      Text('Study status', style: TextStyle(fontSize: 16)),
+                      SizedBox(height: 4),
+                      Row(
+                        children: [
+                          Expanded(
+                            child: DropdownMenu(
+                              expandedInsets: EdgeInsets.zero,
+                              requestFocusOnTap: false,
+                              initialSelection:
+                                  widget.workerProfile.studyStatus,
+                              dropdownMenuEntries: const [
+                                DropdownMenuEntry(value: "就讀中", label: "就讀中"),
+                                DropdownMenuEntry(value: "已畢業", label: "已畢業"),
+                                DropdownMenuEntry(value: "肆業", label: "肆業"),
+                              ],
+                              onSelected: (String? value) {
+                                if (value != null) {
+                                  setState(() {
+                                    widget.workerProfile.studyStatus = value;
+                                  });
+                                }
+                              },
+                              inputDecorationTheme: InputDecorationTheme(
+                                border: OutlineInputBorder(
+                                  borderRadius: BorderRadius.circular(12),
+                                  borderSide: BorderSide(color: Colors.black),
+                                ),
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
+                      SizedBox(height: 16),
+                      Text('Certificates', style: TextStyle(fontSize: 16)),
+                      SizedBox(height: 4),
+                      Row(
+                        children: [
+                          Expanded(
+                            child: MultiDropdown(
+                              items: [
+                                DropdownItem(label: "普通小型車", value: "普通小型車"),
+                                DropdownItem(label: "職業小型車", value: "職業小型車"),
+                                DropdownItem(label: "普通大貨車", value: "普通大貨車"),
+                                DropdownItem(label: "職業大貨車", value: "職業大貨車"),
+                                DropdownItem(label: "普通大客車", value: "普通大客車"),
+                                DropdownItem(label: "職業大客車", value: "職業大客車"),
+                                DropdownItem(label: "普通聯結車", value: "普通聯結車"),
+                                DropdownItem(label: "職業聯結車", value: "職業聯結車"),
+                                DropdownItem(label: "小型輕型機車", value: "小型輕型機車"),
+                                DropdownItem(label: "普通輕型機車", value: "普通輕型機車"),
+                                DropdownItem(label: "普通重型機車", value: "普通重型機車"),
+                                DropdownItem(label: "大型重型機車", value: "大型重型機車"),
+                              ],
+                              onSelectionChange: (selectedItems) =>
+                                  setState(() {
+                                    widget.workerProfile.certificates =
+                                        selectedItems;
+                                  }),
+                            ),
+                          ),
+                        ],
+                      ),
+                      //TODO: jobExperience need to use ? widget
+                    ],
+                  ),
+                ),
+              ),
+            ),
+            SizedBox(height: 16),
+            Row(
               children: [
-                TextField(
-                  decoration: const InputDecoration(labelText: 'First name'),
-                  controller: firstNameController,
+                Expanded(
+                  child: ElevatedButton(
+                    onPressed: () {},
+                    child: Text("Save Changes"),
+                  ),
                 ),
-                SizedBox(height: 16),
-                TextField(
-                  decoration: const InputDecoration(labelText: 'Last name'),
-                  controller: lastNameController,
-                ),
-                SizedBox(height: 16),
-                TextField(
-                  decoration: const InputDecoration(labelText: 'Phone number'),
-                  controller: phoneNumberController,
-                ),
-                SizedBox(height: 16),
-                Text('Highest education', style: TextStyle(fontSize: 16)),
-                SizedBox(height: 4),
-                Row(
-                  children: [
-                    Expanded(
-                      child: DropdownMenu(
-                        expandedInsets: EdgeInsets.zero,
-                        requestFocusOnTap: false,
-                        initialSelection: widget.workerProfile.highestEducation,
-                        dropdownMenuEntries: const [
-                          DropdownMenuEntry(value: "高中", label: "高中"),
-                          DropdownMenuEntry(value: "大學", label: "大學"),
-                          DropdownMenuEntry(value: "碩士", label: "碩士"),
-                          DropdownMenuEntry(value: "博士", label: "博士"),
-                          DropdownMenuEntry(value: "其他", label: "其他"),
-                        ],
-                        onSelected: (String? value) {
-                          if (value != null) {
-                            setState(() {
-                              widget.workerProfile.highestEducation = value;
-                            });
-                          }
-                        },
-                      ),
-                    ),
-                  ],
-                ),
-                SizedBox(height: 16),
-                TextField(
-                  decoration: const InputDecoration(labelText: 'School name'),
-                  controller: schoolNameController,
-                ),
-                SizedBox(height: 16),
-                TextField(
-                  decoration: const InputDecoration(labelText: 'Major'),
-                  controller: majorController,
-                ),
-                SizedBox(height: 16),
-                //TODO: studyStatus need to use dropdown
-                Text('Study status', style: TextStyle(fontSize: 16)),
-                SizedBox(height: 4),
-                Row(
-                  children: [
-                    Expanded(
-                      child: DropdownMenu(
-                        expandedInsets: EdgeInsets.zero,
-                        requestFocusOnTap: false,
-                        initialSelection: widget.workerProfile.studyStatus,
-                        dropdownMenuEntries: const [
-                          DropdownMenuEntry(value: "就讀中", label: "就讀中"),
-                          DropdownMenuEntry(value: "已畢業", label: "已畢業"),
-                          DropdownMenuEntry(value: "肆業", label: "肆業"),
-                        ],
-                        onSelected: (String? value) {
-                          if (value != null) {
-                            setState(() {
-                              widget.workerProfile.studyStatus = value;
-                            });
-                          }
-                        },
-                      ),
-                    ),
-                  ],
-                ),
-                SizedBox(height: 16),
-                //TODO: certificates need to use dropdown
-                //TODO: jobExperience need to use ? widget
               ],
             ),
-          ),
+            SizedBox(height: 16),
+          ],
         ),
       ),
     );
