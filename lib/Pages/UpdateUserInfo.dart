@@ -27,7 +27,7 @@ class _UpdateUserInfoState extends State<UpdateUserInfo> {
     return Scaffold(
       appBar: AppBar(title: const Text('Update Information')),
       body: Padding(
-        padding: const EdgeInsets.all(16.0),
+        padding: const EdgeInsets.only(left: 16, right: 16, top: 16),
         child: Column(
           children: [
             TextField(decoration: const InputDecoration(labelText: 'Uername')),

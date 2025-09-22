@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_rating_bar/flutter_rating_bar.dart';
 import 'package:rhttp/rhttp.dart';
 import 'package:working_system_app/Others/Utils.dart';
+import 'package:working_system_app/Pages/UpdateUserInfo.dart';
 import 'package:working_system_app/Types/WorkerProfile.dart';
 import 'package:flutter/services.dart';
 
@@ -52,6 +53,15 @@ class _PersonalState extends State<Personal> {
         isLoading = false;
       });
     });
+  }
+
+  Future<void> logout() async {
+    final _ = await Utils.client.get(
+      "/user/logout",
+      headers: const HttpHeaders.rawMap({"platform": "mobile"}),
+    );
+    widget.clearSessionKey();
+    widget.updateIndex(1);
   }
 
   @override
@@ -253,6 +263,41 @@ class _PersonalState extends State<Personal> {
                               ),
                             ),
                           ),
+                          SizedBox(height: 8),
+                          ElevatedButton(
+                            onPressed: () => Navigator.of(context).push(
+                              MaterialPageRoute(
+                                builder: (context) => UpdateUserInfo(
+                                  sessionKey: widget.sessionKey,
+                                  clearSessionKey: widget.clearSessionKey,
+                                  updateIndex: widget.updateIndex,
+                                ),
+                              ),
+                            ),
+                            style: ElevatedButton.styleFrom(
+                              backgroundColor: Colors.green,
+                              minimumSize: Size(double.infinity, 48),
+                            ),
+                            child: Text(
+                              "Update Information",
+                              style: TextStyle(color: Colors.white),
+                            ),
+                          ),
+                          SizedBox(height: 8),
+                          ElevatedButton(
+                            onPressed: () {
+                              logout();
+                            },
+                            style: ElevatedButton.styleFrom(
+                              backgroundColor: Colors.red,
+                              minimumSize: Size(double.infinity, 48),
+                            ),
+                            child: Text(
+                              "Logout",
+                              style: TextStyle(color: Colors.white),
+                            ),
+                          ),
+                          SizedBox(height: 8),
                         ],
                       ),
                     ),
