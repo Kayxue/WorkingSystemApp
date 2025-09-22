@@ -271,6 +271,7 @@ class _PersonalState extends State<Personal> {
                                   sessionKey: widget.sessionKey,
                                   clearSessionKey: widget.clearSessionKey,
                                   updateIndex: widget.updateIndex,
+                                  workerProfile: profile,
                                 ),
                               ),
                             ),
