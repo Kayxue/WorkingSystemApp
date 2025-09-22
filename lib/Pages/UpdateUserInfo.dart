@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:working_system_app/Types/WorkerProfile.dart';
+import 'package:multi_dropdown/multi_dropdown.dart';
 
 class UpdateUserInfo extends StatefulWidget {
   final String sessionKey;
@@ -45,6 +46,7 @@ class _UpdateUserInfoState extends State<UpdateUserInfo> {
           child: Padding(
             padding: const EdgeInsets.only(left: 16, right: 16, top: 16),
             child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 TextField(
                   decoration: const InputDecoration(labelText: 'First name'),
@@ -61,13 +63,15 @@ class _UpdateUserInfoState extends State<UpdateUserInfo> {
                   controller: phoneNumberController,
                 ),
                 SizedBox(height: 16),
-                //TODO: highestEducation need to use dropdown
+                Text('Highest education', style: TextStyle(fontSize: 16)),
+                SizedBox(height: 4),
                 Row(
                   children: [
                     Expanded(
                       child: DropdownMenu(
                         expandedInsets: EdgeInsets.zero,
                         requestFocusOnTap: false,
+                        initialSelection: widget.workerProfile.highestEducation,
                         dropdownMenuEntries: const [
                           DropdownMenuEntry(value: "高中", label: "高中"),
                           DropdownMenuEntry(value: "大學", label: "大學"),
@@ -76,7 +80,11 @@ class _UpdateUserInfoState extends State<UpdateUserInfo> {
                           DropdownMenuEntry(value: "其他", label: "其他"),
                         ],
                         onSelected: (String? value) {
-                          // Handle selection
+                          if (value != null) {
+                            setState(() {
+                              widget.workerProfile.highestEducation = value;
+                            });
+                          }
                         },
                       ),
                     ),
@@ -94,6 +102,32 @@ class _UpdateUserInfoState extends State<UpdateUserInfo> {
                 ),
                 SizedBox(height: 16),
                 //TODO: studyStatus need to use dropdown
+                Text('Study status', style: TextStyle(fontSize: 16)),
+                SizedBox(height: 4),
+                Row(
+                  children: [
+                    Expanded(
+                      child: DropdownMenu(
+                        expandedInsets: EdgeInsets.zero,
+                        requestFocusOnTap: false,
+                        initialSelection: widget.workerProfile.studyStatus,
+                        dropdownMenuEntries: const [
+                          DropdownMenuEntry(value: "就讀中", label: "就讀中"),
+                          DropdownMenuEntry(value: "已畢業", label: "已畢業"),
+                          DropdownMenuEntry(value: "肆業", label: "肆業"),
+                        ],
+                        onSelected: (String? value) {
+                          if (value != null) {
+                            setState(() {
+                              widget.workerProfile.studyStatus = value;
+                            });
+                          }
+                        },
+                      ),
+                    ),
+                  ],
+                ),
+                SizedBox(height: 16),
                 //TODO: certificates need to use dropdown
                 //TODO: jobExperience need to use ? widget
               ],
