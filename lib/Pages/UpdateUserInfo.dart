@@ -62,6 +62,27 @@ class _UpdateUserInfoState extends State<UpdateUserInfo> {
                 ),
                 SizedBox(height: 16),
                 //TODO: highestEducation need to use dropdown
+                Row(
+                  children: [
+                    Expanded(
+                      child: DropdownMenu(
+                        expandedInsets: EdgeInsets.zero,
+                        requestFocusOnTap: false,
+                        dropdownMenuEntries: const [
+                          DropdownMenuEntry(value: "高中", label: "高中"),
+                          DropdownMenuEntry(value: "大學", label: "大學"),
+                          DropdownMenuEntry(value: "碩士", label: "碩士"),
+                          DropdownMenuEntry(value: "博士", label: "博士"),
+                          DropdownMenuEntry(value: "其他", label: "其他"),
+                        ],
+                        onSelected: (String? value) {
+                          // Handle selection
+                        },
+                      ),
+                    ),
+                  ],
+                ),
+                SizedBox(height: 16),
                 TextField(
                   decoration: const InputDecoration(labelText: 'School name'),
                   controller: schoolNameController,

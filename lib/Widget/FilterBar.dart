@@ -60,7 +60,7 @@ class _FilterBarState extends State<FilterBar> {
               child: SizedBox(
                 child: DropdownMenu(
                   expandedInsets: EdgeInsets.zero,
-                  enableSearch: false,
+                  requestFocusOnTap: false,
                   initialSelection: "",
                   dropdownMenuEntries: [
                     DropdownMenuEntry<String>(value: "", label: "無指定縣市"),
@@ -85,6 +85,7 @@ class _FilterBarState extends State<FilterBar> {
                   expandedInsets: EdgeInsets.zero,
                   initialSelection: "",
                   enabled: widget.selectedCity.isNotEmpty,
+                  requestFocusOnTap: false,
                   dropdownMenuEntries: [
                     DropdownMenuEntry<String>(value: "", label: "無指定區"),
                     if (widget.cityDistrictMap != null &&
