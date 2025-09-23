@@ -267,11 +267,11 @@ class _PersonalState extends State<Personal> {
                           ElevatedButton(
                             onPressed: () => Navigator.of(context).push(
                               MaterialPageRoute(
-                                builder: (context) => UpdateUserInfo(
+                                builder: (context) => UpdateUserInfo.clone(
                                   sessionKey: widget.sessionKey,
                                   clearSessionKey: widget.clearSessionKey,
                                   updateIndex: widget.updateIndex,
-                                  workerProfile: profile,
+                                  origin: profile,
                                 ),
                               ),
                             ),

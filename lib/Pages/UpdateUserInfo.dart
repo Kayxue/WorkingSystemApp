@@ -18,6 +18,14 @@ class UpdateUserInfo extends StatefulWidget {
     required this.workerProfile,
   });
 
+  UpdateUserInfo.clone({
+    super.key,
+    required this.sessionKey,
+    required this.clearSessionKey,
+    required this.updateIndex,
+    required WorkerProfile origin,
+  }) : workerProfile = WorkerProfile.clone(origin);
+
   @override
   State<UpdateUserInfo> createState() => _UpdateUserInfoState();
 }
@@ -29,7 +37,8 @@ class _UpdateUserInfoState extends State<UpdateUserInfo>
   TextEditingController phoneNumberController = TextEditingController();
   TextEditingController schoolNameController = TextEditingController();
   TextEditingController majorController = TextEditingController();
-  MultiSelectController certificatesController = MultiSelectController();
+  MultiSelectController<String> certificatesController =
+      MultiSelectController<String>();
   SlidableController? slidableController;
 
   void removeJobExperience(String experience) {
@@ -66,9 +75,11 @@ class _UpdateUserInfoState extends State<UpdateUserInfo>
     schoolNameController.text = widget.workerProfile.schoolName ?? "";
     majorController.text = widget.workerProfile.major ?? "";
     if (widget.workerProfile.certificates != null) {
-      certificatesController.selectWhere(
-        (item) => widget.workerProfile.certificates!.contains(item.value),
-      );
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        certificatesController.selectWhere(
+          (item) => widget.workerProfile.certificates!.contains(item.value),
+        );
+      });
     }
     slidableController = SlidableController(this);
   }
@@ -196,6 +207,7 @@ class _UpdateUserInfoState extends State<UpdateUserInfo>
                         children: [
                           Expanded(
                             child: MultiDropdown(
+                              controller: certificatesController,
                               items: [
                                 DropdownItem(label: "普通小型車", value: "普通小型車"),
                                 DropdownItem(label: "職業小型車", value: "職業小型車"),
@@ -238,7 +250,9 @@ class _UpdateUserInfoState extends State<UpdateUserInfo>
               children: [
                 Expanded(
                   child: ElevatedButton(
-                    onPressed: () {},
+                    onPressed: () {
+                      debugPrint(widget.workerProfile.toJson().toString());
+                    },
                     child: Text("Save Changes"),
                   ),
                 ),

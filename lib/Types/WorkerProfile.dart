@@ -44,6 +44,29 @@ class WorkerProfile {
     required this.ratingStats,
   });
 
+  WorkerProfile.clone(WorkerProfile origin)
+    : this(
+        workerId: origin.workerId,
+        email: origin.email,
+        firstName: origin.firstName,
+        lastName: origin.lastName,
+        phoneNumber: origin.phoneNumber,
+        highestEducation: origin.highestEducation,
+        schoolName: origin.schoolName,
+        major: origin.major,
+        studyStatus: origin.studyStatus,
+        certificates: origin.certificates == null
+            ? null
+            : List<String>.from(origin.certificates!),
+        jobExperience: List<String>.from(origin.jobExperience),
+        createdAt: origin.createdAt,
+        updatedAt: origin.updatedAt,
+        role: origin.role,
+        userId: origin.userId,
+        profilePhoto: origin.profilePhoto,
+        ratingStats: RatingStats.clone(origin.ratingStats),
+      );
+
   factory WorkerProfile.fromJson(Map<String, dynamic> json) =>
       _$WorkerProfileFromJson(json);
 

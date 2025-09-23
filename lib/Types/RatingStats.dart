@@ -13,4 +13,10 @@ class RatingStats {
       _$RatingStatsFromJson(json);
 
   Map<String, dynamic> toJson() => _$RatingStatsToJson(this);
+
+  RatingStats.clone(RatingStats ratingStats)
+    : this(
+        averageRating: ratingStats.averageRating,
+        totalRatings: ratingStats.totalRatings,
+      );
 }
