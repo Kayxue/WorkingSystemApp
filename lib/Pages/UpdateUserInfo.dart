@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:working_system_app/Types/WorkerProfile.dart';
 import 'package:multi_dropdown/multi_dropdown.dart';
+import 'package:working_system_app/Widget/JobExperienceEditor.dart';
 
 class UpdateUserInfo extends StatefulWidget {
   final String sessionKey;
@@ -27,6 +28,27 @@ class _UpdateUserInfoState extends State<UpdateUserInfo> {
   TextEditingController schoolNameController = TextEditingController();
   TextEditingController majorController = TextEditingController();
   MultiSelectController certificatesController = MultiSelectController();
+
+  void removeJobExperience(String experience) {
+    setState(() {
+      widget.workerProfile.jobExperience.remove(experience);
+    });
+  }
+
+  void addJobExperience(String experience) {
+    setState(() {
+      widget.workerProfile.jobExperience.add(experience);
+    });
+  }
+
+  void editJobExperience(String oldExperience, String newExperience) {
+    setState(() {
+      int index = widget.workerProfile.jobExperience.indexOf(oldExperience);
+      if (index != -1) {
+        widget.workerProfile.jobExperience[index] = newExperience;
+      }
+    });
+  }
 
   @override
   void initState() {
@@ -189,7 +211,14 @@ class _UpdateUserInfoState extends State<UpdateUserInfo> {
                           ),
                         ],
                       ),
-                      //TODO: jobExperience need to use ? widget
+                      SizedBox(height: 16),
+                      JobExperienceEditor(
+                        removeJobExperience: removeJobExperience,
+                        addJobExperience: addJobExperience,
+                        editJobExperience: editJobExperience,
+                        jobExperience: widget.workerProfile.jobExperience,
+                      ),
+                      SizedBox(height: 16),
                     ],
                   ),
                 ),
