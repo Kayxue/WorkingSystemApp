@@ -265,16 +265,34 @@ class _PersonalState extends State<Personal> {
                           ),
                           SizedBox(height: 8),
                           ElevatedButton(
-                            onPressed: () => Navigator.of(context).push(
-                              MaterialPageRoute(
-                                builder: (context) => UpdateUserInfo.clone(
-                                  sessionKey: widget.sessionKey,
-                                  clearSessionKey: widget.clearSessionKey,
-                                  updateIndex: widget.updateIndex,
-                                  origin: profile,
-                                ),
-                              ),
-                            ),
+                            onPressed: () async {
+                              final result = await Navigator.of(context)
+                                  .push<(bool, WorkerProfile?)>(
+                                    MaterialPageRoute(
+                                      builder: (context) =>
+                                          UpdateUserInfo.clone(
+                                            sessionKey: widget.sessionKey,
+                                            clearSessionKey:
+                                                widget.clearSessionKey,
+                                            updateIndex: widget.updateIndex,
+                                            origin: profile,
+                                          ),
+                                    ),
+                                  );
+                              if (result != null && result.$1 == true) {
+                                if (!context.mounted) return;
+                                ScaffoldMessenger.of(context).showSnackBar(
+                                  SnackBar(content: Text("Profile updated")),
+                                );
+                                WidgetsBinding.instance.addPostFrameCallback((
+                                  _,
+                                ) {
+                                  setState(() {
+                                    profile = result.$2!;
+                                  });
+                                });
+                              }
+                            },
                             style: ElevatedButton.styleFrom(
                               backgroundColor: Colors.green,
                               minimumSize: Size(double.infinity, 48),

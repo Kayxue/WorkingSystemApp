@@ -1,5 +1,9 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
+import 'package:rhttp/rhttp.dart';
+import 'package:working_system_app/Others/Utils.dart';
 import 'package:working_system_app/Types/WorkerProfile.dart';
 import 'package:multi_dropdown/multi_dropdown.dart';
 import 'package:working_system_app/Widget/JobExperienceEditor.dart';
@@ -66,6 +70,21 @@ class _UpdateUserInfoState extends State<UpdateUserInfo>
     });
   }
 
+  Future<(bool, WorkerProfile?)> updateProfile() async {
+    final response = await Utils.client.put(
+      "/user/update/profile",
+      headers: HttpHeaders.rawMap({
+        "platform": "mobile",
+        "cookie": widget.sessionKey,
+      }),
+      body: HttpBody.json(widget.workerProfile.toJson()),
+    );
+    if (response.statusCode == 200) {
+      return (true, WorkerProfile.fromJson(jsonDecode(response.body)));
+    }
+    return (false, null);
+  }
+
   @override
   void initState() {
     super.initState();
@@ -104,6 +123,9 @@ class _UpdateUserInfoState extends State<UpdateUserInfo>
                           labelText: 'First name',
                         ),
                         controller: firstNameController,
+                        onChanged: (value) => setState(() {
+                          widget.workerProfile.firstName = value;
+                        }),
                       ),
                       SizedBox(height: 16),
                       TextField(
@@ -111,6 +133,9 @@ class _UpdateUserInfoState extends State<UpdateUserInfo>
                           labelText: 'Last name',
                         ),
                         controller: lastNameController,
+                        onChanged: (value) => setState(() {
+                          widget.workerProfile.lastName = value;
+                        }),
                       ),
                       SizedBox(height: 16),
                       TextField(
@@ -118,6 +143,9 @@ class _UpdateUserInfoState extends State<UpdateUserInfo>
                           labelText: 'Phone number',
                         ),
                         controller: phoneNumberController,
+                        onChanged: (value) => setState(() {
+                          widget.workerProfile.phoneNumber = value;
+                        }),
                       ),
                       SizedBox(height: 16),
                       Text('Highest education', style: TextStyle(fontSize: 16)),
@@ -161,11 +189,21 @@ class _UpdateUserInfoState extends State<UpdateUserInfo>
                           labelText: 'School name',
                         ),
                         controller: schoolNameController,
+                        onChanged: (value) => setState(() {
+                          widget.workerProfile.schoolName = value.isEmpty
+                              ? null
+                              : value;
+                        }),
                       ),
                       SizedBox(height: 16),
                       TextField(
                         decoration: const InputDecoration(labelText: 'Major'),
                         controller: majorController,
+                        onChanged: (value) => setState(() {
+                          widget.workerProfile.major = value.isEmpty
+                              ? null
+                              : value;
+                        }),
                       ),
                       SizedBox(height: 16),
                       Text('Study status', style: TextStyle(fontSize: 16)),
@@ -250,8 +288,15 @@ class _UpdateUserInfoState extends State<UpdateUserInfo>
               children: [
                 Expanded(
                   child: ElevatedButton(
-                    onPressed: () {
-                      debugPrint(widget.workerProfile.toJson().toString());
+                    onPressed: () async {
+                      final result = await updateProfile();
+                      if (result.$1) {
+                        if (!context.mounted) return;
+                        Navigator.of(context).pop((true,result.$2!));
+                      } else {
+                        if (!context.mounted) return;
+                        Navigator.of(context).pop((false, null));
+                      }
                     },
                     child: Text("Save Changes"),
                   ),
