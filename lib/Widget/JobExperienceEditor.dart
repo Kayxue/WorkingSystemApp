@@ -6,6 +6,7 @@ class JobExperienceEditor extends StatelessWidget {
   final Function(String) addJobExperience;
   final Function(String, String) editJobExperience;
   final List<String> jobExperience;
+  final SlidableController? controller;
 
   const JobExperienceEditor({
     super.key,
@@ -13,7 +14,42 @@ class JobExperienceEditor extends StatelessWidget {
     required this.addJobExperience,
     required this.editJobExperience,
     required this.jobExperience,
+    required this.controller,
   });
+
+  Future<(String, String?)> showTextInputDialog(
+    BuildContext context,
+    bool insert,
+    String initialText,
+  ) {
+    final TextEditingController textController = TextEditingController(
+      text: initialText,
+    );
+    return showDialog<(String, String?)>(
+      context: context,
+      builder: (context) {
+        return AlertDialog(
+          title: Text(insert ? "Add Job Experience" : "Edit Job Experience"),
+          content: TextField(
+            controller: textController,
+            decoration: InputDecoration(hintText: "Enter job experience"),
+          ),
+          actions: [
+            TextButton(
+              onPressed: () => Navigator.of(context).pop(("", null)),
+              child: Text("Cancel"),
+            ),
+            TextButton(
+              onPressed: () => Navigator.of(
+                context,
+              ).pop((textController.text, insert ? null : initialText)),
+              child: Text("OK"),
+            ),
+          ],
+        );
+      },
+    ).then((value) => value ?? ("", null));
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -37,12 +73,33 @@ class JobExperienceEditor extends StatelessWidget {
                           fontWeight: FontWeight.bold,
                         ),
                       ),
-                      TextButton(onPressed: () {}, child: Text("Add")),
+                      TextButton(
+                        onPressed: () async {
+                          await controller!.close();
+                          if (!context.mounted) return;
+                          final (newExperience, _) = await showTextInputDialog(
+                            context,
+                            true,
+                            "",
+                          );
+                          if (newExperience.isNotEmpty) {
+                            if (!addJobExperience(newExperience)) {
+                              ScaffoldMessenger.of(context).showSnackBar(
+                                SnackBar(
+                                  content: Text("Experience already exists"),
+                                ),
+                              );
+                            }
+                          }
+                        },
+                        child: Text("Add"),
+                      ),
                     ],
                   ),
                   ...[
                     for (final experience in jobExperience)
                       Slidable(
+                        controller: controller,
                         key: ValueKey(experience),
                         endActionPane: ActionPane(
                           motion: DrawerMotion(),
@@ -53,7 +110,22 @@ class JobExperienceEditor extends StatelessWidget {
                           children: [
                             SlidableAction(
                               flex: 1,
-                              onPressed: null,
+                              onPressed: (_) async {
+                                final (
+                                  editedExperience,
+                                  _,
+                                ) = await showTextInputDialog(
+                                  context,
+                                  false,
+                                  experience,
+                                );
+                                if (editedExperience.isNotEmpty) {
+                                  editJobExperience(
+                                    experience,
+                                    editedExperience,
+                                  );
+                                }
+                              },
                               backgroundColor: Colors.blue,
                               foregroundColor: Colors.white,
                               icon: Icons.edit,
@@ -71,7 +143,7 @@ class JobExperienceEditor extends StatelessWidget {
                         ),
                         child: SizedBox(
                           height: 50,
-                          child: ListTile(title: Text("Test")),
+                          child: ListTile(title: Text(experience)),
                         ),
                       ),
                   ],

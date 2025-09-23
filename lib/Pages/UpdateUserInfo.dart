@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_slidable/flutter_slidable.dart';
 import 'package:working_system_app/Types/WorkerProfile.dart';
 import 'package:multi_dropdown/multi_dropdown.dart';
 import 'package:working_system_app/Widget/JobExperienceEditor.dart';
@@ -21,13 +22,15 @@ class UpdateUserInfo extends StatefulWidget {
   State<UpdateUserInfo> createState() => _UpdateUserInfoState();
 }
 
-class _UpdateUserInfoState extends State<UpdateUserInfo> {
+class _UpdateUserInfoState extends State<UpdateUserInfo>
+    with SingleTickerProviderStateMixin {
   TextEditingController firstNameController = TextEditingController();
   TextEditingController lastNameController = TextEditingController();
   TextEditingController phoneNumberController = TextEditingController();
   TextEditingController schoolNameController = TextEditingController();
   TextEditingController majorController = TextEditingController();
   MultiSelectController certificatesController = MultiSelectController();
+  SlidableController? slidableController;
 
   void removeJobExperience(String experience) {
     setState(() {
@@ -35,10 +38,14 @@ class _UpdateUserInfoState extends State<UpdateUserInfo> {
     });
   }
 
-  void addJobExperience(String experience) {
-    setState(() {
-      widget.workerProfile.jobExperience.add(experience);
-    });
+  bool addJobExperience(String experience) {
+    if (!widget.workerProfile.jobExperience.contains(experience)) {
+      setState(() {
+        widget.workerProfile.jobExperience.add(experience);
+      });
+      return true;
+    }
+    return false;
   }
 
   void editJobExperience(String oldExperience, String newExperience) {
@@ -63,6 +70,7 @@ class _UpdateUserInfoState extends State<UpdateUserInfo> {
         (item) => widget.workerProfile.certificates!.contains(item.value),
       );
     }
+    slidableController = SlidableController(this);
   }
 
   @override
@@ -217,6 +225,7 @@ class _UpdateUserInfoState extends State<UpdateUserInfo> {
                         addJobExperience: addJobExperience,
                         editJobExperience: editJobExperience,
                         jobExperience: widget.workerProfile.jobExperience,
+                        controller: slidableController,
                       ),
                       SizedBox(height: 16),
                     ],
