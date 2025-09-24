@@ -1,5 +1,3 @@
-import 'dart:convert';
-
 import 'package:flutter/material.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
 import 'package:rhttp/rhttp.dart';
@@ -70,7 +68,7 @@ class _UpdateUserInfoState extends State<UpdateUserInfo>
     });
   }
 
-  Future<(bool, WorkerProfile?)> updateProfile() async {
+  Future<bool> updateProfile() async {
     final response = await Utils.client.put(
       "/user/update/profile",
       headers: HttpHeaders.rawMap({
@@ -80,9 +78,9 @@ class _UpdateUserInfoState extends State<UpdateUserInfo>
       body: HttpBody.json(widget.workerProfile.toJson()),
     );
     if (response.statusCode == 200) {
-      return (true, WorkerProfile.fromJson(jsonDecode(response.body)));
+      return true;
     }
-    return (false, null);
+    return false;
   }
 
   @override
@@ -289,13 +287,12 @@ class _UpdateUserInfoState extends State<UpdateUserInfo>
                 Expanded(
                   child: ElevatedButton(
                     onPressed: () async {
-                      final result = await updateProfile();
-                      if (result.$1) {
+                      if (await updateProfile()) {
                         if (!context.mounted) return;
-                        Navigator.of(context).pop((true,result.$2!));
+                        Navigator.of(context).pop(true);
                       } else {
                         if (!context.mounted) return;
-                        Navigator.of(context).pop((false, null));
+                        Navigator.of(context).pop(false);
                       }
                     },
                     child: Text("Save Changes"),

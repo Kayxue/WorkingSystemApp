@@ -267,7 +267,7 @@ class _PersonalState extends State<Personal> {
                           ElevatedButton(
                             onPressed: () async {
                               final result = await Navigator.of(context)
-                                  .push<(bool, WorkerProfile?)>(
+                                  .push<bool>(
                                     MaterialPageRoute(
                                       builder: (context) =>
                                           UpdateUserInfo.clone(
@@ -279,17 +279,18 @@ class _PersonalState extends State<Personal> {
                                           ),
                                     ),
                                   );
-                              if (result != null && result.$1 == true) {
+                              if (result != null && result) {
                                 if (!context.mounted) return;
                                 ScaffoldMessenger.of(context).showSnackBar(
                                   SnackBar(content: Text("Profile updated")),
                                 );
-                                WidgetsBinding.instance.addPostFrameCallback((
-                                  _,
-                                ) {
-                                  setState(() {
-                                    profile = result.$2!;
-                                  });
+                                setState(() {
+                                  isLoading = true;
+                                });
+                                final profile = await loadUserProfile();
+                                setState(() {
+                                  this.profile = profile;
+                                  isLoading = false;
                                 });
                               }
                             },
