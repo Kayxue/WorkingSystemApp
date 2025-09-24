@@ -103,7 +103,7 @@ class JobExperienceEditor extends StatelessWidget {
                         key: ValueKey(experience),
                         endActionPane: ActionPane(
                           motion: DrawerMotion(),
-                          extentRatio: 0.25,
+                          extentRatio: 0.6,
                           dismissible: DismissiblePane(
                             onDismissed: () => removeJobExperience(experience),
                           ),
