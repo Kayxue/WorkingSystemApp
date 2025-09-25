@@ -51,6 +51,7 @@ dependencies:
   flutter_rating_bar: ^4.0.1
   multi_dropdown: ^3.0.1
   flutter_slidable: ^4.0.1
+  firebase_messaging: ^16.0.2
 
 dev_dependencies:
   flutter_test:
