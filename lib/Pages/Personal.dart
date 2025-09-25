@@ -5,6 +5,7 @@ import 'package:flutter_rating_bar/flutter_rating_bar.dart';
 import 'package:rhttp/rhttp.dart';
 import 'package:working_system_app/Others/Utils.dart';
 import 'package:working_system_app/Pages/UpdateUserInfo.dart';
+import 'package:working_system_app/Pages/UpdateUserPassword.dart';
 import 'package:working_system_app/Types/WorkerProfile.dart';
 import 'package:flutter/services.dart';
 
@@ -300,6 +301,33 @@ class _PersonalState extends State<Personal> {
                             ),
                             child: Text(
                               "Update Information",
+                              style: TextStyle(color: Colors.white),
+                            ),
+                          ),
+                          SizedBox(height: 8),
+                          ElevatedButton(
+                            onPressed: () async {
+                              final result = await Navigator.of(context)
+                                  .push<bool>(
+                                    MaterialPageRoute(
+                                      builder: (context) => UpdateUserPassword(
+                                        sessionKey: widget.sessionKey,
+                                      ),
+                                    ),
+                                  );
+                              if (result != null && result) {
+                                if (!context.mounted) return;
+                                ScaffoldMessenger.of(context).showSnackBar(
+                                  SnackBar(content: Text("Password updated")),
+                                );
+                              }
+                            },
+                            style: ElevatedButton.styleFrom(
+                              backgroundColor: Colors.blue,
+                              minimumSize: Size(double.infinity, 48),
+                            ),
+                            child: Text(
+                              "Update Password",
                               style: TextStyle(color: Colors.white),
                             ),
                           ),
