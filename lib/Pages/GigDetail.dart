@@ -148,7 +148,7 @@ class _GigDetailState extends State<GigDetail> {
                   SizedBox(height: 16),
                   SizedBox(
                     width: double.infinity,
-                    child: ElevatedButton(
+                    child: FilledButton(
                       onPressed: widget.sessionKey.isEmpty
                           ? null
                           : () async {

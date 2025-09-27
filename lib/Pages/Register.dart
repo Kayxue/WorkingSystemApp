@@ -1,58 +1,31 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
-import 'package:rhttp/rhttp.dart';
-import 'package:working_system_app/Others/Utils.dart';
-import 'package:working_system_app/Types/WorkerProfile.dart';
 import 'package:multi_dropdown/multi_dropdown.dart';
+import 'package:working_system_app/Types/WorkerRegisterForm.dart';
 import 'package:working_system_app/Widget/JobExperienceEditor.dart';
 
-class UpdateUserInfo extends StatefulWidget {
-  final String sessionKey;
-  final Function clearSessionKey;
-  final Function(int) updateIndex;
-  final WorkerProfile workerProfile;
-
-  const UpdateUserInfo({
-    super.key,
-    required this.sessionKey,
-    required this.clearSessionKey,
-    required this.updateIndex,
-    required this.workerProfile,
-  });
-
-  UpdateUserInfo.clone({
-    super.key,
-    required this.sessionKey,
-    required this.clearSessionKey,
-    required this.updateIndex,
-    required WorkerProfile origin,
-  }) : workerProfile = WorkerProfile.clone(origin);
+class Register extends StatefulWidget {
+  const Register({super.key});
 
   @override
-  State<UpdateUserInfo> createState() => _UpdateUserInfoState();
+  State<Register> createState() => _RegisterState();
 }
 
-class _UpdateUserInfoState extends State<UpdateUserInfo>
+class _RegisterState extends State<Register>
     with SingleTickerProviderStateMixin {
-  TextEditingController firstNameController = TextEditingController();
-  TextEditingController lastNameController = TextEditingController();
-  TextEditingController phoneNumberController = TextEditingController();
-  TextEditingController schoolNameController = TextEditingController();
-  TextEditingController majorController = TextEditingController();
-  MultiSelectController<String> certificatesController =
-      MultiSelectController<String>();
+  WorkerRegisterForm registerForm = WorkerRegisterForm();
   SlidableController? slidableController;
 
   void removeJobExperience(String experience) {
     setState(() {
-      widget.workerProfile.jobExperience.remove(experience);
+      registerForm.jobExperience.remove(experience);
     });
   }
 
   bool addJobExperience(String experience) {
-    if (!widget.workerProfile.jobExperience.contains(experience)) {
+    if (!registerForm.jobExperience.contains(experience)) {
       setState(() {
-        widget.workerProfile.jobExperience.add(experience);
+        registerForm.jobExperience.add(experience);
       });
       return true;
     }
@@ -61,43 +34,16 @@ class _UpdateUserInfoState extends State<UpdateUserInfo>
 
   void editJobExperience(String oldExperience, String newExperience) {
     setState(() {
-      int index = widget.workerProfile.jobExperience.indexOf(oldExperience);
+      int index = registerForm.jobExperience.indexOf(oldExperience);
       if (index != -1) {
-        widget.workerProfile.jobExperience[index] = newExperience;
+        registerForm.jobExperience[index] = newExperience;
       }
     });
-  }
-
-  Future<bool> updateProfile() async {
-    final response = await Utils.client.put(
-      "/user/update/profile",
-      headers: HttpHeaders.rawMap({
-        "platform": "mobile",
-        "cookie": widget.sessionKey,
-      }),
-      body: HttpBody.json(widget.workerProfile.toJson()),
-    );
-    if (response.statusCode == 200) {
-      return true;
-    }
-    return false;
   }
 
   @override
   void initState() {
     super.initState();
-    firstNameController.text = widget.workerProfile.firstName;
-    lastNameController.text = widget.workerProfile.lastName;
-    phoneNumberController.text = widget.workerProfile.phoneNumber;
-    schoolNameController.text = widget.workerProfile.schoolName ?? "";
-    majorController.text = widget.workerProfile.major ?? "";
-    if (widget.workerProfile.certificates != null) {
-      WidgetsBinding.instance.addPostFrameCallback((_) {
-        certificatesController.selectWhere(
-          (item) => widget.workerProfile.certificates!.contains(item.value),
-        );
-      });
-    }
     slidableController = SlidableController(this);
   }
 
@@ -120,9 +66,8 @@ class _UpdateUserInfoState extends State<UpdateUserInfo>
                         decoration: const InputDecoration(
                           labelText: 'First name',
                         ),
-                        controller: firstNameController,
                         onChanged: (value) => setState(() {
-                          widget.workerProfile.firstName = value;
+                          registerForm.firstName = value;
                         }),
                       ),
                       SizedBox(height: 16),
@@ -130,9 +75,8 @@ class _UpdateUserInfoState extends State<UpdateUserInfo>
                         decoration: const InputDecoration(
                           labelText: 'Last name',
                         ),
-                        controller: lastNameController,
                         onChanged: (value) => setState(() {
-                          widget.workerProfile.lastName = value;
+                          registerForm.lastName = value;
                         }),
                       ),
                       SizedBox(height: 16),
@@ -140,10 +84,36 @@ class _UpdateUserInfoState extends State<UpdateUserInfo>
                         decoration: const InputDecoration(
                           labelText: 'Phone number',
                         ),
-                        controller: phoneNumberController,
                         onChanged: (value) => setState(() {
-                          widget.workerProfile.phoneNumber = value;
+                          registerForm.phoneNumber = value;
                         }),
+                      ),
+                      SizedBox(height: 16),
+                      TextField(
+                        decoration: const InputDecoration(labelText: 'Email'),
+                        onChanged: (value) => setState(() {
+                          registerForm.email = value;
+                        }),
+                      ),
+                      SizedBox(height: 16),
+                      TextField(
+                        decoration: const InputDecoration(
+                          labelText: 'Password',
+                        ),
+                        onChanged: (value) => setState(() {
+                          registerForm.password = value;
+                        }),
+                        obscureText: true,
+                      ),
+                      SizedBox(height: 16),
+                      TextField(
+                        decoration: const InputDecoration(
+                          labelText: 'Confirm password',
+                        ),
+                        onChanged: (value) => setState(() {
+                          registerForm.confirmPassword = value;
+                        }),
+                        obscureText: true,
                       ),
                       SizedBox(height: 16),
                       Text('Highest education', style: TextStyle(fontSize: 16)),
@@ -154,8 +124,6 @@ class _UpdateUserInfoState extends State<UpdateUserInfo>
                             child: DropdownMenu(
                               expandedInsets: EdgeInsets.zero,
                               requestFocusOnTap: false,
-                              initialSelection:
-                                  widget.workerProfile.highestEducation,
                               dropdownMenuEntries: const [
                                 DropdownMenuEntry(value: "高中", label: "高中"),
                                 DropdownMenuEntry(value: "大學", label: "大學"),
@@ -166,8 +134,7 @@ class _UpdateUserInfoState extends State<UpdateUserInfo>
                               onSelected: (String? value) {
                                 if (value != null) {
                                   setState(() {
-                                    widget.workerProfile.highestEducation =
-                                        value;
+                                    registerForm.highestEducation = value;
                                   });
                                 }
                               },
@@ -186,9 +153,8 @@ class _UpdateUserInfoState extends State<UpdateUserInfo>
                         decoration: const InputDecoration(
                           labelText: 'School name',
                         ),
-                        controller: schoolNameController,
                         onChanged: (value) => setState(() {
-                          widget.workerProfile.schoolName = value.isEmpty
+                          registerForm.schoolName = value.isEmpty
                               ? null
                               : value;
                         }),
@@ -196,11 +162,8 @@ class _UpdateUserInfoState extends State<UpdateUserInfo>
                       SizedBox(height: 16),
                       TextField(
                         decoration: const InputDecoration(labelText: 'Major'),
-                        controller: majorController,
                         onChanged: (value) => setState(() {
-                          widget.workerProfile.major = value.isEmpty
-                              ? null
-                              : value;
+                          registerForm.major = value.isEmpty ? null : value;
                         }),
                       ),
                       SizedBox(height: 16),
@@ -212,8 +175,7 @@ class _UpdateUserInfoState extends State<UpdateUserInfo>
                             child: DropdownMenu(
                               expandedInsets: EdgeInsets.zero,
                               requestFocusOnTap: false,
-                              initialSelection:
-                                  widget.workerProfile.studyStatus,
+                              initialSelection: "就讀中",
                               dropdownMenuEntries: const [
                                 DropdownMenuEntry(value: "就讀中", label: "就讀中"),
                                 DropdownMenuEntry(value: "已畢業", label: "已畢業"),
@@ -222,7 +184,7 @@ class _UpdateUserInfoState extends State<UpdateUserInfo>
                               onSelected: (String? value) {
                                 if (value != null) {
                                   setState(() {
-                                    widget.workerProfile.studyStatus = value;
+                                    registerForm.studyStatus = value;
                                   });
                                 }
                               },
@@ -243,7 +205,6 @@ class _UpdateUserInfoState extends State<UpdateUserInfo>
                         children: [
                           Expanded(
                             child: MultiDropdown(
-                              controller: certificatesController,
                               items: [
                                 DropdownItem(label: "普通小型車", value: "普通小型車"),
                                 DropdownItem(label: "職業小型車", value: "職業小型車"),
@@ -260,8 +221,7 @@ class _UpdateUserInfoState extends State<UpdateUserInfo>
                               ],
                               onSelectionChange: (selectedItems) =>
                                   setState(() {
-                                    widget.workerProfile.certificates =
-                                        selectedItems;
+                                    registerForm.certificates = selectedItems;
                                   }),
                             ),
                           ),
@@ -272,7 +232,7 @@ class _UpdateUserInfoState extends State<UpdateUserInfo>
                         removeJobExperience: removeJobExperience,
                         addJobExperience: addJobExperience,
                         editJobExperience: editJobExperience,
-                        jobExperience: widget.workerProfile.jobExperience,
+                        jobExperience: registerForm.jobExperience,
                         controller: slidableController,
                       ),
                       SizedBox(height: 16),
@@ -287,15 +247,9 @@ class _UpdateUserInfoState extends State<UpdateUserInfo>
                 Expanded(
                   child: FilledButton(
                     onPressed: () async {
-                      if (await updateProfile()) {
-                        if (!context.mounted) return;
-                        Navigator.of(context).pop(true);
-                      } else {
-                        if (!context.mounted) return;
-                        Navigator.of(context).pop(false);
-                      }
+                      //TODO: Register logic
                     },
-                    child: Text("Save Changes"),
+                    child: Text("Register"),
                   ),
                 ),
               ],

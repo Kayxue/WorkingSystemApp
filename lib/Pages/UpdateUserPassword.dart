@@ -122,7 +122,7 @@ class _UpdateUserPasswordState extends State<UpdateUserPassword> {
             Row(
               children: [
                 Expanded(
-                  child: ElevatedButton(
+                  child: FilledButton(
                     onPressed: () async {
                       if (basicPasswordValidation()) {
                         final updateResult = await updatePassword();

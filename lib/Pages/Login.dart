@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:rhttp/rhttp.dart';
 import 'package:working_system_app/Others/Utils.dart';
+import 'package:working_system_app/Pages/Register.dart';
 
 class Login extends StatefulWidget {
   final Function(String key) setSessionKey;
@@ -96,11 +97,20 @@ class _LoginState extends State<Login> {
             obscureText: true,
           ),
           SizedBox(height: 16),
-          ElevatedButton(
+          FilledButton(
             onPressed: () {
               login();
             },
             child: Text("Login"),
+          ),
+          SizedBox(height: 16),
+          ElevatedButton(
+            onPressed: () {
+              Navigator.of(
+                context,
+              ).push(MaterialPageRoute(builder: (context) => Register()));
+            },
+            child: Text("Register"),
           ),
         ],
       ),
