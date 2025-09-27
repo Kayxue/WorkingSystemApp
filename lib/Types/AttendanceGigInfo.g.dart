@@ -15,8 +15,8 @@ AttendanceGigInfo _$AttendanceGigInfoFromJson(Map<String, dynamic> json) =>
       city: json['city'] as String,
       district: json['district'] as String,
       address: json['address'] as String,
-      checkedIn: json['checkedIn'] as String,
-      checkedOut: json['checkedOut'] as String,
+      checkedIn: json['checkedIn'] as bool,
+      checkedOut: json['checkedOut'] as bool,
     );
 
 Map<String, dynamic> _$AttendanceGigInfoToJson(AttendanceGigInfo instance) =>

@@ -11,8 +11,8 @@ class AttendanceGigInfo {
   String city;
   String district;
   String address;
-  String checkedIn;
-  String checkedOut;
+  bool checkedIn;
+  bool checkedOut;
 
   AttendanceGigInfo({
     required this.gigId,
