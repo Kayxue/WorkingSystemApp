@@ -6,6 +6,7 @@ import 'package:syncfusion_flutter_calendar/calendar.dart';
 import 'package:working_system_app/Others/Utils.dart';
 import 'package:working_system_app/Types/ApplicationGig.dart';
 import 'package:working_system_app/Types/CustomAppointment.dart';
+import 'package:working_system_app/Pages/AttendanceList.dart';
 
 class Schedule extends StatefulWidget {
   final String sessionKey;
@@ -123,9 +124,29 @@ class _ScheduleState extends State<Schedule> {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Text(
-                    "Schedule",
-                    style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
+                  AppBar(
+                    title: Text(
+                      "Schedule",
+                      style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),                    
+                      ),
+                    automaticallyImplyLeading: false,
+                    actions: [ // goto Attendance List page
+                      TextButton(
+                        child: Text(
+                          "Check In",
+                          style: TextStyle(color: Colors.black),
+                        ),
+                        onPressed: () {
+                          Navigator.of(context).push(
+                            MaterialPageRoute(
+                              builder: (context) => AttendanceList(
+                                sessionKey: widget.sessionKey,
+                              ), 
+                            )                    
+                          );
+                        },
+                      ),
+                    ],
                   ),
                   SizedBox(height: 8),
                   Expanded(
