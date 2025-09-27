@@ -8,7 +8,6 @@ class WorkerRegisterForm{
   String lastName = '';
   String email = '';
   String password = '';
-  String confirmPassword = '';
   String phoneNumber = '';
   String highestEducation = '';
   String? schoolName;

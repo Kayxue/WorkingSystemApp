@@ -1,6 +1,10 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
 import 'package:multi_dropdown/multi_dropdown.dart';
+import 'package:rhttp/rhttp.dart';
+import 'package:working_system_app/Others/Utils.dart';
 import 'package:working_system_app/Types/WorkerRegisterForm.dart';
 import 'package:working_system_app/Widget/JobExperienceEditor.dart';
 
@@ -14,6 +18,7 @@ class Register extends StatefulWidget {
 class _RegisterState extends State<Register>
     with SingleTickerProviderStateMixin {
   WorkerRegisterForm registerForm = WorkerRegisterForm();
+  String confirmPassword = '';
   SlidableController? slidableController;
 
   void removeJobExperience(String experience) {
@@ -39,6 +44,58 @@ class _RegisterState extends State<Register>
         registerForm.jobExperience[index] = newExperience;
       }
     });
+  }
+
+  Future<bool> passwordMatch() async {
+    if (registerForm.password != confirmPassword) {
+      await showDialog(
+        context: context,
+        builder: (context) {
+          return AlertDialog(
+            title: Text("Error"),
+            content: Text("Passwords do not match"),
+            actions: [
+              TextButton(
+                onPressed: () {
+                  Navigator.of(context).pop();
+                },
+                child: Text("OK"),
+              ),
+            ],
+          );
+        },
+      );
+      return false;
+    }
+    return true;
+  }
+
+  Future<(bool,String?)> register() async {
+    final response = await Utils.client.put(
+      "/user/register/worker",
+      headers: HttpHeaders.rawMap({
+        "platform": "mobile",
+      }),
+      body: HttpBody.json(registerForm.toJson()),
+    );
+    if (response.statusCode == 201) {
+      return (true, null);
+    }
+    try {
+      final bodyJson = jsonDecode(response.body) as Map<String, dynamic>;
+      final errors = (bodyJson["errors"] as List<dynamic>)
+          .map((e) => e as Map<String, dynamic>)
+          .toList();
+      final errorMessages = errors
+          .map((e) => e["message"] as String)
+          .join("\n");
+      return (
+        false,
+        errorMessages,
+      );
+    } on FormatException {
+      return (false, response.body);
+    }
   }
 
   @override
@@ -111,7 +168,7 @@ class _RegisterState extends State<Register>
                           labelText: 'Confirm password',
                         ),
                         onChanged: (value) => setState(() {
-                          registerForm.confirmPassword = value;
+                          confirmPassword = value;
                         }),
                         obscureText: true,
                       ),
@@ -247,7 +304,32 @@ class _RegisterState extends State<Register>
                 Expanded(
                   child: FilledButton(
                     onPressed: () async {
-                      //TODO: Register logic
+                      if(!await passwordMatch()){
+                        return;
+                      }
+                      final result=await register();
+                      if (result.$1) {
+                        if (!context.mounted) return;
+                        Navigator.of(context).pop(true);
+                      } else {
+                        if (!context.mounted) return;
+                        await showDialog(
+                          context: context,
+                          builder: (context) {
+                            return AlertDialog(
+                              title: const Text("Can't register"),
+                              content: Text(result.$2!),
+                              actions: [
+                                TextButton(
+                                  onPressed: () =>
+                                      Navigator.of(context).pop(),
+                                  child: const Text("OK"),
+                                ),
+                              ],
+                            );
+                          },
+                        );
+                      }
                     },
                     child: Text("Register"),
                   ),

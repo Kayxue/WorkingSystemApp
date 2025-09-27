@@ -12,7 +12,6 @@ WorkerRegisterForm _$WorkerRegisterFormFromJson(Map<String, dynamic> json) =>
       ..lastName = json['lastName'] as String
       ..email = json['email'] as String
       ..password = json['password'] as String
-      ..confirmPassword = json['confirmPassword'] as String
       ..phoneNumber = json['phoneNumber'] as String
       ..highestEducation = json['highestEducation'] as String
       ..schoolName = json['schoolName'] as String?
@@ -31,7 +30,6 @@ Map<String, dynamic> _$WorkerRegisterFormToJson(WorkerRegisterForm instance) =>
       'lastName': instance.lastName,
       'email': instance.email,
       'password': instance.password,
-      'confirmPassword': instance.confirmPassword,
       'phoneNumber': instance.phoneNumber,
       'highestEducation': instance.highestEducation,
       'schoolName': instance.schoolName,

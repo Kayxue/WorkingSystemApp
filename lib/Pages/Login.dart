@@ -105,10 +105,18 @@ class _LoginState extends State<Login> {
           ),
           SizedBox(height: 16),
           ElevatedButton(
-            onPressed: () {
-              Navigator.of(
+            onPressed: () async {
+              final result = await Navigator.of(
                 context,
-              ).push(MaterialPageRoute(builder: (context) => Register()));
+              ).push<bool>(MaterialPageRoute(builder: (context) => Register()));
+              if (result == true) {
+                if (!context.mounted) return;
+                ScaffoldMessenger.of(context).showSnackBar(
+                  SnackBar(
+                    content: Text("Registration successful. Please log in."),
+                  ),
+                );
+              }
             },
             child: Text("Register"),
           ),
