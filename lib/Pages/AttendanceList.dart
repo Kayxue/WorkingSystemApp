@@ -147,17 +147,17 @@ class _AttendanceListState extends State<AttendanceList> {
                           // time
                           trailing: Text("${attendanceList[index].timeStart} - ${attendanceList[index].timeEnd}"),
                         ),
-                      onTap: () => Navigator.of(context).push(
-                        MaterialPageRoute(
-                          builder: (context) => TakeAttendance(
-                            gigId: attendanceList[index].gigId,
-                            gigTitle: attendanceList[index].title,
-                            attendanceTime: attendanceList[index].checkedIn ? attendanceList[index].timeStart : attendanceList[index].timeEnd,
-                            attendanceType: attendanceList[index].checkedIn ? "CheckOut" : "CheckIn",
-                            sessionKey: widget.sessionKey,
+                        onTap: () => Navigator.of(context).push(
+                          MaterialPageRoute(
+                            builder: (context) => TakeAttendance(
+                              gigId: attendanceList[index].gigId,
+                              gigTitle: attendanceList[index].title,
+                              attendanceTime: attendanceList[index].checkedIn ? attendanceList[index].timeEnd : attendanceList[index].timeStart,
+                              attendanceType: attendanceList[index].checkedIn ? "CheckOut" : "CheckIn",
+                              sessionKey: widget.sessionKey,
+                            ),
                           ),
                         ),
-                      ),
                     ), 
                   );
                 },
