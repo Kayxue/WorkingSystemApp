@@ -29,11 +29,11 @@ class NotificationManager {
       _isInitialized = true;
       
       if (kDebugMode) {
-        print('通知管理器初始化完成');
+        debugPrint('通知管理器初始化完成');
       }
     } catch (e) {
       if (kDebugMode) {
-        print('通知管理器初始化失敗: $e');
+        debugPrint('通知管理器初始化失敗: $e');
       }
     }
   }
@@ -44,7 +44,7 @@ class NotificationManager {
   
   static void _onTokenUpdated(String newToken) {
     if (kDebugMode) {
-      print('FCM Token 已更新: $newToken');
+      debugPrint('FCM Token 已更新: $newToken');
     }
     
     _currentFCMToken = newToken;
@@ -55,7 +55,7 @@ class NotificationManager {
     try {
       if (_currentSessionKey == null || _currentSessionKey!.isEmpty) {
         if (kDebugMode) {
-          print('使用者未登入，跳過 FCM Token 註冊');
+          debugPrint('使用者未登入，跳過 FCM Token 註冊');
         }
         return;
       }
@@ -74,7 +74,7 @@ class NotificationManager {
       };
       
       if (kDebugMode) {
-        print('發送 FCM Token 到伺服器');
+        debugPrint('發送 FCM Token 到伺服器');
       }
       
       final response = await Utils.client.post(
@@ -85,22 +85,22 @@ class NotificationManager {
       
       if (response.statusCode == 200) {
         if (kDebugMode) {
-          print('FCM Token 註冊成功');
+          debugPrint('FCM Token 註冊成功');
         }
       } else {
         if (kDebugMode) {
-          print('FCM Token 註冊失敗，狀態碼: ${response.statusCode}');
-          print('回應內容: ${response.body}');
+          debugPrint('FCM Token 註冊失敗，狀態碼: ${response.statusCode}');
+          debugPrint('回應內容: ${response.body}');
           
           if (response.statusCode == 401) {
-            print('Session 可能已過期，清除本地 sessionKey');
+            debugPrint('Session 可能已過期，清除本地 sessionKey');
             _currentSessionKey = null;
           }
         }
       }
     } catch (e) {
       if (kDebugMode) {
-        print('發送 Token 到伺服器失敗: $e');
+        debugPrint('發送 Token 到伺服器失敗: $e');
       }
     }
   }
@@ -123,7 +123,7 @@ class NotificationManager {
     await FCMService.subscribeToTopic('general_notifications');
     
     if (kDebugMode) {
-      print('已訂閱一般通知主題');
+      debugPrint('已訂閱一般通知主題');
     }
   }
   

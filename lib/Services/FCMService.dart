@@ -20,7 +20,7 @@ class FCMService {
       );
     } catch (e) {
       if (kDebugMode) {
-        print('Firebase 初始化錯誤: $e');
+        debugPrint('Firebase 初始化錯誤: $e');
       }
     }
 
@@ -44,7 +44,7 @@ class FCMService {
     );
     
     if (kDebugMode) {
-      print('通知權限狀態: ${settings.authorizationStatus}');
+      debugPrint('通知權限狀態: ${settings.authorizationStatus}');
     }
   }
   
@@ -81,12 +81,12 @@ class FCMService {
     try {
       String? token = await _firebaseMessaging.getToken();
       if (kDebugMode) {
-        print('FCM Token: $token');
+        debugPrint('FCM Token: $token');
       }
       return token;
     } catch (e) {
       if (kDebugMode) {
-        print('獲取 FCM Token 錯誤: $e');
+        debugPrint('獲取 FCM Token 錯誤: $e');
       }
       return null;
     }
@@ -96,7 +96,7 @@ class FCMService {
   static void _setupForegroundMessageHandler() {
     FirebaseMessaging.onMessage.listen((RemoteMessage message) {
       if (kDebugMode) {
-        print('收到前景訊息: ${message.notification?.title}');
+        debugPrint('收到前景訊息: ${message.notification?.title}');
       }
       
       _showLocalNotification(message);
@@ -140,7 +140,7 @@ class FCMService {
   static void _setupNotificationClickHandler() {
     FirebaseMessaging.onMessageOpenedApp.listen((RemoteMessage message) {
       if (kDebugMode) {
-        print('點擊通知開啟應用程式: ${message.notification?.title}');
+        debugPrint('點擊通知開啟應用程式: ${message.notification?.title}');
       }
       _handleNotificationClick(message.data);
     });
@@ -149,7 +149,7 @@ class FCMService {
     FirebaseMessaging.instance.getInitialMessage().then((RemoteMessage? message) {
       if (message != null) {
         if (kDebugMode) {
-          print('從終止狀態點擊通知開啟應用程式: ${message.notification?.title}');
+          debugPrint('從終止狀態點擊通知開啟應用程式: ${message.notification?.title}');
         }
         _handleNotificationClick(message.data);
       }
@@ -159,14 +159,14 @@ class FCMService {
   /// 處理通知點擊事件
   static void _handleNotificationClick(Map<String, dynamic> data) {
     if (kDebugMode) {
-      print('處理通知點擊，資料: $data');
+      debugPrint('處理通知點擊，資料: $data');
     }
   }
   
   /// 本地通知點擊處理
   static void _onNotificationTap(NotificationResponse notificationResponse) {
     if (kDebugMode) {
-      print('點擊本地通知: ${notificationResponse.payload}');
+      debugPrint('點擊本地通知: ${notificationResponse.payload}');
     }
   }
   
@@ -179,11 +179,11 @@ class FCMService {
     try {
       await _firebaseMessaging.subscribeToTopic(topic);
       if (kDebugMode) {
-        print('成功訂閱主題: $topic');
+        debugPrint('成功訂閱主題: $topic');
       }
     } catch (e) {
       if (kDebugMode) {
-        print('訂閱主題錯誤: $e');
+        debugPrint('訂閱主題錯誤: $e');
       }
     }
   }
@@ -197,11 +197,11 @@ class FCMService {
     try {
       await _firebaseMessaging.unsubscribeFromTopic(topic);
       if (kDebugMode) {
-        print('成功取消訂閱主題: $topic');
+        debugPrint('成功取消訂閱主題: $topic');
       }
     } catch (e) {
       if (kDebugMode) {
-        print('取消訂閱主題錯誤: $e');
+        debugPrint('取消訂閱主題錯誤: $e');
       }
     }
   }
@@ -224,7 +224,7 @@ Future<void> _backgroundMessageHandler(RemoteMessage message) async {
   );
   
   if (kDebugMode) {
-    print('收到背景訊息: ${message.notification?.title}');
+    debugPrint('收到背景訊息: ${message.notification?.title}');
   }
   
   // 注意：不要在背景處理器中顯示 UI
