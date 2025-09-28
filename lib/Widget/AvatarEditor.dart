@@ -10,7 +10,7 @@ class AvatarUpdater extends StatelessWidget {
       children: [
         //TODO: Display Avatar Icon
         Row(
-          crossAxisAlignment: CrossAxisAlignment.center,
+          mainAxisAlignment: MainAxisAlignment.center,
           children: [
             FilledButton(
               onPressed: () {
@@ -19,6 +19,7 @@ class AvatarUpdater extends StatelessWidget {
               style: FilledButton.styleFrom(backgroundColor: Colors.green),
               child: const Text("Upload"),
             ),
+            SizedBox(width: 8),
             FilledButton(
               onPressed: () {
                 //TODO: Implement remove avatar logic
