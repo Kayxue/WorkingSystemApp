@@ -10,7 +10,7 @@ class AvatarUpdater extends StatelessWidget {
       children: [
         //TODO: Display Avatar Icon
         Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          crossAxisAlignment: CrossAxisAlignment.center,
           children: [
             FilledButton(
               onPressed: () {

@@ -107,7 +107,7 @@ class _RegisterState extends State<Register>
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: const Text('Update Information')),
+      appBar: AppBar(title: const Text('Register')),
       body: Padding(
         padding: const EdgeInsets.only(left: 16, right: 16),
         child: Column(
@@ -181,6 +181,7 @@ class _RegisterState extends State<Register>
                             child: DropdownMenu(
                               expandedInsets: EdgeInsets.zero,
                               requestFocusOnTap: false,
+                              initialSelection: "其他",
                               dropdownMenuEntries: const [
                                 DropdownMenuEntry(value: "高中", label: "高中"),
                                 DropdownMenuEntry(value: "大學", label: "大學"),
