@@ -6,10 +6,15 @@ import 'package:working_system_app/Pages/Login.dart';
 import 'package:working_system_app/Pages/Personal.dart';
 import 'package:working_system_app/Pages/Schedule.dart';
 import 'package:working_system_app/Widget/BottomBar.dart';
+import 'package:working_system_app/Services/FCMService.dart';
+import 'package:working_system_app/Services/NotificationManager.dart';
 import 'package:rhttp/rhttp.dart';
 
 void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
   await Rhttp.init();
+  await FCMService.initialize();
+  await NotificationManager.initialize();
   runApp(const MyApp());
 }
 
@@ -55,6 +60,8 @@ class _ApplicationBaseState extends State<ApplicationBase> {
     prefs.then((SharedPreferences preferences) {
       preferences.setString('sessionKey', key);
     });
+    
+    NotificationManager.handleUserLogin(key);
   }
 
   void clearSessionKey() {
@@ -64,6 +71,8 @@ class _ApplicationBaseState extends State<ApplicationBase> {
     prefs.then((SharedPreferences preferences) {
       preferences.remove('sessionKey');
     });
+    
+    NotificationManager.handleUserLogout();
   }
 
   @override
@@ -88,6 +97,8 @@ class _ApplicationBaseState extends State<ApplicationBase> {
         setState(() {
           sessionKey = storedSessionKey;
         });
+        
+        NotificationManager.handleUserLogin(storedSessionKey);
       } else {
         clearSessionKey();
       }
