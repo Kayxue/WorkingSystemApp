@@ -1,3 +1,4 @@
+import 'package:apple_like_avatar_generator/apple_like_avatar_generator.dart';
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:working_system_app/Others/Utils.dart';
@@ -13,6 +14,7 @@ import 'package:rhttp/rhttp.dart';
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Rhttp.init();
+  await AppleLikeAvatarGenerator.init();
   await FCMService.initialize();
   await NotificationManager.initialize();
   runApp(const MyApp());

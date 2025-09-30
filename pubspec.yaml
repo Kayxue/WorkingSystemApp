@@ -55,6 +55,7 @@ dependencies:
   firebase_core: ^4.1.1
   flutter_local_notifications: ^19.4.2
   hl_image_picker: ^1.2.16
+  apple_like_avatar_generator: ^0.0.6
 
 dev_dependencies:
   flutter_test:

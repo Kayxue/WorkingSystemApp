@@ -9,6 +9,7 @@ list(APPEND FLUTTER_PLUGIN_LIST
 )
 
 list(APPEND FLUTTER_FFI_PLUGIN_LIST
+  apple_like_avatar_generator
   flutter_local_notifications_windows
   rhttp
 )

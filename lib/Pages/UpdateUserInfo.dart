@@ -117,7 +117,7 @@ class _UpdateUserInfoState extends State<UpdateUserInfo>
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      AvatarUpdater(),
+                      AvatarUpdater(profile: widget.workerProfile),
                       TextField(
                         decoration: const InputDecoration(
                           labelText: 'First name',

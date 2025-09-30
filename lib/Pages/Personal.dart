@@ -3,6 +3,7 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:flutter_rating_bar/flutter_rating_bar.dart';
 import 'package:rhttp/rhttp.dart';
+import 'package:apple_like_avatar_generator/apple_like_avatar_generator.dart';
 import 'package:working_system_app/Others/Utils.dart';
 import 'package:working_system_app/Pages/UpdateUserInfo.dart';
 import 'package:working_system_app/Pages/UpdateUserPassword.dart';
@@ -147,16 +148,46 @@ class _PersonalState extends State<Personal> {
                               ],
                             ),
                           ),
-                          if (profile.profilePhoto != null)
-                            Padding(
-                              padding: const EdgeInsets.only(right: 16.0),
-                              child: CircleAvatar(
-                                radius: 35,
-                                backgroundImage: NetworkImage(
-                                  profile.profilePhoto!.url,
-                                ),
-                              ),
+
+                          Padding(
+                            padding: const EdgeInsets.only(right: 16.0),
+                            child: ClipOval(
+                              child: profile.profilePhoto != null
+                                  ? Image.network(
+                                      profile.profilePhoto!.url,
+                                      width: 70,
+                                      height: 70,
+                                    )
+                                  : FutureBuilder<Uint8List>(
+                                      future: AppleLikeAvatarGenerator.generateWithName(
+                                        "${profile.firstName}${profile.lastName}",
+                                      ),
+                                      builder: (context, snapshot) {
+                                        if (snapshot.connectionState ==
+                                            ConnectionState.waiting) {
+                                          return Container(
+                                            width: 70,
+                                            height: 70,
+                                            color: Colors
+                                                .transparent, // Transparent background
+                                          );
+                                        } else if (snapshot.hasError) {
+                                          return Text(
+                                            'Error: ${snapshot.error}',
+                                          );
+                                        } else if (snapshot.hasData) {
+                                          return Image.memory(
+                                            snapshot.data!,
+                                            width: 70,
+                                            height: 70,
+                                          );
+                                        } else {
+                                          return const Text('No data');
+                                        }
+                                      },
+                                    ),
                             ),
+                          ),
                         ],
                       ),
                     ),

@@ -1,4 +1,6 @@
 PODS:
+  - apple_like_avatar_generator (0.0.1):
+    - FlutterMacOS
   - Firebase/CoreOnly (12.2.0):
     - FirebaseCore (~> 12.2.0)
   - Firebase/Messaging (12.2.0):
@@ -79,6 +81,7 @@ PODS:
     - FlutterMacOS
 
 DEPENDENCIES:
+  - apple_like_avatar_generator (from `Flutter/ephemeral/.symlinks/plugins/apple_like_avatar_generator/macos`)
   - firebase_core (from `Flutter/ephemeral/.symlinks/plugins/firebase_core/macos`)
   - firebase_messaging (from `Flutter/ephemeral/.symlinks/plugins/firebase_messaging/macos`)
   - flutter_local_notifications (from `Flutter/ephemeral/.symlinks/plugins/flutter_local_notifications/macos`)
@@ -101,6 +104,8 @@ SPEC REPOS:
     - PromisesObjC
 
 EXTERNAL SOURCES:
+  apple_like_avatar_generator:
+    :path: Flutter/ephemeral/.symlinks/plugins/apple_like_avatar_generator/macos
   firebase_core:
     :path: Flutter/ephemeral/.symlinks/plugins/firebase_core/macos
   firebase_messaging:
@@ -119,6 +124,7 @@ EXTERNAL SOURCES:
     :path: Flutter/ephemeral/.symlinks/plugins/url_launcher_macos/macos
 
 SPEC CHECKSUMS:
+  apple_like_avatar_generator: 2e346406caff668e06e7b0ca77195c0106173f13
   Firebase: 26f6f8d460603af3df970ad505b16b15f5e2e9a1
   firebase_core: 54fd706197e1779d510b297548eee74d3b39577c
   firebase_messaging: 658f1a6906d80faec2fb20e3aadb81af6b09e441
