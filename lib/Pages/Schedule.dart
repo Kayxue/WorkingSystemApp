@@ -127,10 +127,14 @@ class _ScheduleState extends State<Schedule> {
                   AppBar(
                     title: Text(
                       "Schedule",
-                      style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),                    
+                      style: TextStyle(
+                        fontSize: 24,
+                        fontWeight: FontWeight.bold,
                       ),
+                    ),
                     automaticallyImplyLeading: false,
-                    actions: [ // goto Attendance List page
+                    actions: [
+                      // goto Attendance List page
                       TextButton(
                         child: Text(
                           "Check In",
@@ -139,10 +143,9 @@ class _ScheduleState extends State<Schedule> {
                         onPressed: () {
                           Navigator.of(context).push(
                             MaterialPageRoute(
-                              builder: (context) => AttendanceList(
-                                sessionKey: widget.sessionKey,
-                              ), 
-                            )                    
+                              builder: (context) =>
+                                  AttendanceList(sessionKey: widget.sessionKey),
+                            ),
                           );
                         },
                       ),
@@ -240,11 +243,16 @@ class _ScheduleState extends State<Schedule> {
           int.parse(endHour),
           int.parse(endMin),
         );
+        Color color = switch (int.parse(startHour)) {
+          >= 6 && < 12 => Colors.orange,
+          >= 12 && < 18 => Colors.green,
+          _ => Color.fromARGB(255, 3, 27, 136),
+        };
         return CustomAppointment(
           startTime: startDatetime,
           endTime: endDatetime,
           subject: e.title,
-          color: Colors.blue,
+          color: color,
           gigId: e.gigId,
         );
       }),
