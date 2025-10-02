@@ -63,6 +63,7 @@ class AvatarUpdater extends StatelessWidget {
                   debugPrint(
                     'Image info - Width: ${info.width}, Height: ${info.height}, Format: ${info.format}, Ratio: ${info.ratio}',
                   );
+                  // TODO: Crop the image the user selected
                 } else {
                   // User canceled the picker
                   debugPrint('No image selected.');
