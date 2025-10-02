@@ -3,6 +3,7 @@
 #
 
 list(APPEND FLUTTER_PLUGIN_LIST
+  file_selector_linux
   maps_launcher
   url_launcher_linux
 )
@@ -10,6 +11,7 @@ list(APPEND FLUTTER_PLUGIN_LIST
 list(APPEND FLUTTER_FFI_PLUGIN_LIST
   apple_like_avatar_generator
   rhttp
+  rust_lib_working_system_app
 )
 
 set(PLUGIN_BUNDLED_LIBRARIES)

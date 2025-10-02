@@ -70,12 +70,10 @@ class _RegisterState extends State<Register>
     return true;
   }
 
-  Future<(bool,String?)> register() async {
+  Future<(bool, String?)> register() async {
     final response = await Utils.client.put(
       "/user/register/worker",
-      headers: HttpHeaders.rawMap({
-        "platform": "mobile",
-      }),
+      headers: HttpHeaders.rawMap({"platform": "mobile"}),
       body: HttpBody.json(registerForm.toJson()),
     );
     if (response.statusCode == 201) {
@@ -89,10 +87,7 @@ class _RegisterState extends State<Register>
       final errorMessages = errors
           .map((e) => e["message"] as String)
           .join("\n");
-      return (
-        false,
-        errorMessages,
-      );
+      return (false, errorMessages);
     } on FormatException {
       return (false, response.body);
     }
@@ -305,10 +300,10 @@ class _RegisterState extends State<Register>
                 Expanded(
                   child: FilledButton(
                     onPressed: () async {
-                      if(!await passwordMatch()){
+                      if (!await passwordMatch()) {
                         return;
                       }
-                      final result=await register();
+                      final result = await register();
                       if (result.$1) {
                         if (!context.mounted) return;
                         Navigator.of(context).pop(true);
@@ -322,8 +317,7 @@ class _RegisterState extends State<Register>
                               content: Text(result.$2!),
                               actions: [
                                 TextButton(
-                                  onPressed: () =>
-                                      Navigator.of(context).pop(),
+                                  onPressed: () => Navigator.of(context).pop(),
                                   child: const Text("OK"),
                                 ),
                               ],

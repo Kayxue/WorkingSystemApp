@@ -10,9 +10,11 @@ import 'package:working_system_app/Widget/BottomBar.dart';
 import 'package:working_system_app/Services/FCMService.dart';
 import 'package:working_system_app/Services/NotificationManager.dart';
 import 'package:rhttp/rhttp.dart';
+import 'package:working_system_app/src/rust/frb_generated.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
+  await RustLib.init();
   await Rhttp.init();
   await AppleLikeAvatarGenerator.init();
   await FCMService.initialize();
@@ -62,7 +64,7 @@ class _ApplicationBaseState extends State<ApplicationBase> {
     prefs.then((SharedPreferences preferences) {
       preferences.setString('sessionKey', key);
     });
-    
+
     NotificationManager.handleUserLogin(key);
   }
 
@@ -73,7 +75,7 @@ class _ApplicationBaseState extends State<ApplicationBase> {
     prefs.then((SharedPreferences preferences) {
       preferences.remove('sessionKey');
     });
-    
+
     NotificationManager.handleUserLogout();
   }
 
@@ -99,7 +101,7 @@ class _ApplicationBaseState extends State<ApplicationBase> {
         setState(() {
           sessionKey = storedSessionKey;
         });
-        
+
         NotificationManager.handleUserLogin(storedSessionKey);
       } else {
         clearSessionKey();
@@ -142,3 +144,4 @@ class _ApplicationBaseState extends State<ApplicationBase> {
     );
   }
 }
+

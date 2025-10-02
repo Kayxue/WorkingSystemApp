@@ -54,8 +54,11 @@ dependencies:
   firebase_messaging: ^16.0.2
   firebase_core: ^4.1.1
   flutter_local_notifications: ^19.4.2
-  hl_image_picker: ^1.2.16
   apple_like_avatar_generator: ^0.0.6
+  image_picker: ^1.2.0
+  rust_lib_working_system_app:
+    path: rust_builder
+  flutter_rust_bridge: 2.11.1
 
 dev_dependencies:
   flutter_test:
@@ -69,6 +72,8 @@ dev_dependencies:
   flutter_lints: ^6.0.0
   build_runner: ^2.6.0
   json_serializable: ^6.10.0
+  integration_test:
+    sdk: flutter
 
 # For information on the generic Dart part of this file, see the
 # following page: https://dart.dev/tools/pub/pubspec

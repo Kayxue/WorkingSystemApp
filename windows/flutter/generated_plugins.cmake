@@ -3,6 +3,7 @@
 #
 
 list(APPEND FLUTTER_PLUGIN_LIST
+  file_selector_windows
   firebase_core
   maps_launcher
   url_launcher_windows
@@ -12,6 +13,7 @@ list(APPEND FLUTTER_FFI_PLUGIN_LIST
   apple_like_avatar_generator
   flutter_local_notifications_windows
   rhttp
+  rust_lib_working_system_app
 )
 
 set(PLUGIN_BUNDLED_LIBRARIES)

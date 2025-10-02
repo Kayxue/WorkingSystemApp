@@ -52,7 +52,7 @@ class _TakeAttendanceState extends State<TakeAttendance> {
     if (text.length == 4 && !isLoading) {
       FocusScope.of(context).unfocus();
       takeAttendance(text);
-      _controller.clear();  
+      _controller.clear();
     }
     setState(() {});
   }
@@ -68,22 +68,23 @@ class _TakeAttendanceState extends State<TakeAttendance> {
         "platform": "mobile",
         "cookie": widget.sessionKey,
       }),
-      body: HttpBody.json({"gigId": widget.gigId, "attendanceCode": code, "checkType": widget.attendanceType}),
+      body: HttpBody.json({
+        "gigId": widget.gigId,
+        "attendanceCode": code,
+        "checkType": widget.attendanceType,
+      }),
     );
     if (!mounted) return;
 
     if (response.statusCode == 400) {
       final body = jsonDecode(response.body);
-      await showStatusDialog(
-        title: "Failed",
-        description: body["message"],
-      );
+      await showStatusDialog(title: "Failed", description: body["message"]);
       setState(() {
         isLoading = false;
         takeAttendanceSucceed = false;
         errorMessage = body["message"];
       });
-    }else if (response.statusCode != 200) {
+    } else if (response.statusCode != 200) {
       await showStatusDialog(
         title: "Error",
         description: "Failed to take attendance. Please try again.",
@@ -158,10 +159,7 @@ class _TakeAttendanceState extends State<TakeAttendance> {
         ),
       );
     }
-    return Row(
-      mainAxisAlignment: MainAxisAlignment.center,
-      children: boxes,
-    );
+    return Row(mainAxisAlignment: MainAxisAlignment.center, children: boxes);
   }
 
   @override
@@ -170,7 +168,9 @@ class _TakeAttendanceState extends State<TakeAttendance> {
 
     return Scaffold(
       appBar: AppBar(
-        title: Text("${widget.gigTitle} - ${widget.attendanceType == "CheckIn" ? "上班打卡" : "下班打卡"}"),
+        title: Text(
+          "${widget.gigTitle} - ${widget.attendanceType == "CheckIn" ? "上班打卡" : "下班打卡"}",
+        ),
       ),
       body: Center(
         child: Padding(
@@ -195,13 +195,11 @@ class _TakeAttendanceState extends State<TakeAttendance> {
                 child: TextField(
                   controller: _controller,
                   focusNode: _focusNode,
-                  maxLength: 4, 
+                  maxLength: 4,
                   keyboardType: TextInputType.number,
-                  inputFormatters: [
-                    FilteringTextInputFormatter.digitsOnly,
-                  ],
+                  inputFormatters: [FilteringTextInputFormatter.digitsOnly],
                   onChanged: _handleInputChange,
-                  decoration: const InputDecoration(counterText: ""), 
+                  decoration: const InputDecoration(counterText: ""),
                 ),
               ),
               GestureDetector(
@@ -221,7 +219,11 @@ class _TakeAttendanceState extends State<TakeAttendance> {
                 ),
               if (isSendBefore && !isLoading)
                 Text(
-                  takeAttendanceSucceed ? '打卡成功！' : (errorMessage.isNotEmpty ? '打卡失敗: $errorMessage' : '打卡失敗，請再試一次。'),
+                  takeAttendanceSucceed
+                      ? '打卡成功！'
+                      : (errorMessage.isNotEmpty
+                            ? '打卡失敗: $errorMessage'
+                            : '打卡失敗，請再試一次。'),
                   style: TextStyle(
                     color: takeAttendanceSucceed ? Colors.green : Colors.red,
                     fontWeight: FontWeight.bold,

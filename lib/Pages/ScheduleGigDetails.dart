@@ -144,7 +144,7 @@ class _GigDetailState extends State<GigDetail> {
               padding: const EdgeInsets.only(left: 16, right: 16),
               child: Column(
                 children: [
-                  GigInformation(gigdetail: gigdetail!),              
+                  GigInformation(gigdetail: gigdetail!),
                   SizedBox(height: 32),
                 ],
               ),

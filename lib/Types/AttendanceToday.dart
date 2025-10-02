@@ -20,4 +20,3 @@ class AttendanceToday {
 
   Map<String, dynamic> toJson() => _$AttendanceTodayToJson(this);
 }
-

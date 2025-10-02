@@ -28,6 +28,6 @@ class AttendanceGigInfo {
 
   factory AttendanceGigInfo.fromJson(Map<String, dynamic> json) =>
       _$AttendanceGigInfoFromJson(json);
-  
+
   Map<String, dynamic> toJson() => _$AttendanceGigInfoToJson(this);
 }

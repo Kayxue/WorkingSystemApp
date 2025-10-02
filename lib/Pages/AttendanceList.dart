@@ -11,7 +11,7 @@ class AttendanceList extends StatefulWidget {
   final String sessionKey;
 
   const AttendanceList({super.key, required this.sessionKey});
-  
+
   @override
   State<AttendanceList> createState() => _AttendanceListState();
 }
@@ -84,7 +84,7 @@ class _AttendanceListState extends State<AttendanceList> {
     return Scaffold(
       appBar: AppBar(title: Text("Today's Attendance")),
       body: isLoading
-          ? Center (child: CircularProgressIndicator())
+          ? Center(child: CircularProgressIndicator())
           : RefreshIndicator(
               onRefresh: () async {
                 setState(() {
@@ -104,61 +104,72 @@ class _AttendanceListState extends State<AttendanceList> {
                 itemCount: attendanceList.length,
                 itemBuilder: (context, index) {
                   return Card(
-                    margin: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 4.0),
+                    margin: const EdgeInsets.symmetric(
+                      horizontal: 16.0,
+                      vertical: 4.0,
+                    ),
                     clipBehavior: Clip.hardEdge,
-                      child: InkWell(
-                        splashColor: Colors.grey.withAlpha(30),
-                        child: ListTile(
-                          title: Text(attendanceList[index].title),
-                          subtitle: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Text("${attendanceList[index].city} ${attendanceList[index].district}"),
-                              const SizedBox(height: 8),
-                              Row(
-                                children: [
-                                  Icon(
-                                    attendanceList[index].checkedIn
-                                        ? Icons.check_circle
-                                        : Icons.radio_button_unchecked,
-                                    color: attendanceList[index].checkedIn
-                                        ? Colors.green
-                                        : Colors.grey,
-                                    size: 20,
-                                  ),
-                                  const SizedBox(width: 4),
-                                  const Text("CheckIn"),
-                                  const SizedBox(width: 16),
-                                  Icon(
-                                    attendanceList[index].checkedOut
-                                        ? Icons.check_circle
-                                        : Icons.radio_button_unchecked,
-                                    color: attendanceList[index].checkedOut
-                                        ? Colors.green
-                                        : Colors.grey,
-                                    size: 20,
-                                  ),
-                                  const SizedBox(width: 4),
-                                  const Text("CheckOut"),
-                                ],
-                              ),
-                            ],
-                          ),
-                          // time
-                          trailing: Text("${attendanceList[index].timeStart} - ${attendanceList[index].timeEnd}"),
-                        ),
-                        onTap: () => Navigator.of(context).push(
-                          MaterialPageRoute(
-                            builder: (context) => TakeAttendance(
-                              gigId: attendanceList[index].gigId,
-                              gigTitle: attendanceList[index].title,
-                              attendanceTime: attendanceList[index].checkedIn ? attendanceList[index].timeEnd : attendanceList[index].timeStart,
-                              attendanceType: attendanceList[index].checkedIn ? "CheckOut" : "CheckIn",
-                              sessionKey: widget.sessionKey,
+                    child: InkWell(
+                      splashColor: Colors.grey.withAlpha(30),
+                      child: ListTile(
+                        title: Text(attendanceList[index].title),
+                        subtitle: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text(
+                              "${attendanceList[index].city} ${attendanceList[index].district}",
                             ),
+                            const SizedBox(height: 8),
+                            Row(
+                              children: [
+                                Icon(
+                                  attendanceList[index].checkedIn
+                                      ? Icons.check_circle
+                                      : Icons.radio_button_unchecked,
+                                  color: attendanceList[index].checkedIn
+                                      ? Colors.green
+                                      : Colors.grey,
+                                  size: 20,
+                                ),
+                                const SizedBox(width: 4),
+                                const Text("CheckIn"),
+                                const SizedBox(width: 16),
+                                Icon(
+                                  attendanceList[index].checkedOut
+                                      ? Icons.check_circle
+                                      : Icons.radio_button_unchecked,
+                                  color: attendanceList[index].checkedOut
+                                      ? Colors.green
+                                      : Colors.grey,
+                                  size: 20,
+                                ),
+                                const SizedBox(width: 4),
+                                const Text("CheckOut"),
+                              ],
+                            ),
+                          ],
+                        ),
+                        // time
+                        trailing: Text(
+                          "${attendanceList[index].timeStart} - ${attendanceList[index].timeEnd}",
+                        ),
+                      ),
+                      onTap: () => Navigator.of(context).push(
+                        MaterialPageRoute(
+                          builder: (context) => TakeAttendance(
+                            gigId: attendanceList[index].gigId,
+                            gigTitle: attendanceList[index].title,
+                            attendanceTime: attendanceList[index].checkedIn
+                                ? attendanceList[index].timeEnd
+                                : attendanceList[index].timeStart,
+                            attendanceType: attendanceList[index].checkedIn
+                                ? "CheckOut"
+                                : "CheckIn",
+                            sessionKey: widget.sessionKey,
                           ),
                         ),
-                    ), 
+                      ),
+                    ),
                   );
                 },
               ),

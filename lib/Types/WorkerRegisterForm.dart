@@ -3,7 +3,7 @@ import 'package:json_annotation/json_annotation.dart';
 part 'WorkerRegisterForm.g.dart';
 
 @JsonSerializable(explicitToJson: true)
-class WorkerRegisterForm{
+class WorkerRegisterForm {
   String firstName = '';
   String lastName = '';
   String email = '';
@@ -18,6 +18,7 @@ class WorkerRegisterForm{
 
   WorkerRegisterForm();
 
-  factory WorkerRegisterForm.fromJson(Map<String, dynamic> json) => _$WorkerRegisterFormFromJson(json);
+  factory WorkerRegisterForm.fromJson(Map<String, dynamic> json) =>
+      _$WorkerRegisterFormFromJson(json);
   Map<String, dynamic> toJson() => _$WorkerRegisterFormToJson(this);
 }
