@@ -4,6 +4,7 @@ import 'package:apple_like_avatar_generator/apple_like_avatar_generator.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:working_system_app/Types/WorkerProfile.dart';
+import 'package:working_system_app/src/rust/api/core.dart';
 
 class AvatarUpdater extends StatelessWidget {
   final WorkerProfile profile;
@@ -56,11 +57,15 @@ class AvatarUpdater extends StatelessWidget {
                 );
                 if (image != null) {
                   // Handle the selected image file
-                  print('Selected image path: ${image.path}');
+                  debugPrint('Selected image path: ${image.path}');
                   if (!context.mounted) return;
+                  ImageInformation info = await getImageInformation(image.path);
+                  debugPrint(
+                    'Image info - Width: ${info.width}, Height: ${info.height}, Format: ${info.format}, Ratio: ${info.ratio}',
+                  );
                 } else {
                   // User canceled the picker
-                  print('No image selected.');
+                  debugPrint('No image selected.');
                 }
               },
               style: FilledButton.styleFrom(
