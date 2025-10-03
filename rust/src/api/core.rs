@@ -1,6 +1,6 @@
 use anyhow::Result;
-use image::GenericImageView;
-use std::{fs::read, path::Path};
+use image::{GenericImageView, ImageFormat};
+use std::{fs::read, io::Cursor, path::Path};
 
 pub struct ImageInformation {
     pub width: u32,
@@ -31,6 +31,22 @@ pub fn get_image_information(path: String) -> Result<ImageInformation> {
         ratio: width as f32 / height as f32,
         format,
     })
+}
+
+#[flutter_rust_bridge::frb(positional)]
+pub fn read_image(path: String) -> Result<Vec<u8>> {
+    let path = Path::new(&path);
+
+    if !path.exists() {
+        return Err(anyhow::anyhow!("File does not exist"));
+    }
+
+    let img = image::open(path)?;
+    let mut buf = Vec::new();
+    let mut cursor = Cursor::new(&mut buf);
+    img.write_to(&mut cursor, ImageFormat::Png)?;
+
+    Ok(buf)
 }
 
 #[flutter_rust_bridge::frb(init)]

@@ -59,6 +59,7 @@ dependencies:
   rust_lib_working_system_app:
     path: rust_builder
   flutter_rust_bridge: 2.11.1
+  image_cropper: ^11.0.0
 
 dev_dependencies:
   flutter_test:

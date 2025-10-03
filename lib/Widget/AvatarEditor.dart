@@ -3,6 +3,7 @@ import 'dart:typed_data';
 import 'package:apple_like_avatar_generator/apple_like_avatar_generator.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:image_cropper/image_cropper.dart';
 import 'package:working_system_app/Types/WorkerProfile.dart';
 import 'package:working_system_app/src/rust/api/core.dart';
 
@@ -51,23 +52,44 @@ class AvatarUpdater extends StatelessWidget {
           children: [
             FilledButton(
               onPressed: () async {
-                //TODO: Implement select photo logic
                 final XFile? image = await picker.pickImage(
                   source: ImageSource.gallery,
                 );
-                if (image != null) {
-                  // Handle the selected image file
-                  debugPrint('Selected image path: ${image.path}');
-                  if (!context.mounted) return;
-                  ImageInformation info = await getImageInformation(image.path);
-                  debugPrint(
-                    'Image info - Width: ${info.width}, Height: ${info.height}, Format: ${info.format}, Ratio: ${info.ratio}',
-                  );
-                  // TODO: Crop the image the user selected
-                } else {
-                  // User canceled the picker
-                  debugPrint('No image selected.');
+                if (image == null) {
+                  return;
                 }
+                debugPrint('Selected image path: ${image.path}');
+                if (!context.mounted) return;
+                ImageInformation info = await getImageInformation(image.path);
+                debugPrint(
+                  'Image info - Width: ${info.width}, Height: ${info.height}, Format: ${info.format}, Ratio: ${info.ratio}',
+                );
+                if (info.ratio == 1) {
+                  //TODO: Set image to modify
+                  return;
+                }
+                CroppedFile? croppedFile = await ImageCropper().cropImage(
+                  sourcePath: image.path,
+                  aspectRatio: CropAspectRatio(ratioX: 1, ratioY: 1),
+                  uiSettings: [
+                    AndroidUiSettings(
+                      toolbarTitle: 'Crop Image',
+                      toolbarColor: Colors.lightBlue,
+                      toolbarWidgetColor: Colors.white,
+                      initAspectRatio: CropAspectRatioPreset.square,
+                      lockAspectRatio: true,
+                    ),
+                    IOSUiSettings(
+                      title: 'Crop Image',
+                      aspectRatioLockEnabled: true,
+                    ),
+                  ],
+                );
+                if (croppedFile == null) {
+                  return;
+                }
+                debugPrint('Cropped image path: ${croppedFile.path}');
+                //TODO: Set image to modify
               },
               style: FilledButton.styleFrom(
                 backgroundColor: Colors.green,

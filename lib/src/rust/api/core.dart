@@ -9,6 +9,9 @@ import 'package:flutter_rust_bridge/flutter_rust_bridge_for_generated.dart';
 Future<ImageInformation> getImageInformation(String path) =>
     RustLib.instance.api.crateApiCoreGetImageInformation(path: path);
 
+Future<Uint8List> readImage(String path) =>
+    RustLib.instance.api.crateApiCoreReadImage(path: path);
+
 class ImageInformation {
   final int width;
   final int height;
