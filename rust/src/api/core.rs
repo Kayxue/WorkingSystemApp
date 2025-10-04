@@ -1,6 +1,6 @@
 use anyhow::Result;
 use image::{GenericImageView, ImageFormat};
-use std::{fs::read, io::Cursor, path::Path};
+use std::{fs::{metadata, read}, io::Cursor, path::Path};
 
 pub struct ImageInformation {
     pub width: u32,
@@ -47,6 +47,12 @@ pub fn read_image(path: String) -> Result<Vec<u8>> {
     img.write_to(&mut cursor, ImageFormat::Png)?;
 
     Ok(buf)
+}
+
+#[flutter_rust_bridge::frb(positional)]
+pub fn get_image_size(path:String) -> Result<f32>{
+    let metadata = metadata(path)?;
+    Ok(((metadata.len() as f32) / 1024f32) / 1024f32)
 }
 
 #[flutter_rust_bridge::frb(init)]

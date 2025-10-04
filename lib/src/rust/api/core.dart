@@ -12,6 +12,9 @@ Future<ImageInformation> getImageInformation(String path) =>
 Future<Uint8List> readImage(String path) =>
     RustLib.instance.api.crateApiCoreReadImage(path: path);
 
+Future<double> getImageSize(String path) =>
+    RustLib.instance.api.crateApiCoreGetImageSize(path: path);
+
 class ImageInformation {
   final int width;
   final int height;

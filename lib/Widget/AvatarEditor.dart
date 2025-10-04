@@ -89,6 +89,9 @@ class AvatarUpdater extends StatelessWidget {
                   return;
                 }
                 debugPrint('Cropped image path: ${croppedFile.path}');
+                final imageSize = await getImageSize(croppedFile.path);
+                debugPrint("Image size: $imageSize");
+                
                 //TODO: Set image to modify
               },
               style: FilledButton.styleFrom(
