@@ -65,7 +65,28 @@ class AvatarUpdater extends StatelessWidget {
                 );
                 if (info.ratio == 1) {
                   if (!context.mounted) return;
-                  final imageSize=await getImageSize(image.path);
+                  final (filename, imageSize) = await getImageNameAndSize(
+                    image.path,
+                  );
+                  if (imageSize > 2) {
+                    // Show dialog
+                    await showDialog(
+                      context: context,
+                      builder: (context) => AlertDialog(
+                        title: Text('Image Too Large'),
+                        content: Text(
+                          'Please select an image smaller than 2MB.',
+                        ),
+                        actions: [
+                          TextButton(
+                            onPressed: () => Navigator.of(context).pop(),
+                            child: Text('OK'),
+                          ),
+                        ],
+                      ),
+                    );
+                    return;
+                  }
                   //TODO: Set image to modify
                   return;
                 }
@@ -91,11 +112,26 @@ class AvatarUpdater extends StatelessWidget {
                   return;
                 }
                 debugPrint('Cropped image path: ${croppedFile.path}');
-                final imageSize = await getImageSize(croppedFile.path);
+                final (filename, imageSize) = await getImageNameAndSize(
+                  croppedFile.path,
+                );
                 debugPrint("Image size: $imageSize");
-                if(imageSize > 2){
+                if (imageSize > 2) {
                   if (!context.mounted) return;
-
+                  await showDialog(
+                    context: context,
+                    builder: (context) => AlertDialog(
+                      title: Text('Image Too Large'),
+                      content: Text('Please select an image smaller than 2MB.'),
+                      actions: [
+                        TextButton(
+                          onPressed: () => Navigator.of(context).pop(),
+                          child: Text('OK'),
+                        ),
+                      ],
+                    ),
+                  );
+                  return;
                 }
                 //TODO: Set image to modify
               },
@@ -103,7 +139,7 @@ class AvatarUpdater extends StatelessWidget {
                 backgroundColor: Colors.green,
                 fixedSize: Size.fromWidth(105),
               ),
-              child: const Text("Upload"),
+              child: const Text("Choose"),
             ),
             SizedBox(width: 8),
             FilledButton(
