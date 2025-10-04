@@ -72,6 +72,7 @@ class AvatarUpdater extends StatelessWidget {
                 CroppedFile? croppedFile = await ImageCropper().cropImage(
                   sourcePath: image.path,
                   aspectRatio: CropAspectRatio(ratioX: 1, ratioY: 1),
+                  compressFormat: ImageCompressFormat.png,
                   uiSettings: [
                     AndroidUiSettings(
                       toolbarTitle: 'Crop Image',
