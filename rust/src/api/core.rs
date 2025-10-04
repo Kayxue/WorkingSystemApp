@@ -50,9 +50,10 @@ pub fn read_image(path: String) -> Result<Vec<u8>> {
 }
 
 #[flutter_rust_bridge::frb(positional)]
-pub fn get_image_size(path:String) -> Result<f32>{
+pub fn get_image_name_and_size(path:String) -> Result<(String,f32)>{
     let metadata = metadata(path)?;
-    Ok(((metadata.len() as f32) / 1024f32) / 1024f32)
+    let filename = Path::new(&path).file_name().map(|e| format!("{}",e.to_str())).unwrap();
+    Ok(filename,((metadata.len() as f32) / 1024f32) / 1024f32)
 }
 
 #[flutter_rust_bridge::frb(init)]

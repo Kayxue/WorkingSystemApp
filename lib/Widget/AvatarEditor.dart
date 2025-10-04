@@ -59,12 +59,13 @@ class AvatarUpdater extends StatelessWidget {
                   return;
                 }
                 debugPrint('Selected image path: ${image.path}');
-                if (!context.mounted) return;
                 ImageInformation info = await getImageInformation(image.path);
                 debugPrint(
                   'Image info - Width: ${info.width}, Height: ${info.height}, Format: ${info.format}, Ratio: ${info.ratio}',
                 );
                 if (info.ratio == 1) {
+                  if (!context.mounted) return;
+                  final imageSize=await getImageSize(image.path);
                   //TODO: Set image to modify
                   return;
                 }
@@ -91,7 +92,10 @@ class AvatarUpdater extends StatelessWidget {
                 debugPrint('Cropped image path: ${croppedFile.path}');
                 final imageSize = await getImageSize(croppedFile.path);
                 debugPrint("Image size: $imageSize");
-                
+                if(imageSize > 2){
+                  if (!context.mounted) return;
+
+                }
                 //TODO: Set image to modify
               },
               style: FilledButton.styleFrom(
