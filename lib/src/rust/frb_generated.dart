@@ -66,7 +66,7 @@ class RustLib extends BaseEntrypoint<RustLibApi, RustLibApiImpl, RustLibWire> {
   String get codegenVersion => '2.11.1';
 
   @override
-  int get rustContentHash => -1947542566;
+  int get rustContentHash => 818455030;
 
   static const kDefaultExternalLibraryLoaderConfig =
       ExternalLibraryLoaderConfig(
@@ -81,7 +81,9 @@ abstract class RustLibApi extends BaseApi {
     required String path,
   });
 
-  Future<double> crateApiCoreGetImageSize({required String path});
+  Future<(String, double)> crateApiCoreGetImageNameAndSize({
+    required String path,
+  });
 
   Future<void> crateApiCoreInitApp();
 
@@ -130,7 +132,9 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
       );
 
   @override
-  Future<double> crateApiCoreGetImageSize({required String path}) {
+  Future<(String, double)> crateApiCoreGetImageNameAndSize({
+    required String path,
+  }) {
     return handler.executeNormal(
       NormalTask(
         callFfi: (port_) {
@@ -144,18 +148,21 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
           );
         },
         codec: SseCodec(
-          decodeSuccessData: sse_decode_f_32,
+          decodeSuccessData: sse_decode_record_string_f_32,
           decodeErrorData: sse_decode_AnyhowException,
         ),
-        constMeta: kCrateApiCoreGetImageSizeConstMeta,
+        constMeta: kCrateApiCoreGetImageNameAndSizeConstMeta,
         argValues: [path],
         apiImpl: this,
       ),
     );
   }
 
-  TaskConstMeta get kCrateApiCoreGetImageSizeConstMeta =>
-      const TaskConstMeta(debugName: "get_image_size", argNames: ["path"]);
+  TaskConstMeta get kCrateApiCoreGetImageNameAndSizeConstMeta =>
+      const TaskConstMeta(
+        debugName: "get_image_name_and_size",
+        argNames: ["path"],
+      );
 
   @override
   Future<void> crateApiCoreInitApp() {
@@ -251,6 +258,16 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
   }
 
   @protected
+  (String, double) dco_decode_record_string_f_32(dynamic raw) {
+    // Codec=Dco (DartCObject based), see doc to use other codecs
+    final arr = raw as List<dynamic>;
+    if (arr.length != 2) {
+      throw Exception('Expected 2 elements, got ${arr.length}');
+    }
+    return (dco_decode_String(arr[0]), dco_decode_f_32(arr[1]));
+  }
+
+  @protected
   int dco_decode_u_32(dynamic raw) {
     // Codec=Dco (DartCObject based), see doc to use other codecs
     return raw as int;
@@ -308,6 +325,14 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
     // Codec=Sse (Serialization based), see doc to use other codecs
     var len_ = sse_decode_i_32(deserializer);
     return deserializer.buffer.getUint8List(len_);
+  }
+
+  @protected
+  (String, double) sse_decode_record_string_f_32(SseDeserializer deserializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    var var_field0 = sse_decode_String(deserializer);
+    var var_field1 = sse_decode_f_32(deserializer);
+    return (var_field0, var_field1);
   }
 
   @protected
@@ -380,6 +405,16 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
     // Codec=Sse (Serialization based), see doc to use other codecs
     sse_encode_i_32(self.length, serializer);
     serializer.buffer.putUint8List(self);
+  }
+
+  @protected
+  void sse_encode_record_string_f_32(
+    (String, double) self,
+    SseSerializer serializer,
+  ) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    sse_encode_String(self.$1, serializer);
+    sse_encode_f_32(self.$2, serializer);
   }
 
   @protected
