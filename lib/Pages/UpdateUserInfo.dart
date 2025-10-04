@@ -72,6 +72,14 @@ class _UpdateUserInfoState extends State<UpdateUserInfo>
     });
   }
 
+  void changeAvatar(String location, String fileName) {
+    setState(() {
+      locationAvatarToChange = location;
+      nameAvatarToChange = fileName;
+      updateAvatar = true;
+    });
+  }
+
   Future<bool> updateProfile() async {
     final response = await Utils.client.put(
       "/user/update/profile",
@@ -120,7 +128,10 @@ class _UpdateUserInfoState extends State<UpdateUserInfo>
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      AvatarUpdater(profile: widget.workerProfile),
+                      AvatarUpdater(
+                        profile: widget.workerProfile,
+                        changeAvatar: changeAvatar,
+                      ),
                       TextField(
                         decoration: const InputDecoration(
                           labelText: 'First name',

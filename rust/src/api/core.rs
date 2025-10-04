@@ -49,7 +49,7 @@ pub fn read_image(path: String) -> Result<Vec<u8>> {
     Ok(buf)
 }
 
-
+#[flutter_rust_bridge::frb(positional)]
 pub fn get_image_name_and_size(path:String) -> Result<(String,f32)>{
     let metadata = metadata(&path)?;
     let filename = Path::new(&path).file_name().map(|e| format!("{}",e.to_str().unwrap())).unwrap();

@@ -10,8 +10,9 @@ import 'package:working_system_app/src/rust/api/core.dart';
 class AvatarUpdater extends StatelessWidget {
   final WorkerProfile profile;
   final ImagePicker picker = ImagePicker();
+  final Function(String, String) changeAvatar;
 
-  AvatarUpdater({super.key, required this.profile});
+  AvatarUpdater({super.key, required this.profile, required this.changeAvatar});
 
   @override
   Widget build(BuildContext context) {
@@ -88,6 +89,7 @@ class AvatarUpdater extends StatelessWidget {
                     return;
                   }
                   //TODO: Set image to modify
+                  changeAvatar(image.path, filename);
                   return;
                 }
                 CroppedFile? croppedFile = await ImageCropper().cropImage(
@@ -112,11 +114,11 @@ class AvatarUpdater extends StatelessWidget {
                   return;
                 }
                 debugPrint('Cropped image path: ${croppedFile.path}');
-                final (filename, imageSize) = await getImageNameAndSize(
+                final (croppedImageName,croppedImageSize) = await getImageNameAndSize(
                   croppedFile.path,
                 );
-                debugPrint("Image size: $imageSize");
-                if (imageSize > 2) {
+                debugPrint("Image size: $croppedImageSize");
+                if (croppedImageSize > 2) {
                   if (!context.mounted) return;
                   await showDialog(
                     context: context,
@@ -133,7 +135,7 @@ class AvatarUpdater extends StatelessWidget {
                   );
                   return;
                 }
-                //TODO: Set image to modify
+                changeAvatar(croppedFile.path, croppedImageName);
               },
               style: FilledButton.styleFrom(
                 backgroundColor: Colors.green,
