@@ -44,6 +44,7 @@ class _UpdateUserInfoState extends State<UpdateUserInfo>
       MultiSelectController<String>();
   SlidableController? slidableController;
   String? locationAvatarToChange;
+  String? nameAvatarToChange;
   bool updateAvatar = false;
 
   void removeJobExperience(String experience) {
