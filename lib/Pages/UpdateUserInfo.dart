@@ -1,3 +1,5 @@
+import 'dart:typed_data';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
 import 'package:rhttp/rhttp.dart';
@@ -43,7 +45,7 @@ class _UpdateUserInfoState extends State<UpdateUserInfo>
   MultiSelectController<String> certificatesController =
       MultiSelectController<String>();
   SlidableController? slidableController;
-  String? locationAvatarToChange;
+  Uint8List? avatarBytes;
   String? nameAvatarToChange;
   bool updateAvatar = false;
 
@@ -72,9 +74,9 @@ class _UpdateUserInfoState extends State<UpdateUserInfo>
     });
   }
 
-  void changeAvatar(String location, String fileName) {
+  void changeAvatar(Uint8List? avatar, String? fileName) {
     setState(() {
-      locationAvatarToChange = location;
+      avatarBytes = avatar;
       nameAvatarToChange = fileName;
       updateAvatar = true;
     });
@@ -131,6 +133,8 @@ class _UpdateUserInfoState extends State<UpdateUserInfo>
                       AvatarUpdater(
                         profile: widget.workerProfile,
                         changeAvatar: changeAvatar,
+                        avatarBytes: avatarBytes,
+                        updateAvatar: updateAvatar,
                       ),
                       TextField(
                         decoration: const InputDecoration(

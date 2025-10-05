@@ -9,10 +9,18 @@ import 'package:working_system_app/src/rust/api/core.dart';
 
 class AvatarUpdater extends StatelessWidget {
   final WorkerProfile profile;
+  final Uint8List? avatarBytes;
+  final bool updateAvatar;
   final ImagePicker picker = ImagePicker();
-  final Function(String, String) changeAvatar;
+  final Function(Uint8List?, String?) changeAvatar;
 
-  AvatarUpdater({super.key, required this.profile, required this.changeAvatar});
+  AvatarUpdater({
+    super.key,
+    required this.profile,
+    required this.changeAvatar,
+    required this.updateAvatar,
+    this.avatarBytes,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -20,32 +28,67 @@ class AvatarUpdater extends StatelessWidget {
       crossAxisAlignment: CrossAxisAlignment.center,
       children: [
         ClipOval(
-          child: profile.profilePhoto != null
-              ? Image.network(profile.profilePhoto!.url, width: 70, height: 70)
-              : FutureBuilder<Uint8List>(
-                  future: AppleLikeAvatarGenerator.generateWithName(
-                    "${profile.firstName}${profile.lastName}",
-                  ),
-                  builder: (context, snapshot) {
-                    if (snapshot.connectionState == ConnectionState.waiting) {
-                      return Container(
+          child: !updateAvatar
+              ? (profile.profilePhoto == null
+                    ? FutureBuilder<Uint8List>(
+                        future: AppleLikeAvatarGenerator.generateWithName(
+                          "${profile.firstName}${profile.lastName}",
+                        ),
+                        builder: (context, snapshot) {
+                          if (snapshot.connectionState ==
+                              ConnectionState.waiting) {
+                            return Container(
+                              width: 70,
+                              height: 70,
+                              color:
+                                  Colors.transparent, // Transparent background
+                            );
+                          } else if (snapshot.hasError) {
+                            return Text('Error: ${snapshot.error}');
+                          } else if (snapshot.hasData) {
+                            return Image.memory(
+                              snapshot.data!,
+                              width: 70,
+                              height: 70,
+                            );
+                          } else {
+                            return const Text('No data');
+                          }
+                        },
+                      )
+                    : Image.network(
+                        profile.profilePhoto!.url,
                         width: 70,
                         height: 70,
-                        color: Colors.transparent, // Transparent background
-                      );
-                    } else if (snapshot.hasError) {
-                      return Text('Error: ${snapshot.error}');
-                    } else if (snapshot.hasData) {
-                      return Image.memory(
-                        snapshot.data!,
-                        width: 70,
-                        height: 70,
-                      );
-                    } else {
-                      return const Text('No data');
-                    }
-                  },
-                ),
+                      ))
+              : (avatarBytes == null
+                    ? FutureBuilder<Uint8List>(
+                        future: AppleLikeAvatarGenerator.generateWithName(
+                          "${profile.firstName}${profile.lastName}",
+                        ),
+                        builder: (context, snapshot) {
+                          if (snapshot.connectionState ==
+                              ConnectionState.waiting) {
+                            return Container(
+                              width: 70,
+                              height: 70,
+                              color:
+                                  Colors.transparent, // Transparent background
+                            );
+                          } else if (snapshot.hasError) {
+                            return Text('Error: ${snapshot.error}');
+                          } else if (snapshot.hasData) {
+                            return Image.memory(
+                              snapshot.data!,
+                              width: 70,
+                              height: 70,
+                            );
+                          } else {
+                            return const Text('No data');
+                          }
+                        },
+                      )
+                    : Image.memory(avatarBytes!, width: 70, height: 70)),
         ),
         SizedBox(height: 8),
         Row(
@@ -89,7 +132,8 @@ class AvatarUpdater extends StatelessWidget {
                     return;
                   }
                   //TODO: Set image to modify
-                  changeAvatar(image.path, filename);
+                  final imageBytes = await readImage(image.path);
+                  changeAvatar(imageBytes, filename);
                   return;
                 }
                 CroppedFile? croppedFile = await ImageCropper().cropImage(
@@ -114,9 +158,8 @@ class AvatarUpdater extends StatelessWidget {
                   return;
                 }
                 debugPrint('Cropped image path: ${croppedFile.path}');
-                final (croppedImageName,croppedImageSize) = await getImageNameAndSize(
-                  croppedFile.path,
-                );
+                final (croppedImageName, croppedImageSize) =
+                    await getImageNameAndSize(croppedFile.path);
                 debugPrint("Image size: $croppedImageSize");
                 if (croppedImageSize > 2) {
                   if (!context.mounted) return;
@@ -135,7 +178,8 @@ class AvatarUpdater extends StatelessWidget {
                   );
                   return;
                 }
-                changeAvatar(croppedFile.path, croppedImageName);
+                final croppedImageBytes = await readImage(croppedFile.path);
+                changeAvatar(croppedImageBytes, croppedImageName);
               },
               style: FilledButton.styleFrom(
                 backgroundColor: Colors.green,
@@ -147,6 +191,14 @@ class AvatarUpdater extends StatelessWidget {
             FilledButton(
               onPressed: () {
                 //TODO: Implement remove avatar logic
+                if ((avatarBytes == null && updateAvatar) ||
+                    profile.profilePhoto == null) {
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    SnackBar(content: Text("No avatar to remove")),
+                  );
+                  return;
+                }
+                changeAvatar(null, null);
               },
               style: FilledButton.styleFrom(
                 backgroundColor: Colors.red,
