@@ -15,6 +15,12 @@ Future<Uint8List> readImage(String path) =>
 Future<(String, double)> getImageNameAndSize(String path) =>
     RustLib.instance.api.crateApiCoreGetImageNameAndSize(path: path);
 
+Future<String> changeFilenameExtension(String filename, String extension_) =>
+    RustLib.instance.api.crateApiCoreChangeFilenameExtension(
+      filename: filename,
+      extension_: extension_,
+    );
+
 class ImageInformation {
   final int width;
   final int height;

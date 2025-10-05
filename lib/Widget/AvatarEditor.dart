@@ -131,9 +131,12 @@ class AvatarUpdater extends StatelessWidget {
                     );
                     return;
                   }
-                  //TODO: Set image to modify
                   final imageBytes = await readImage(image.path);
-                  changeAvatar(imageBytes, filename);
+                  final convertedFilename = await changeFilenameExtension(
+                    filename,
+                    "png",
+                  );
+                  changeAvatar(imageBytes, convertedFilename);
                   return;
                 }
                 CroppedFile? croppedFile = await ImageCropper().cropImage(
@@ -160,7 +163,6 @@ class AvatarUpdater extends StatelessWidget {
                 debugPrint('Cropped image path: ${croppedFile.path}');
                 final (croppedImageName, croppedImageSize) =
                     await getImageNameAndSize(croppedFile.path);
-                debugPrint("Image size: $croppedImageSize");
                 if (croppedImageSize > 2) {
                   if (!context.mounted) return;
                   await showDialog(
@@ -190,7 +192,6 @@ class AvatarUpdater extends StatelessWidget {
             SizedBox(width: 8),
             FilledButton(
               onPressed: () {
-                //TODO: Implement remove avatar logic
                 if ((avatarBytes == null && updateAvatar) ||
                     profile.profilePhoto == null) {
                   ScaffoldMessenger.of(context).showSnackBar(
