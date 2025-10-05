@@ -83,6 +83,7 @@ class _UpdateUserInfoState extends State<UpdateUserInfo>
   }
 
   Future<bool> updateProfile() async {
+    //TODO: If avatar has changed, change avatar first
     final response = await Utils.client.put(
       "/user/update/profile",
       headers: HttpHeaders.rawMap({
