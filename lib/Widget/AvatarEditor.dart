@@ -193,7 +193,7 @@ class AvatarUpdater extends StatelessWidget {
             FilledButton(
               onPressed: () {
                 if ((avatarBytes == null && updateAvatar) ||
-                    profile.profilePhoto == null) {
+                    (profile.profilePhoto == null && !updateAvatar)) {
                   ScaffoldMessenger.of(context).showSnackBar(
                     SnackBar(content: Text("No avatar to remove")),
                   );
