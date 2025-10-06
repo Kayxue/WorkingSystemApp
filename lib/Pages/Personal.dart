@@ -9,6 +9,7 @@ import 'package:working_system_app/Types/WorkerProfile.dart';
 import 'package:flutter/services.dart';
 import 'package:working_system_app/Widget/LoadingIndicator.dart';
 import 'package:working_system_app/Widget/ProfileCard.dart';
+import 'package:working_system_app/Widget/ProfileInfoList.dart';
 
 class Personal extends StatefulWidget {
   final String sessionKey;
@@ -95,80 +96,70 @@ class _PersonalState extends State<Personal> {
                     child: SingleChildScrollView(
                       child: Column(
                         children: [
-                          Card(
-                            child: Padding(
-                              padding: EdgeInsets.all(8),
-                              child: Column(
-                                children: [
-                                  InkWell(
-                                    onTap: () {
-                                      copyToClipboard(profile.email, "Email");
-                                    },
-                                    splashColor: Colors.grey.withAlpha(70),
-                                    child: ListTile(
-                                      leading: Icon(Icons.email),
-                                      title: Text("Email"),
-                                      subtitle: Text(profile.email),
-                                    ),
-                                  ),
-                                  InkWell(
-                                    onTap: () {
-                                      copyToClipboard(
-                                        profile.phoneNumber,
-                                        "Phone number",
-                                      );
-                                    },
-                                    splashColor: Colors.grey.withAlpha(70),
-                                    child: ListTile(
-                                      leading: Icon(Icons.phone),
-                                      title: Text("Phone"),
-                                      subtitle: Text(profile.phoneNumber),
-                                    ),
-                                  ),
-                                ],
+                          ProfileInfoList(
+                            children: [
+                              InkWell(
+                                onTap: () {
+                                  copyToClipboard(profile.email, "Email");
+                                },
+                                splashColor: Colors.grey.withAlpha(70),
+                                child: ListTile(
+                                  leading: Icon(Icons.email),
+                                  title: Text("Email"),
+                                  subtitle: Text(profile.email),
+                                ),
                               ),
-                            ),
+                              InkWell(
+                                onTap: () {
+                                  copyToClipboard(
+                                    profile.phoneNumber,
+                                    "Phone number",
+                                  );
+                                },
+                                splashColor: Colors.grey.withAlpha(70),
+                                child: ListTile(
+                                  leading: Icon(Icons.phone),
+                                  title: Text("Phone"),
+                                  subtitle: Text(profile.phoneNumber),
+                                ),
+                              ),
+                            ],
                           ),
                           SizedBox(height: 8),
-                          Card(
-                            child: Padding(
-                              padding: EdgeInsets.all(8),
-                              child: Column(
-                                children: [
-                                  ListTile(
-                                    leading: Icon(Icons.school),
-                                    title: Text("Education"),
-                                    subtitle: Text(
-                                      "${profile.schoolName?.isNotEmpty == true ? profile.schoolName : ""}${profile.major?.isNotEmpty == true ? profile.major : ""}${profile.schoolName?.endsWith(profile.highestEducation) == true ? "" : profile.highestEducation}",
-                                    ),
-                                  ),
-                                  ListTile(
-                                    leading: Icon(Icons.badge),
-                                    title: Text("Status"),
-                                    subtitle: Text(profile.studyStatus),
-                                  ),
-                                  ListTile(
-                                    leading: Icon(Icons.check_circle),
-                                    title: Text("Certificates"),
-                                    subtitle: Text(
-                                      profile.certificates != null &&
-                                              profile.certificates!.isNotEmpty
-                                          ? profile.certificates!.join("、")
-                                          : "No certificates",
-                                    ),
-                                  ),
-                                  ListTile(
-                                    leading: Icon(Icons.description),
-                                    title: Text("Experience"),
-                                    subtitle: Text(
-                                      profile.jobExperience.isEmpty
-                                          ? "No experience"
-                                          : profile.jobExperience.join("、"),
-                                    ),
-                                  ),
-                                ],
+                          ProfileInfoList(
+                            children: [
+                              ListTile(
+                                leading: Icon(Icons.school),
+                                title: Text("Education"),
+                                subtitle: Text(
+                                  "${profile.schoolName?.isNotEmpty == true ? profile.schoolName : ""}${profile.major?.isNotEmpty == true ? profile.major : ""}${profile.schoolName?.endsWith(profile.highestEducation) == true ? "" : profile.highestEducation}",
+                                ),
                               ),
-                            ),
+                              ListTile(
+                                leading: Icon(Icons.badge),
+                                title: Text("Status"),
+                                subtitle: Text(profile.studyStatus),
+                              ),
+                              ListTile(
+                                leading: Icon(Icons.check_circle),
+                                title: Text("Certificates"),
+                                subtitle: Text(
+                                  profile.certificates != null &&
+                                          profile.certificates!.isNotEmpty
+                                      ? profile.certificates!.join("、")
+                                      : "No certificates",
+                                ),
+                              ),
+                              ListTile(
+                                leading: Icon(Icons.description),
+                                title: Text("Experience"),
+                                subtitle: Text(
+                                  profile.jobExperience.isEmpty
+                                      ? "No experience"
+                                      : profile.jobExperience.join("、"),
+                                ),
+                              ),
+                            ],
                           ),
                           SizedBox(height: 8),
                           ElevatedButton(
