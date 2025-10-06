@@ -7,6 +7,7 @@ import 'package:working_system_app/Others/Utils.dart';
 import 'package:working_system_app/Types/ApplicationGig.dart';
 import 'package:working_system_app/Types/CustomAppointment.dart';
 import 'package:working_system_app/Pages/AttendanceList.dart';
+import 'package:working_system_app/Widget/LoadingIndicator.dart';
 
 class Schedule extends StatefulWidget {
   final String sessionKey;
@@ -108,17 +109,7 @@ class _ScheduleState extends State<Schedule> {
   Widget build(BuildContext context) {
     return SafeArea(
       child: isLoading
-          ? Center(
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                crossAxisAlignment: CrossAxisAlignment.center,
-                children: [
-                  CircularProgressIndicator(),
-                  SizedBox(height: 8),
-                  Text("Loading", style: TextStyle(fontSize: 12)),
-                ],
-              ),
-            )
+          ? LoadingIndicator()
           : Padding(
               padding: EdgeInsets.only(top: 16, left: 16, right: 16),
               child: Column(

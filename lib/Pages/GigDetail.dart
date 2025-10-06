@@ -5,6 +5,7 @@ import 'package:rhttp/rhttp.dart';
 import 'package:working_system_app/Others/Utils.dart';
 import 'package:working_system_app/Types/GigDetails.dart';
 import 'package:working_system_app/Widget/GigInformation.dart';
+import 'package:working_system_app/Widget/LoadingIndicator.dart';
 
 class GigDetail extends StatefulWidget {
   final String gigId;
@@ -129,17 +130,7 @@ class _GigDetailState extends State<GigDetail> {
     return Scaffold(
       appBar: AppBar(title: Text(widget.title)),
       body: isLoading
-          ? Center(
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                crossAxisAlignment: CrossAxisAlignment.center,
-                children: [
-                  CircularProgressIndicator(),
-                  SizedBox(height: 8),
-                  Text("Loading", style: TextStyle(fontSize: 12)),
-                ],
-              ),
-            )
+          ? LoadingIndicator()
           : Padding(
               padding: const EdgeInsets.only(left: 16, right: 16),
               child: Column(

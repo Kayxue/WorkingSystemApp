@@ -1,14 +1,14 @@
 import 'dart:convert';
 
 import 'package:flutter/material.dart';
-import 'package:flutter_rating_bar/flutter_rating_bar.dart';
 import 'package:rhttp/rhttp.dart';
-import 'package:apple_like_avatar_generator/apple_like_avatar_generator.dart';
 import 'package:working_system_app/Others/Utils.dart';
 import 'package:working_system_app/Pages/UpdateUserInfo.dart';
 import 'package:working_system_app/Pages/UpdateUserPassword.dart';
 import 'package:working_system_app/Types/WorkerProfile.dart';
 import 'package:flutter/services.dart';
+import 'package:working_system_app/Widget/LoadingIndicator.dart';
+import 'package:working_system_app/Widget/ProfileCard.dart';
 
 class Personal extends StatefulWidget {
   final String sessionKey;
@@ -70,17 +70,7 @@ class _PersonalState extends State<Personal> {
   Widget build(BuildContext context) {
     return SafeArea(
       child: isLoading
-          ? Center(
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                crossAxisAlignment: CrossAxisAlignment.center,
-                children: [
-                  CircularProgressIndicator(),
-                  SizedBox(height: 8),
-                  Text("Loading", style: TextStyle(fontSize: 12)),
-                ],
-              ),
-            )
+          ? LoadingIndicator()
           : Padding(
               padding: EdgeInsets.only(top: 16, left: 16, right: 16),
               child: Column(
@@ -91,106 +81,7 @@ class _PersonalState extends State<Personal> {
                     style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
                   ),
                   SizedBox(height: 8),
-                  Card(
-                    color: Colors.blue,
-                    child: Container(
-                      width: double.infinity,
-                      height: 100,
-                      padding: EdgeInsets.symmetric(vertical: 4.0),
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          Padding(
-                            padding: EdgeInsets.only(left: 16),
-                            child: Column(
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                Text(
-                                  "${profile.lastName}${profile.firstName}",
-                                  style: TextStyle(
-                                    color: Colors.white,
-                                    fontSize: 24,
-                                    fontWeight: FontWeight.bold,
-                                  ),
-                                ),
-                                SizedBox(height: 4),
-                                Row(
-                                  crossAxisAlignment: CrossAxisAlignment.center,
-                                  children: [
-                                    Text(
-                                      "Your rating:",
-                                      style: TextStyle(
-                                        color: Colors.white,
-                                        fontSize: 16,
-                                        fontWeight: FontWeight.w500,
-                                      ),
-                                    ),
-                                    SizedBox(width: 4),
-                                    RatingBarIndicator(
-                                      rating: profile.ratingStats.averageRating,
-                                      itemBuilder: (context, index) =>
-                                          Icon(Icons.star, color: Colors.amber),
-                                      itemCount: 5,
-                                      itemSize: 16.0,
-                                      direction: Axis.horizontal,
-                                    ),
-                                    SizedBox(width: 4),
-                                    Text(
-                                      "(${profile.ratingStats.totalRatings})",
-                                      style: TextStyle(
-                                        color: Colors.white,
-                                        fontSize: 16,
-                                      ),
-                                    ),
-                                  ],
-                                ),
-                              ],
-                            ),
-                          ),
-                          Padding(
-                            padding: const EdgeInsets.only(right: 16.0),
-                            child: ClipOval(
-                              child: profile.profilePhoto != null
-                                  ? Image.network(
-                                      profile.profilePhoto!.url,
-                                      width: 70,
-                                      height: 70,
-                                    )
-                                  : FutureBuilder<Uint8List>(
-                                      future: AppleLikeAvatarGenerator.generateWithName(
-                                        "${profile.firstName}${profile.lastName}",
-                                      ),
-                                      builder: (context, snapshot) {
-                                        if (snapshot.connectionState ==
-                                            ConnectionState.waiting) {
-                                          return Container(
-                                            width: 70,
-                                            height: 70,
-                                            color: Colors
-                                                .transparent, // Transparent background
-                                          );
-                                        } else if (snapshot.hasError) {
-                                          return Text(
-                                            'Error: ${snapshot.error}',
-                                          );
-                                        } else if (snapshot.hasData) {
-                                          return Image.memory(
-                                            snapshot.data!,
-                                            width: 70,
-                                            height: 70,
-                                          );
-                                        } else {
-                                          return const Text('No data');
-                                        }
-                                      },
-                                    ),
-                            ),
-                          ),
-                        ],
-                      ),
-                    ),
-                  ),
+                  ProfileCard(profile: profile),
                   SizedBox(height: 8),
                   Expanded(
                     child: SingleChildScrollView(

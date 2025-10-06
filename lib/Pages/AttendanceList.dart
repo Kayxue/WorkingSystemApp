@@ -6,6 +6,7 @@ import 'package:working_system_app/Others/Utils.dart';
 import 'package:working_system_app/Pages/TakeAttendance.dart';
 import 'package:working_system_app/Types/AttendanceToday.dart';
 import 'package:working_system_app/Types/AttendanceGigInfo.dart';
+import 'package:working_system_app/Widget/LoadingIndicator.dart';
 
 class AttendanceList extends StatefulWidget {
   final String sessionKey;
@@ -84,7 +85,7 @@ class _AttendanceListState extends State<AttendanceList> {
     return Scaffold(
       appBar: AppBar(title: Text("Today's Attendance")),
       body: isLoading
-          ? Center(child: CircularProgressIndicator())
+          ? LoadingIndicator()
           : RefreshIndicator(
               onRefresh: () async {
                 setState(() {
