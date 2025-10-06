@@ -132,7 +132,7 @@ class _GigDetailState extends State<GigDetail> {
       body: isLoading
           ? LoadingIndicator()
           : Padding(
-              padding: const EdgeInsets.only(left: 16, right: 16,bottom: 32),
+              padding: const EdgeInsets.only(left: 16, right: 16),
               child: Column(
                 children: [
                   GigInformation(gigdetail: gigdetail!),
@@ -154,7 +154,7 @@ class _GigDetailState extends State<GigDetail> {
                       ),
                     ),
                   ),
-
+                  const SizedBox(height: 32),
                 ],
               ),
             ),

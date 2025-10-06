@@ -104,7 +104,7 @@ class _RegisterState extends State<Register>
     return Scaffold(
       appBar: AppBar(title: const Text('Register')),
       body: Padding(
-        padding: const EdgeInsets.only(left: 16, right: 16,bottom: 16),
+        padding: const EdgeInsets.only(left: 16, right: 16),
         child: Column(
           children: [
             Expanded(
@@ -331,7 +331,7 @@ class _RegisterState extends State<Register>
                 ),
               ],
             ),
-            
+            const SizedBox(height: 16),
           ],
         ),
       ),

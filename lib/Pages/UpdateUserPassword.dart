@@ -73,7 +73,7 @@ class _UpdateUserPasswordState extends State<UpdateUserPassword> {
     return Scaffold(
       appBar: AppBar(title: const Text('Update Password')),
       body: Padding(
-        padding: const EdgeInsets.only(left: 16, right: 16, bottom: 16),
+        padding: const EdgeInsets.only(left: 16, right: 16),
         child: Column(
           children: [
             Expanded(
@@ -155,6 +155,7 @@ class _UpdateUserPasswordState extends State<UpdateUserPassword> {
                 ),
               ],
             ),
+            const SizedBox(height: 16),
           ],
         ),
       ),
