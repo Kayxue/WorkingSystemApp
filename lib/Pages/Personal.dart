@@ -66,6 +66,14 @@ class _PersonalState extends State<Personal> {
     widget.updateIndex(1);
   }
 
+  Future<void> copyToClipboard(String text, String label) async {
+    await Clipboard.setData(ClipboardData(text: text));
+    if (!mounted) return;
+    ScaffoldMessenger.of(
+      context,
+    ).showSnackBar(SnackBar(content: Text("$label copied to clipboard")));
+  }
+
   @override
   Widget build(BuildContext context) {
     return SafeArea(
@@ -93,20 +101,8 @@ class _PersonalState extends State<Personal> {
                               child: Column(
                                 children: [
                                   InkWell(
-                                    onTap: () async {
-                                      await Clipboard.setData(
-                                        ClipboardData(text: profile.email),
-                                      );
-                                      if (!context.mounted) return;
-                                      ScaffoldMessenger.of(
-                                        context,
-                                      ).showSnackBar(
-                                        SnackBar(
-                                          content: Text(
-                                            "Email copied to clipboard",
-                                          ),
-                                        ),
-                                      );
+                                    onTap: () {
+                                      copyToClipboard(profile.email, "Email");
                                     },
                                     splashColor: Colors.grey.withAlpha(70),
                                     child: ListTile(
@@ -117,20 +113,9 @@ class _PersonalState extends State<Personal> {
                                   ),
                                   InkWell(
                                     onTap: () {
-                                      Clipboard.setData(
-                                        ClipboardData(
-                                          text: profile.phoneNumber,
-                                        ),
-                                      );
-                                      if (!context.mounted) return;
-                                      ScaffoldMessenger.of(
-                                        context,
-                                      ).showSnackBar(
-                                        SnackBar(
-                                          content: Text(
-                                            "Phone number copied to clipboard",
-                                          ),
-                                        ),
+                                      copyToClipboard(
+                                        profile.phoneNumber,
+                                        "Phone number",
                                       );
                                     },
                                     splashColor: Colors.grey.withAlpha(70),
