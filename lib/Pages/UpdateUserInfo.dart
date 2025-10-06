@@ -83,7 +83,37 @@ class _UpdateUserInfoState extends State<UpdateUserInfo>
   }
 
   Future<bool> updateProfile() async {
-    //TODO: If avatar has changed, change avatar first
+    if (updateAvatar) {
+      late final HttpBody body;
+      if (avatarBytes == null) {
+        body = HttpBody.multipart({
+          "deleteProfilePhoto": MultipartItem.text(text: "true"),
+        });
+      } else {
+        body = HttpBody.multipart({
+          "profilePhoto": MultipartItem.bytes(
+            bytes: avatarBytes!,
+            fileName: nameAvatarToChange!,
+          ),
+        });
+      }
+      final responseAvatar = await Utils.client.put(
+        "/user/update/profilePhoto",
+        headers: HttpHeaders.rawMap({
+          "platform": "mobile",
+          "cookie": widget.sessionKey,
+        }),
+        body: body,
+      );
+      if (responseAvatar.statusCode != 200) {
+        return false;
+      }
+      if (avatarBytes == null) {
+        widget.workerProfile.profilePhoto = null;
+      } else {
+        //TODO: Update profile photo url
+      }
+    }
     final response = await Utils.client.put(
       "/user/update/profile",
       headers: HttpHeaders.rawMap({
