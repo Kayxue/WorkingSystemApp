@@ -83,6 +83,17 @@ class _UpdateUserInfoState extends State<UpdateUserInfo>
   }
 
   Future<bool> updateProfile() async {
+    final response = await Utils.client.put(
+      "/user/update/profile",
+      headers: HttpHeaders.rawMap({
+        "platform": "mobile",
+        "cookie": widget.sessionKey,
+      }),
+      body: HttpBody.json(widget.workerProfile.toJson()),
+    );
+    if (response.statusCode != 200) {
+      return false;
+    }
     if (updateAvatar) {
       late final HttpBody body;
       if (avatarBytes == null) {
@@ -106,26 +117,11 @@ class _UpdateUserInfoState extends State<UpdateUserInfo>
         body: body,
       );
       if (responseAvatar.statusCode != 200) {
+        debugPrint("Failed to update avatar");
         return false;
       }
-      if (avatarBytes == null) {
-        widget.workerProfile.profilePhoto = null;
-      } else {
-        //TODO: Update profile photo url
-      }
     }
-    final response = await Utils.client.put(
-      "/user/update/profile",
-      headers: HttpHeaders.rawMap({
-        "platform": "mobile",
-        "cookie": widget.sessionKey,
-      }),
-      body: HttpBody.json(widget.workerProfile.toJson()),
-    );
-    if (response.statusCode == 200) {
-      return true;
-    }
-    return false;
+    return true;
   }
 
   @override
