@@ -8,6 +8,7 @@ import 'package:working_system_app/Pages/UpdateUserPassword.dart';
 import 'package:working_system_app/Types/WorkerProfile.dart';
 import 'package:flutter/services.dart';
 import 'package:working_system_app/Widget/LoadingIndicator.dart';
+import 'package:working_system_app/Widget/ProfileButtonRow.dart';
 import 'package:working_system_app/Widget/ProfileCard.dart';
 import 'package:working_system_app/Widget/ProfileInfoList.dart';
 
@@ -45,6 +46,17 @@ class _PersonalState extends State<Personal> {
     }
     final Map<String, dynamic> respond = jsonDecode(response.body);
     return WorkerProfile.fromJson(respond);
+  }
+
+  Future<void> refetchProfile() async {
+    setState(() {
+      isLoading = true;
+    });
+    final profile = await loadUserProfile();
+    setState(() {
+      this.profile = profile;
+      isLoading = false;
+    });
   }
 
   @override
@@ -96,6 +108,16 @@ class _PersonalState extends State<Personal> {
                     child: SingleChildScrollView(
                       child: Column(
                         children: [
+                          Card(
+                            child: Padding(padding: EdgeInsets.only(bottom: 8,top: 8),child:ProfileButtonRow(
+                              sessionKey: widget.sessionKey,
+                              clearSessionKey: widget.clearSessionKey,
+                              updateIndex: widget.updateIndex,
+                              profile: profile,
+                              refetchProfile: refetchProfile,
+                            )),
+                          ),
+                          SizedBox(height: 8),
                           ProfileInfoList(
                             children: [
                               InkWell(
