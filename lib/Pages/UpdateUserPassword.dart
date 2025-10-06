@@ -73,7 +73,7 @@ class _UpdateUserPasswordState extends State<UpdateUserPassword> {
     return Scaffold(
       appBar: AppBar(title: const Text('Update Password')),
       body: Padding(
-        padding: const EdgeInsets.only(left: 16, right: 16),
+        padding: const EdgeInsets.only(left: 16, right: 16, bottom: 16),
         child: Column(
           children: [
             Expanded(
@@ -94,7 +94,7 @@ class _UpdateUserPasswordState extends State<UpdateUserPassword> {
                           }),
                           obscureText: true,
                         ),
-                        SizedBox(height: 16),
+                        const SizedBox(height: 16),
                         TextField(
                           decoration: const InputDecoration(labelText: 'New'),
                           onChanged: (value) => setState(() {
@@ -102,7 +102,7 @@ class _UpdateUserPasswordState extends State<UpdateUserPassword> {
                           }),
                           obscureText: true,
                         ),
-                        SizedBox(height: 16),
+                        const SizedBox(height: 16),
                         TextField(
                           decoration: const InputDecoration(
                             labelText: 'Confirm New Password',
@@ -118,7 +118,7 @@ class _UpdateUserPasswordState extends State<UpdateUserPassword> {
                 ],
               ),
             ),
-            SizedBox(height: 16),
+            const SizedBox(height: 16),
             Row(
               children: [
                 Expanded(
@@ -150,12 +150,11 @@ class _UpdateUserPasswordState extends State<UpdateUserPassword> {
                         }
                       }
                     },
-                    child: Text("Update Password"),
+                    child: const Text("Update Password"),
                   ),
                 ),
               ],
             ),
-            SizedBox(height: 16),
           ],
         ),
       ),

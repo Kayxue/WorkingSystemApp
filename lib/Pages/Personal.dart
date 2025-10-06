@@ -129,20 +129,20 @@ class _PersonalState extends State<Personal> {
                           ProfileInfoList(
                             children: [
                               ListTile(
-                                leading: Icon(Icons.school),
-                                title: Text("Education"),
+                                leading: const Icon(Icons.school),
+                                title: const Text("Education"),
                                 subtitle: Text(
                                   "${profile.schoolName?.isNotEmpty == true ? profile.schoolName : ""}${profile.major?.isNotEmpty == true ? profile.major : ""}${profile.schoolName?.endsWith(profile.highestEducation) == true ? "" : profile.highestEducation}",
                                 ),
                               ),
                               ListTile(
-                                leading: Icon(Icons.badge),
-                                title: Text("Status"),
+                                leading: const Icon(Icons.badge),
+                                title: const Text("Status"),
                                 subtitle: Text(profile.studyStatus),
                               ),
                               ListTile(
-                                leading: Icon(Icons.check_circle),
-                                title: Text("Certificates"),
+                                leading: const Icon(Icons.check_circle),
+                                title: const Text("Certificates"),
                                 subtitle: Text(
                                   profile.certificates != null &&
                                           profile.certificates!.isNotEmpty
@@ -151,8 +151,8 @@ class _PersonalState extends State<Personal> {
                                 ),
                               ),
                               ListTile(
-                                leading: Icon(Icons.description),
-                                title: Text("Experience"),
+                                leading: const Icon(Icons.description),
+                                title: const Text("Experience"),
                                 subtitle: Text(
                                   profile.jobExperience.isEmpty
                                       ? "No experience"
@@ -161,7 +161,7 @@ class _PersonalState extends State<Personal> {
                               ),
                             ],
                           ),
-                          SizedBox(height: 8),
+                          const SizedBox(height: 8),
                           ElevatedButton(
                             onPressed: () async {
                               final result = await Navigator.of(context)
@@ -196,12 +196,12 @@ class _PersonalState extends State<Personal> {
                               backgroundColor: Colors.green,
                               minimumSize: Size(double.infinity, 48),
                             ),
-                            child: Text(
+                            child: const Text(
                               "Update Information",
                               style: TextStyle(color: Colors.white),
                             ),
                           ),
-                          SizedBox(height: 8),
+                          const SizedBox(height: 8),
                           ElevatedButton(
                             onPressed: () async {
                               final result = await Navigator.of(context)
@@ -223,7 +223,7 @@ class _PersonalState extends State<Personal> {
                               backgroundColor: Colors.blue,
                               minimumSize: Size(double.infinity, 48),
                             ),
-                            child: Text(
+                            child: const Text(
                               "Update Password",
                               style: TextStyle(color: Colors.white),
                             ),
@@ -237,12 +237,12 @@ class _PersonalState extends State<Personal> {
                               backgroundColor: Colors.red,
                               minimumSize: Size(double.infinity, 48),
                             ),
-                            child: Text(
+                            child: const Text(
                               "Logout",
                               style: TextStyle(color: Colors.white),
                             ),
                           ),
-                          SizedBox(height: 8),
+                          const SizedBox(height: 8),
                         ],
                       ),
                     ),

@@ -46,13 +46,13 @@ class _FilterBarState extends State<FilterBar> {
       mainAxisAlignment: MainAxisAlignment.center,
       children: [
         TextField(
-          decoration: InputDecoration(
+          decoration: const InputDecoration(
             hint: Text("Search works", style: TextStyle(color: Colors.grey)),
             border: OutlineInputBorder(),
           ),
           onChanged: (value) => widget.textSearchObservable.add(value),
         ),
-        SizedBox(height: 10),
+        const SizedBox(height: 10),
         Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
@@ -63,7 +63,7 @@ class _FilterBarState extends State<FilterBar> {
                   requestFocusOnTap: false,
                   initialSelection: "",
                   dropdownMenuEntries: [
-                    DropdownMenuEntry<String>(value: "", label: "無指定縣市"),
+                    const DropdownMenuEntry<String>(value: "", label: "無指定縣市"),
                     if (widget.cityDistrictMap != null)
                       ...widget.cityDistrictMap!.keys.map(
                         (city) =>
@@ -78,7 +78,7 @@ class _FilterBarState extends State<FilterBar> {
                 ),
               ),
             ),
-            SizedBox(width: 10),
+            const SizedBox(width: 10),
             Expanded(
               child: SizedBox(
                 child: DropdownMenu(
@@ -87,7 +87,7 @@ class _FilterBarState extends State<FilterBar> {
                   enabled: widget.selectedCity.isNotEmpty,
                   requestFocusOnTap: false,
                   dropdownMenuEntries: [
-                    DropdownMenuEntry<String>(value: "", label: "無指定區"),
+                    const DropdownMenuEntry<String>(value: "", label: "無指定區"),
                     if (widget.cityDistrictMap != null &&
                         widget.selectedCity.isNotEmpty)
                       ...widget.cityDistrictMap![widget.selectedCity]!.map(

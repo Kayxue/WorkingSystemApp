@@ -37,13 +37,13 @@ class JobExperienceEditor extends StatelessWidget {
           actions: [
             TextButton(
               onPressed: () => Navigator.of(context).pop(("", null)),
-              child: Text("Cancel"),
+              child: const Text("Cancel"),
             ),
             TextButton(
               onPressed: () => Navigator.of(
                 context,
               ).pop((textController.text, insert ? null : initialText)),
-              child: Text("OK"),
+              child: const Text("OK"),
             ),
           ],
         );
@@ -66,7 +66,7 @@ class JobExperienceEditor extends StatelessWidget {
                   Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
-                      Text(
+                      const Text(
                         "Job Experience",
                         style: TextStyle(
                           fontSize: 16,
@@ -85,14 +85,14 @@ class JobExperienceEditor extends StatelessWidget {
                           if (newExperience.isNotEmpty) {
                             if (!addJobExperience(newExperience)) {
                               ScaffoldMessenger.of(context).showSnackBar(
-                                SnackBar(
+                                const SnackBar(
                                   content: Text("Experience already exists"),
                                 ),
                               );
                             }
                           }
                         },
-                        child: Text("Add"),
+                        child: const Text("Add"),
                       ),
                     ],
                   ),

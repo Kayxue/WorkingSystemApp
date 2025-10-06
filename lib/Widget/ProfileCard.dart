@@ -29,17 +29,17 @@ class ProfileCard extends StatelessWidget {
                 children: [
                   Text(
                     "${profile.lastName}${profile.firstName}",
-                    style: TextStyle(
+                    style: const TextStyle(
                       color: Colors.white,
                       fontSize: 24,
                       fontWeight: FontWeight.bold,
                     ),
                   ),
-                  SizedBox(height: 4),
+                  const SizedBox(height: 4),
                   Row(
                     crossAxisAlignment: CrossAxisAlignment.center,
                     children: [
-                      Text(
+                      const Text(
                         "Your rating:",
                         style: TextStyle(
                           color: Colors.white,
@@ -47,7 +47,7 @@ class ProfileCard extends StatelessWidget {
                           fontWeight: FontWeight.w500,
                         ),
                       ),
-                      SizedBox(width: 4),
+                      const SizedBox(width: 4),
                       RatingBarIndicator(
                         rating: profile.ratingStats.averageRating,
                         itemBuilder: (context, index) =>
@@ -56,7 +56,7 @@ class ProfileCard extends StatelessWidget {
                         itemSize: 16.0,
                         direction: Axis.horizontal,
                       ),
-                      SizedBox(width: 4),
+                      const SizedBox(width: 4),
                       Text(
                         "(${profile.ratingStats.totalRatings})",
                         style: TextStyle(color: Colors.white, fontSize: 16),

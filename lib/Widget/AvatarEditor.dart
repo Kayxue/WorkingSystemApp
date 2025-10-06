@@ -189,13 +189,13 @@ class AvatarUpdater extends StatelessWidget {
               ),
               child: const Text("Choose"),
             ),
-            SizedBox(width: 8),
+            const SizedBox(width: 8),
             FilledButton(
               onPressed: () {
                 if ((avatarBytes == null && updateAvatar) ||
                     (profile.profilePhoto == null && !updateAvatar)) {
                   ScaffoldMessenger.of(context).showSnackBar(
-                    SnackBar(content: Text("No avatar to remove")),
+                    SnackBar(content: const Text("No avatar to remove")),
                   );
                   return;
                 }

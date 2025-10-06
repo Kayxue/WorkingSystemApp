@@ -13,7 +13,7 @@ class EnvironmentPhotoGallery extends StatelessWidget {
       padding: EdgeInsets.only(left: 4, right: 4),
       child: Column(
         children: [
-          Padding(
+          const Padding(
             padding: EdgeInsets.only(left: 4, right: 4),
             child: Align(
               alignment: Alignment.topLeft,
@@ -23,7 +23,7 @@ class EnvironmentPhotoGallery extends StatelessWidget {
               ),
             ),
           ),
-          SizedBox(height: 8),
+          const SizedBox(height: 8),
           SizedBox(
             height: 256,
             child: SingleChildScrollView(

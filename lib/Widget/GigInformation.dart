@@ -19,16 +19,16 @@ class GigInformation extends StatelessWidget {
       child: SingleChildScrollView(
         child: Column(
           children: [
-            Center(
+            const Center(
               child: Text(
                 "Details",
                 style: TextStyle(fontSize: 32, fontWeight: FontWeight.bold),
               ),
             ),
-            SizedBox(height: 8),
+            const SizedBox(height: 8),
             Card(
               child: ListTile(
-                title: Text(
+                title: const Text(
                   "Description",
                   style: TextStyle(fontWeight: FontWeight.w500),
                 ),
@@ -38,10 +38,10 @@ class GigInformation extends StatelessWidget {
                 ),
               ),
             ),
-            SizedBox(height: 4),
+            const SizedBox(height: 4),
             Card(
               child: ListTile(
-                title: Text(
+                title: const Text(
                   "Date",
                   style: TextStyle(fontWeight: FontWeight.w500),
                 ),
@@ -50,7 +50,7 @@ class GigInformation extends StatelessWidget {
                 ),
               ),
             ),
-            SizedBox(height: 4),
+            const SizedBox(height: 4),
             Row(
               children: [
                 Expanded(
@@ -58,7 +58,7 @@ class GigInformation extends StatelessWidget {
                     width: double.infinity,
                     child: Card(
                       child: ListTile(
-                        title: Text(
+                        title: const Text(
                           "Time",
                           style: TextStyle(fontWeight: FontWeight.w500),
                         ),
@@ -69,13 +69,13 @@ class GigInformation extends StatelessWidget {
                     ),
                   ),
                 ),
-                SizedBox(width: 4),
+                const SizedBox(width: 4),
                 Expanded(
                   child: SizedBox(
                     width: double.infinity,
                     child: Card(
                       child: ListTile(
-                        title: Text(
+                        title: const Text(
                           "Hourly Rate",
                           style: TextStyle(fontWeight: FontWeight.w500),
                         ),
@@ -86,7 +86,7 @@ class GigInformation extends StatelessWidget {
                 ),
               ],
             ),
-            SizedBox(height: 4),
+            const SizedBox(height: 4),
             Card(
               clipBehavior: Clip.hardEdge,
               child: InkWell(
@@ -95,7 +95,7 @@ class GigInformation extends StatelessWidget {
                   "${gigdetail.city}${gigdetail.district}${gigdetail.address}",
                 ),
                 child: ListTile(
-                  title: Text(
+                  title: const Text(
                     "Address",
                     style: TextStyle(fontWeight: FontWeight.w500),
                   ),
@@ -105,10 +105,10 @@ class GigInformation extends StatelessWidget {
                 ),
               ),
             ),
-            SizedBox(height: 4),
+            const SizedBox(height: 4),
             Card(
               child: ListTile(
-                title: Text(
+                title: const Text(
                   "Requirements",
                   style: TextStyle(fontWeight: FontWeight.w500),
                 ),
@@ -126,14 +126,14 @@ class GigInformation extends StatelessWidget {
                     ),
                     TableRow(
                       children: [
-                        Align(
+                        const Align(
                           alignment: AlignmentGeometry.centerRight,
-                          child: const Text(
+                          child: Text(
                             "Skills",
                             style: TextStyle(fontWeight: FontWeight.w500),
                           ),
                         ),
-                        SizedBox(),
+                        const SizedBox(),
                         Text(gigdetail.requirements.skills.join(", ")),
                       ],
                     ),
@@ -142,14 +142,14 @@ class GigInformation extends StatelessWidget {
                     ),
                     TableRow(
                       children: [
-                        Align(
+                        const Align(
                           alignment: AlignmentGeometry.centerRight,
-                          child: const Text(
+                          child: Text(
                             "Experience",
                             style: TextStyle(fontWeight: FontWeight.w500),
                           ),
                         ),
-                        SizedBox(),
+                        const SizedBox(),
                         Text(gigdetail.requirements.experience),
                       ],
                     ),
@@ -159,21 +159,21 @@ class GigInformation extends StatelessWidget {
             ),
             if (gigdetail.environmentPhotos != null &&
                 gigdetail.environmentPhotos!.isNotEmpty) ...[
-              SizedBox(height: 8),
+              const SizedBox(height: 8),
               EnvironmentPhotoGallery(gigDetail: gigdetail),
             ],
-            SizedBox(height: 8),
+            const SizedBox(height: 8),
             Card(
               child: ListTile(
-                title: Text(
+                title: const Text(
                   "Contact",
                   style: TextStyle(fontWeight: FontWeight.w500),
                 ),
                 subtitle: Column(
                   children: [
                     ListTile(
-                      leading: Icon(Icons.person),
-                      title: Text("Name"),
+                      leading: const Icon(Icons.person),
+                      title: const Text("Name"),
                       subtitle: Text(gigdetail.contactPerson),
                     ),
                     InkWell(
@@ -197,8 +197,8 @@ class GigInformation extends StatelessWidget {
                         }
                       },
                       child: ListTile(
-                        leading: Icon(Icons.phone),
-                        title: Text("Phone"),
+                        leading: const Icon(Icons.phone),
+                        title: const Text("Phone"),
                         subtitle: Text(
                           gigdetail.contactPhone ?? "Not provided",
                         ),
@@ -230,8 +230,8 @@ class GigInformation extends StatelessWidget {
                             }
                           : null,
                       child: ListTile(
-                        leading: Icon(Icons.email),
-                        title: Text("Email"),
+                        leading: const Icon(Icons.email),
+                        title: const Text("Email"),
                         subtitle: Text(
                           gigdetail.contactEmail ?? "Not provided",
                         ),
@@ -241,17 +241,17 @@ class GigInformation extends StatelessWidget {
                 ),
               ),
             ),
-            SizedBox(height: 16),
+            const SizedBox(height: 16),
             Column(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
                 Text(
                   "Updated: ${DateFormat.yMd().format(gigdetail.updatedAt)} ${DateFormat.Hms().format(gigdetail.updatedAt)}",
-                  style: TextStyle(fontSize: 12, color: Colors.grey),
+                  style: const TextStyle(fontSize: 12, color: Colors.grey),
                 ),
                 Text(
                   "Published: ${DateFormat.yMd().format(gigdetail.publishedAt)} ${DateFormat.Hms().format(gigdetail.publishedAt)}",
-                  style: TextStyle(fontSize: 12, color: Colors.grey),
+                  style: const TextStyle(fontSize: 12, color: Colors.grey),
                 ),
               ],
             ),

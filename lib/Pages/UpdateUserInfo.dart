@@ -117,7 +117,6 @@ class _UpdateUserInfoState extends State<UpdateUserInfo>
         body: body,
       );
       if (responseAvatar.statusCode != 200) {
-        debugPrint("Failed to update avatar");
         return false;
       }
     }
@@ -147,7 +146,7 @@ class _UpdateUserInfoState extends State<UpdateUserInfo>
     return Scaffold(
       appBar: AppBar(title: const Text('Update Information')),
       body: Padding(
-        padding: const EdgeInsets.only(left: 16, right: 16),
+        padding: const EdgeInsets.only(left: 16, right: 16,bottom: 16),
         child: Column(
           children: [
             Expanded(
@@ -347,7 +346,6 @@ class _UpdateUserInfoState extends State<UpdateUserInfo>
                 ),
               ],
             ),
-            SizedBox(height: 16),
           ],
         ),
       ),
