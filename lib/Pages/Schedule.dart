@@ -141,7 +141,6 @@ class _ScheduleState extends State<Schedule> {
                       ),
                     ],
                   ),
-
                   SizedBox(height: 8),
                   Expanded(
                     child: SfCalendar(
