@@ -115,17 +115,16 @@ class _ScheduleState extends State<Schedule> {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  AppBar(
-                    title: Text(
-                      "Schedule",
-                      style: TextStyle(
-                        fontSize: 24,
-                        fontWeight: FontWeight.bold,
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Text(
+                        "Schedule",
+                        style: TextStyle(
+                          fontSize: 24,
+                          fontWeight: FontWeight.bold,
+                        ),
                       ),
-                    ),
-                    automaticallyImplyLeading: false,
-                    actions: [
-                      // goto Attendance List page
                       TextButton(
                         child: Text(
                           "Check In",
@@ -142,6 +141,7 @@ class _ScheduleState extends State<Schedule> {
                       ),
                     ],
                   ),
+
                   SizedBox(height: 8),
                   Expanded(
                     child: SfCalendar(

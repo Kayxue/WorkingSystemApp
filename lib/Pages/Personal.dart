@@ -3,8 +3,6 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:rhttp/rhttp.dart';
 import 'package:working_system_app/Others/Utils.dart';
-import 'package:working_system_app/Pages/UpdateUserInfo.dart';
-import 'package:working_system_app/Pages/UpdateUserPassword.dart';
 import 'package:working_system_app/Types/WorkerProfile.dart';
 import 'package:flutter/services.dart';
 import 'package:working_system_app/Widget/LoadingIndicator.dart';
@@ -109,13 +107,16 @@ class _PersonalState extends State<Personal> {
                       child: Column(
                         children: [
                           Card(
-                            child: Padding(padding: EdgeInsets.only(bottom: 8,top: 8),child:ProfileButtonRow(
-                              sessionKey: widget.sessionKey,
-                              clearSessionKey: widget.clearSessionKey,
-                              updateIndex: widget.updateIndex,
-                              profile: profile,
-                              refetchProfile: refetchProfile,
-                            )),
+                            child: Padding(
+                              padding: EdgeInsets.only(bottom: 8, top: 8),
+                              child: ProfileButtonRow(
+                                sessionKey: widget.sessionKey,
+                                clearSessionKey: widget.clearSessionKey,
+                                updateIndex: widget.updateIndex,
+                                profile: profile,
+                                refetchProfile: refetchProfile,
+                              ),
+                            ),
                           ),
                           SizedBox(height: 8),
                           ProfileInfoList(
@@ -184,73 +185,6 @@ class _PersonalState extends State<Personal> {
                             ],
                           ),
                           const SizedBox(height: 8),
-                          ElevatedButton(
-                            onPressed: () async {
-                              final result = await Navigator.of(context)
-                                  .push<bool>(
-                                    MaterialPageRoute(
-                                      builder: (context) =>
-                                          UpdateUserInfo.clone(
-                                            sessionKey: widget.sessionKey,
-                                            clearSessionKey:
-                                                widget.clearSessionKey,
-                                            updateIndex: widget.updateIndex,
-                                            origin: profile,
-                                          ),
-                                    ),
-                                  );
-                              if (result != null && result) {
-                                if (!context.mounted) return;
-                                ScaffoldMessenger.of(context).showSnackBar(
-                                  SnackBar(content: Text("Profile updated")),
-                                );
-                                setState(() {
-                                  isLoading = true;
-                                });
-                                final profile = await loadUserProfile();
-                                setState(() {
-                                  this.profile = profile;
-                                  isLoading = false;
-                                });
-                              }
-                            },
-                            style: ElevatedButton.styleFrom(
-                              backgroundColor: Colors.green,
-                              minimumSize: Size(double.infinity, 48),
-                            ),
-                            child: const Text(
-                              "Update Information",
-                              style: TextStyle(color: Colors.white),
-                            ),
-                          ),
-                          const SizedBox(height: 8),
-                          ElevatedButton(
-                            onPressed: () async {
-                              final result = await Navigator.of(context)
-                                  .push<bool>(
-                                    MaterialPageRoute(
-                                      builder: (context) => UpdateUserPassword(
-                                        sessionKey: widget.sessionKey,
-                                      ),
-                                    ),
-                                  );
-                              if (result != null && result) {
-                                if (!context.mounted) return;
-                                ScaffoldMessenger.of(context).showSnackBar(
-                                  SnackBar(content: Text("Password updated")),
-                                );
-                              }
-                            },
-                            style: ElevatedButton.styleFrom(
-                              backgroundColor: Colors.blue,
-                              minimumSize: Size(double.infinity, 48),
-                            ),
-                            child: const Text(
-                              "Update Password",
-                              style: TextStyle(color: Colors.white),
-                            ),
-                          ),
-                          SizedBox(height: 8),
                           ElevatedButton(
                             onPressed: () {
                               logout();
