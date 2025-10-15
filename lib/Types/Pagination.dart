@@ -1,23 +1,23 @@
 import 'package:json_annotation/json_annotation.dart';
 
-part 'GigPagination.g.dart';
+part 'Pagination.g.dart';
 
 @JsonSerializable(explicitToJson: true)
-class GigPagination {
+class Pagination {
   int limit;
   int page;
   bool hasMore;
   int returned;
 
-  GigPagination({
+  Pagination({
     required this.limit,
     required this.page,
     required this.hasMore,
     required this.returned,
   });
 
-  factory GigPagination.fromJson(Map<String, dynamic> json) =>
-      _$GigPaginationFromJson(json);
+  factory Pagination.fromJson(Map<String, dynamic> json) =>
+      _$PaginationFromJson(json);
 
-  Map<String, dynamic> toJson() => _$GigPaginationToJson(this);
+  Map<String, dynamic> toJson() => _$PaginationToJson(this);
 }

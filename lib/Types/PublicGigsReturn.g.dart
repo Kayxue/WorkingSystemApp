@@ -11,7 +11,7 @@ PublicGigsReturn _$PublicGigsReturnFromJson(Map<String, dynamic> json) =>
       gigs: (json['gigs'] as List<dynamic>)
           .map((e) => Gigs.fromJson(e as Map<String, dynamic>))
           .toList(),
-      pagination: GigPagination.fromJson(
+      pagination: Pagination.fromJson(
         json['pagination'] as Map<String, dynamic>,
       ),
       filters: GigFilters.fromJson(json['filters'] as Map<String, dynamic>),

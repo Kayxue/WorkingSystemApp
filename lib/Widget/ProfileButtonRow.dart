@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:working_system_app/Pages/Reviews.dart';
 import 'package:working_system_app/Pages/UpdateUserInfo.dart';
 import 'package:working_system_app/Pages/UpdateUserPassword.dart';
 import 'package:working_system_app/Types/WorkerProfile.dart';
@@ -30,6 +31,16 @@ class ProfileButtonRow extends StatelessWidget {
           icon: Icons.business_center,
           text: "Job Requests",
           onPressed: () {},
+        ),
+        CircleButton(
+          iconColor: Colors.black,
+          icon: Icons.star,
+          text: "Reviews",
+          onPressed: () => Navigator.of(context).push<void>(
+            MaterialPageRoute(
+              builder: (context) => Reviews(sessionKey: sessionKey),
+            ),
+          ),
         ),
         CircleButton(
           iconColor: Colors.black,

@@ -1,6 +1,6 @@
 import 'package:json_annotation/json_annotation.dart';
 import 'GigFilters.dart';
-import 'GigPagination.dart';
+import 'Pagination.dart';
 import 'Gigs.dart';
 
 part 'PublicGigsReturn.g.dart';
@@ -8,7 +8,7 @@ part 'PublicGigsReturn.g.dart';
 @JsonSerializable(explicitToJson: true)
 class PublicGigsReturn {
   List<Gigs> gigs;
-  GigPagination pagination;
+  Pagination pagination;
   GigFilters filters;
 
   PublicGigsReturn({
