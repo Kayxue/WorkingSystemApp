@@ -1,5 +1,4 @@
 import 'package:json_annotation/json_annotation.dart';
-import 'package:working_system_app/Types/Pagination.dart';
 import 'package:working_system_app/Types/WorkerReviewEmployer.dart';
 
 part 'WorkerReview.g.dart';
