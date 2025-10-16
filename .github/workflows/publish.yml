@@ -50,8 +50,10 @@ jobs:
           echo "$RUNNER_TEMP/flutter/bin" >> $GITHUB_PATH
 
       - name: Install Flutter
-        # Running "flutter doctor" will download Flutter's dependencies
-        run: flutter doctor
+        # Running "flutter doctor" and precaching will download Flutter's dependencies
+        run: |
+          flutter doctor
+          flutter precache --android
       
       - name: Setup Android SDK
         run: |
