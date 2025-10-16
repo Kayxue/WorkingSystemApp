@@ -49,9 +49,6 @@ jobs:
       - name: Install Dependencies
         run: flutter pub get
 
-      - name: Install flutter_rust_bridge_codegen
-        run: dart pub global activate flutter_rust_bridge_codegen
-
       - name: Setup Android Environment
         run: |
           echo "ANDROID_NDK_HOME=$ANDROID_NDK_LATEST_HOME" >> $GITHUB_ENV
@@ -73,9 +70,6 @@ jobs:
           echo "${{ secrets.GOOGLE_SERVICE_JSON }}" | base64 --decode > android/app/google-services.json
           echo "${{ secrets.FIREBASE_OPTIONS }}" | base64 --decode > lib/firebase_options.dart
           echo "${{ secrets.GOOGLE_SERVICE_PLIST }}" | base64 --decode > ios/Runner/GoogleService-Info.plist
-
-      - name: Generate Rust Bridge
-        run: dart pub global run flutter_rust_bridge_codegen generate
 
       - name: Build APK
         run: flutter build apk --release --build-name="${{ github.event.inputs.version || github.ref_name }}" --build-number="${{ github.run_number }}"
