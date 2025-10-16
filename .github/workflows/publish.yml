@@ -34,13 +34,6 @@ jobs:
           toolchain: stable
           targets: aarch64-linux-android,armv7-linux-androideabi,x86_64-linux-android,i686-linux-android
 
-      - name: Setup Android NDK
-        id: setup-ndk
-        uses: nttld/setup-ndk@v1
-        with:
-          ndk-version: r29
-          add-to-path: false
-
       - name: Setup Flutter SDK
         uses: flutter-actions/setup-flutter@v4
         with:
@@ -50,13 +43,6 @@ jobs:
       - name: Install Dependencies
         run: flutter pub get
 
-      - name: Setup Android Environment
-        run: |
-          echo "ANDROID_NDK_HOME=${{ steps.setup-ndk.outputs.ndk-path }}" >> $GITHUB_ENV
-          echo "ANDROID_NDK_ROOT=${{ steps.setup-ndk.outputs.ndk-path }}" >> $GITHUB_ENV
-          echo "NDK Path: ${{ steps.setup-ndk.outputs.ndk-path }}"
-          ls -la "${{ steps.setup-ndk.outputs.ndk-path }}" || echo "NDK path not found"
-      
       - name: Accept Android Licenses
         run: yes | $ANDROID_HOME/cmdline-tools/latest/bin/sdkmanager --licenses || true
 
@@ -73,15 +59,18 @@ jobs:
 
       - name: Decode Firebase Configuration Files
         run: |
-          echo "${{ secrets.GOOGLE_SERVICE_JSON }}" | base64 --decode > android/app/google-services.json
-          echo "${{ secrets.FIREBASE_OPTIONS }}" | base64 --decode > lib/firebase_options.dart
-          echo "${{ secrets.GOOGLE_SERVICE_PLIST }}" | base64 --decode > ios/Runner/GoogleService-Info.plist
+          echo "Decoding google-services.json..."
+          echo -n "${{ secrets.GOOGLE_SERVICE_JSON }}" | base64 --decode > android/app/google-services.json
+          echo "Decoding firebase_options.dart..."
+          echo -n "${{ secrets.FIREBASE_OPTIONS }}" | base64 --decode > lib/firebase_options.dart
+          echo "Decoding GoogleService-Info.plist..."
+          echo -n "${{ secrets.GOOGLE_SERVICE_PLIST }}" | base64 --decode > ios/Runner/GoogleService-Info.plist
           echo "Verifying decoded files..."
           ls -lh android/app/google-services.json
           ls -lh lib/firebase_options.dart
           ls -lh ios/Runner/GoogleService-Info.plist
           echo "Checking firebase_options.dart content (first 5 lines):"
-          head -n 5 lib/firebase_options.dart
+          head -n 5 lib/firebase_options.dart || echo "File is empty or unreadable"
 
       - name: Build APK
         run: flutter build apk --release --build-name="${{ github.event.inputs.version || github.ref_name }}" --build-number="${{ github.run_number }}"

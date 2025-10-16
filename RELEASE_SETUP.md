@@ -32,15 +32,20 @@ Go to your repository Settings → Secrets and variables → Actions, and add th
 
 5. **GOOGLE_SERVICE_JSON**
    - Base64 encoded version of `android/app/google-services.json`
-   - Generate with: `base64 -i android/app/google-services.json | pbcopy`
+   - Generate with: `base64 -i android/app/google-services.json | tr -d '\n' | pbcopy`
+   - **Important**: Remove all newlines from the base64 string
 
 6. **FIREBASE_OPTIONS**
    - Base64 encoded version of `lib/firebase_options.dart`
-   - Generate with: `base64 -i lib/firebase_options.dart | pbcopy`
+   - Generate with: `base64 -i lib/firebase_options.dart | tr -d '\n' | pbcopy`
+   - **Important**: Remove all newlines from the base64 string
 
 7. **GOOGLE_SERVICE_PLIST**
    - Base64 encoded version of `ios/Runner/GoogleService-Info.plist`
-   - Generate with: `base64 -i ios/Runner/GoogleService-Info.plist | pbcopy`
+   - Generate with: `base64 -i ios/Runner/GoogleService-Info.plist | tr -d '\n' | pbcopy`
+   - **Important**: Remove all newlines from the base64 string
+
+**Note**: When pasting secrets into GitHub, ensure there are NO extra spaces, newlines, or quotes around the base64 string. The secret should be a single continuous string of base64 characters.
 
 ## How to Create a Keystore (if you don't have one)
 
