@@ -6,25 +6,21 @@ import 'package:working_system_app/Others/Utils.dart';
 import 'package:working_system_app/Types/GigDetails.dart';
 import 'package:working_system_app/Widget/GigInformation.dart';
 
-class GigDetail extends StatefulWidget {
+class ScheduleGigDetails extends StatefulWidget {
   final String gigId;
   final String title;
-  final String sessionKey;
-  final Function clearSessionKey;
 
-  const GigDetail({
+  const ScheduleGigDetails({
     super.key,
     required this.gigId,
     required this.title,
-    required this.sessionKey,
-    required this.clearSessionKey,
   });
 
   @override
-  State<GigDetail> createState() => _GigDetailState();
+  State<ScheduleGigDetails> createState() => _ScheduleGigDetailsState();
 }
 
-class _GigDetailState extends State<GigDetail> {
+class _ScheduleGigDetailsState extends State<ScheduleGigDetails> {
   GigDetails? gigdetail;
   bool isLoading = true;
 
@@ -40,52 +36,6 @@ class _GigDetailState extends State<GigDetail> {
     final respond = jsonDecode(response.body) as Map<String, dynamic>;
     final parsed = GigDetails.fromJson(respond);
     return parsed;
-  }
-
-  Future<void> sendApplication() async {
-    final response = await Utils.client.post(
-      "/application/apply/${widget.gigId}",
-      headers: HttpHeaders.rawMap({
-        "platform": "mobile",
-        "cookie": widget.sessionKey,
-      }),
-    );
-    if (!mounted) return;
-    bool succeed = true;
-    switch (response.statusCode) {
-      case 404:
-        succeed = false;
-        await showStatusDialog(
-          title: "Gig Not Exist",
-          description:
-              "Seems that this gig is not exist, or has expired, or has been deactivated",
-        );
-      case 400:
-        succeed = false;
-        await showStatusDialog(
-          title: "Already Applied",
-          description: "You have already applied for this gig.",
-        );
-      case 500:
-        succeed = false;
-        await showStatusDialog(
-          title: "Unknown Error",
-          description: "Unknown error, please report to developer.",
-        );
-      case 401:
-        succeed = false;
-        widget.clearSessionKey();
-        await showStatusDialog(
-          title: "Please login first",
-          description: "Your session has expired, please login first.",
-        );
-    }
-    if (!succeed) return;
-    await showStatusDialog(
-      title: "Succeed",
-      description: "Application has been sent",
-    );
-    return;
   }
 
   Future<void> showStatusDialog({

@@ -1,12 +1,12 @@
 import 'package:json_annotation/json_annotation.dart';
-import 'ApplicationGig.dart';
+import 'Application.dart';
 import 'ApplicationPagination.dart';
 
 part 'UserApplication.g.dart';
 
 @JsonSerializable(explicitToJson: true)
 class UserApplication {
-  List<ApplicationGig> applications;
+  List<Application> applications;
   ApplicationPagination pagination;
 
   UserApplication({

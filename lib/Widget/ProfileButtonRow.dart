@@ -1,3 +1,4 @@
+import 'package:working_system_app/Pages/MyApplications.dart';
 import 'package:flutter/material.dart';
 import 'package:working_system_app/Pages/Reviews.dart';
 import 'package:working_system_app/Pages/UpdateUserInfo.dart';
@@ -30,7 +31,16 @@ class ProfileButtonRow extends StatelessWidget {
           iconColor: Colors.black,
           icon: Icons.business_center,
           text: "Job Requests",
-          onPressed: () {},
+          onPressed: () {
+            Navigator.of(context).push(
+              MaterialPageRoute(
+                builder: (context) => MyApplicationsPage(
+                  sessionKey: sessionKey,
+                  userId: profile.userId,
+                ),
+              ),
+            );
+          },
         ),
         CircleButton(
           iconColor: Colors.black,

@@ -71,7 +71,7 @@ class _RegisterState extends State<Register>
   }
 
   Future<(bool, String?)> register() async {
-    final response = await Utils.client.put(
+    final response = await Utils.client.post(
       "/user/register/worker",
       headers: HttpHeaders.rawMap({"platform": "mobile"}),
       body: HttpBody.json(registerForm.toJson()),

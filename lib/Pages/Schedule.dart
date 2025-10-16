@@ -8,6 +8,7 @@ import 'package:working_system_app/Types/CustomAppointment.dart';
 import 'package:working_system_app/Pages/AttendanceList.dart';
 import 'package:working_system_app/Widget/LoadingIndicator.dart';
 import 'package:intl/intl.dart';
+import 'package:working_system_app/Pages/ScheduleGigDetails.dart';
 
 class Schedule extends StatefulWidget {
   final String sessionKey;
@@ -342,12 +343,13 @@ class _AgendaItem extends StatelessWidget {
     final String timeFormat = DateFormat('jm').format(appointment.startTime) + ' - ' + DateFormat('jm').format(appointment.endTime);
     return InkWell(
       onTap: () {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            content: Text(
-              'Tapped on gig: ${appointment.subject}',
+        //navigate to schedule gig detail page 
+        Navigator.of(context).push(
+          MaterialPageRoute(
+            builder: (context) => ScheduleGigDetails(
+              gigId: appointment.gigId,
+              title: appointment.subject
             ),
-            duration: const Duration(seconds: 2),
           ),
         );
       },
