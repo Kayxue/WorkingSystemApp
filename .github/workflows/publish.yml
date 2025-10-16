@@ -73,12 +73,34 @@ jobs:
           echo "${{ secrets.GOOGLE_SERVICE_JSON }}" | base64 --decode > android/app/google-services.json
           echo "${{ secrets.FIREBASE_OPTIONS }}" | base64 --decode > lib/firebase_options.dart
           echo "${{ secrets.GOOGLE_SERVICE_PLIST }}" | base64 --decode > ios/Runner/GoogleService-Info.plist
+          echo "Verifying decoded files..."
+          ls -lh android/app/google-services.json
+          ls -lh lib/firebase_options.dart
+          ls -lh ios/Runner/GoogleService-Info.plist
+          echo "Checking firebase_options.dart content (first 5 lines):"
+          head -n 5 lib/firebase_options.dart
 
       - name: Build APK
         run: flutter build apk --release --build-name="${{ github.event.inputs.version || github.ref_name }}" --build-number="${{ github.run_number }}"
 
       - name: Build App Bundle
         run: flutter build appbundle --release --build-name="${{ github.event.inputs.version || github.ref_name }}" --build-number="${{ github.run_number }}"
+
+      - name: Build iOS IPA (No Code Sign)
+        run: flutter build ipa --release --no-codesign --build-name="${{ github.event.inputs.version || github.ref_name }}" --build-number="${{ github.run_number }}"
+
+      - name: Package IPA from Archive
+        run: |
+          cd build/ios/archive
+          ARCHIVE_NAME=$(ls -t | grep ".xcarchive" | head -n 1)
+          echo "Found archive: $ARCHIVE_NAME"
+          mkdir -p Payload
+          cp -r "$ARCHIVE_NAME/Products/Applications/Runner.app" Payload/
+          zip -r Runner.ipa Payload
+          mv Runner.ipa ../../../
+          cd ../../..
+          echo "IPA created at: $(pwd)/Runner.ipa"
+          ls -lh Runner.ipa
 
       - name: Get Release Version
         id: version
@@ -99,4 +121,5 @@ jobs:
           files: |
             build/app/outputs/flutter-apk/app-release.apk
             build/app/outputs/bundle/release/app-release.aab
+            Runner.ipa
           token: ${{ secrets.GITHUB_TOKEN }}

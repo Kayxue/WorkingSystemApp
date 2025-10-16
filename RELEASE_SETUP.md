@@ -80,18 +80,20 @@ git push origin v1.0.0
 
 3. **Builds the app**:
    - Generates Rust bridge code
-   - Builds release APK
-   - Builds App Bundle (AAB)
+   - Builds release APK (Android)
+   - Builds App Bundle (AAB for Google Play)
+   - Builds iOS IPA (unsigned, for development/testing)
 
 4. **Creates GitHub Release**:
    - Creates a new release with the specified version
-   - Uploads APK and AAB files as release assets
+   - Uploads APK, AAB, and IPA files as release assets
 
 ## Output Files
 
 The workflow generates:
-- `working-system-app-vX.X.X.apk` - Signed APK for direct installation
-- `working-system-app-vX.X.X.aab` - App Bundle for Google Play Store
+- `app-release.apk` - Signed APK for direct installation on Android devices
+- `app-release.aab` - App Bundle for Google Play Store submission
+- `Runner.ipa` - Unsigned iOS IPA for development/testing (cannot be installed on production devices)
 
 ## Troubleshooting
 
@@ -100,7 +102,9 @@ The workflow generates:
 1. **Keystore decode fails**: Ensure KEYSTORE_BASE64 secret is properly encoded
 2. **Signing fails**: Check that all keystore-related secrets are correct
 3. **Rust build fails**: Ensure your Rust code compiles locally first
-4. **NDK issues**: The workflow uses NDK r29c, ensure compatibility
+4. **NDK issues**: The workflow uses the latest available NDK on the runner
+5. **Firebase configuration missing**: Ensure all Firebase secrets are properly set
+6. **iOS IPA cannot be installed**: The IPA is unsigned and is for development/testing only. To install on devices, you need to sign it with a provisioning profile
 
 ### Testing Locally
 
