@@ -49,3 +49,10 @@ app.*.map.json
 firebase.json
 /lib/firebase_options.dart
 /ios/Runner/GoogleService-Info.plist
+
+# Keystore files (security)
+*.jks
+*.keystore
+key.properties
+android/key.properties
+android/app/keystore.jks
