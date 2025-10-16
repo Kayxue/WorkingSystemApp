@@ -35,50 +35,14 @@ jobs:
           toolchain: stable
           targets: aarch64-linux-android,armv7-linux-androideabi,x86_64-linux-android,i686-linux-android
 
-      - name: Install dependencies from Apt
-        run: |
-          sudo apt-get update -y
-          # Only essential packages for Flutter Android builds
-          sudo apt-get install -y curl git unzip xz-utils zip
-
-      - name: Clone Flutter
-        run: |
-          # Shallow-clone Flutter to reduce download size
-          git clone --depth 1 --branch stable https://github.com/flutter/flutter.git $RUNNER_TEMP/flutter
-
-          # Add Flutter to PATH
-          echo "$RUNNER_TEMP/flutter/bin" >> $GITHUB_PATH
-
-      - name: Install Flutter
-        # Running "flutter doctor" and precaching will download Flutter's dependencies
-        run: |
-          flutter doctor
-          flutter precache --android
-      
-      - name: Setup Android SDK
-        run: |
-          # Set Android SDK path
-          echo "ANDROID_HOME=$HOME/android-sdk" >> $GITHUB_ENV
-          echo "ANDROID_SDK_ROOT=$HOME/android-sdk" >> $GITHUB_ENV
-          
-          # Create SDK directory
-          mkdir -p $HOME/android-sdk/cmdline-tools
-          
-          # Download Android command line tools
-          cd $HOME/android-sdk/cmdline-tools
-          wget -q https://dl.google.com/android/repository/commandlinetools-linux-11076708_latest.zip
-          unzip -q commandlinetools-linux-11076708_latest.zip
-          mv cmdline-tools latest
-          rm commandlinetools-linux-11076708_latest.zip
-          
-          # Add to PATH
-          echo "$HOME/android-sdk/cmdline-tools/latest/bin" >> $GITHUB_PATH
-          echo "$HOME/android-sdk/platform-tools" >> $GITHUB_PATH
+      - name: Setup Flutter SDK
+        uses: flutter-actions/setup-flutter@v4
+        with:
+          channel: stable
+          version: latest
 
       - name: Accept Android Licenses
-        run: |
-          yes | $HOME/android-sdk/cmdline-tools/latest/bin/sdkmanager --licenses
-          $HOME/android-sdk/cmdline-tools/latest/bin/sdkmanager "platform-tools" "platforms;android-34" "build-tools;34.0.0"
+        run: yes | $ANDROID_HOME/cmdline-tools/latest/bin/sdkmanager --licenses || true
       
       - name: Install Dependencies
         run: flutter pub get
