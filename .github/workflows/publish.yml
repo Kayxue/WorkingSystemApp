@@ -35,11 +35,23 @@ jobs:
           toolchain: stable
           targets: aarch64-linux-android,armv7-linux-androideabi,x86_64-linux-android,i686-linux-android
 
-      - name: Setup Flutter SDK
-        uses: flutter-actions/setup-flutter@v4
-        with:
-          channel: stable
-          version: latest
+      - name: Install dependencies from Apt
+        run: |
+          sudo apt-get update -y
+          # Only essential packages for Flutter Android builds
+          sudo apt-get install -y curl git unzip xz-utils zip
+
+      - name: Clone Flutter
+        run: |
+          # Shallow-clone Flutter to reduce download size
+          git clone --depth 1 --branch stable https://github.com/flutter/flutter.git $RUNNER_TEMP/flutter
+
+          # Add Flutter to PATH
+          echo "$RUNNER_TEMP/flutter/bin" >> $GITHUB_PATH
+
+      - name: Install Flutter
+        # Running "flutter doctor" will download Flutter's dependencies
+        run: flutter doctor
       
       - name: Install Dependencies
         run: flutter pub get
@@ -95,6 +107,7 @@ jobs:
         uses: dtolnay/rust-toolchain@stable
         with:
           toolchain: stable
+          targets: aarch64-apple-ios,aarch64-apple-ios-sim,x86_64-apple-ios
 
       - name: Setup Flutter SDK
         uses: flutter-actions/setup-flutter@v4
@@ -114,6 +127,14 @@ jobs:
           echo "Verifying decoded files..."
           ls -lh lib/firebase_options.dart
           ls -lh ios/Runner/GoogleService-Info.plist
+
+      - name: Clean iOS Build
+        run: |
+          cd ios
+          rm -rf Pods Podfile.lock
+          pod cache clean --all || true
+          cd ..
+          flutter clean
 
       - name: Build iOS IPA (No Code Sign)
         run: flutter build ipa --release --no-codesign --build-name="${{ github.event.inputs.version || github.ref_name }}" --build-number="${{ github.run_number }}"
