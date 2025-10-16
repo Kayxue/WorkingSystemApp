@@ -14,10 +14,10 @@ on:
 permissions:
   contents: write
   
-jobs:  
-  build:      
-    name: Build & Release  
-    runs-on: macos-latest
+jobs:
+  build-android:
+    name: Build Android (APK & AAB)
+    runs-on: ubuntu-24.04-arm
     environment: BuildEnv
     steps:
       - name: Checkout repository
@@ -64,20 +64,56 @@ jobs:
           echo "${{ secrets.GOOGLE_SERVICE_JSON }}" | base64 --decode > android/app/google-services.json
           echo "Decoding firebase_options.dart..."
           echo "${{ secrets.FIREBASE_OPTIONS }}" | base64 --decode > lib/firebase_options.dart
-          echo "Decoding GoogleService-Info.plist..."
-          echo "${{ secrets.GOOGLE_SERVICE_PLIST }}" | base64 --decode > ios/Runner/GoogleService-Info.plist
           echo "Verifying decoded files..."
           ls -lh android/app/google-services.json
           ls -lh lib/firebase_options.dart
-          ls -lh ios/Runner/GoogleService-Info.plist
-          echo "Checking firebase_options.dart content (first 5 lines):"
-          head -n 5 lib/firebase_options.dart || echo "File is empty or unreadable"
 
       - name: Build APK
         run: flutter build apk --release --build-name="${{ github.event.inputs.version || github.ref_name }}" --build-number="${{ github.run_number }}"
 
       - name: Build App Bundle
         run: flutter build appbundle --release --build-name="${{ github.event.inputs.version || github.ref_name }}" --build-number="${{ github.run_number }}"
+
+      - name: Upload Android Artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: android-builds
+          path: |
+            build/app/outputs/flutter-apk/app-release.apk
+            build/app/outputs/bundle/release/app-release.aab
+          retention-days: 1
+
+  build-ios:
+    name: Build iOS (IPA)
+    runs-on: macos-latest
+    environment: BuildEnv
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+
+      - name: Setup Rust
+        uses: dtolnay/rust-toolchain@stable
+        with:
+          toolchain: stable
+
+      - name: Setup Flutter SDK
+        uses: flutter-actions/setup-flutter@v4
+        with:
+          channel: stable
+          version: latest
+      
+      - name: Install Dependencies
+        run: flutter pub get
+
+      - name: Decode Firebase Configuration Files
+        run: |
+          echo "Decoding firebase_options.dart..."
+          echo "${{ secrets.FIREBASE_OPTIONS }}" | base64 --decode > lib/firebase_options.dart
+          echo "Decoding GoogleService-Info.plist..."
+          echo "${{ secrets.GOOGLE_SERVICE_PLIST }}" | base64 --decode > ios/Runner/GoogleService-Info.plist
+          echo "Verifying decoded files..."
+          ls -lh lib/firebase_options.dart
+          ls -lh ios/Runner/GoogleService-Info.plist
 
       - name: Build iOS IPA (No Code Sign)
         run: flutter build ipa --release --no-codesign --build-name="${{ github.event.inputs.version || github.ref_name }}" --build-number="${{ github.run_number }}"
@@ -94,6 +130,30 @@ jobs:
           cd ../../..
           echo "IPA created at: $(pwd)/Runner.ipa"
           ls -lh Runner.ipa
+
+      - name: Upload iOS Artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: ios-builds
+          path: Runner.ipa
+          retention-days: 1
+
+  release:
+    name: Create GitHub Release
+    needs: [build-android, build-ios]
+    runs-on: ubuntu-latest
+    steps:
+      - name: Download Android Artifacts
+        uses: actions/download-artifact@v4
+        with:
+          name: android-builds
+          path: android-builds
+
+      - name: Download iOS Artifacts
+        uses: actions/download-artifact@v4
+        with:
+          name: ios-builds
+          path: ios-builds
 
       - name: Get Release Version
         id: version
@@ -112,7 +172,7 @@ jobs:
           draft: false
           prerelease: false
           files: |
-            build/app/outputs/flutter-apk/app-release.apk
-            build/app/outputs/bundle/release/app-release.aab
-            Runner.ipa
+            android-builds/app-release.apk
+            android-builds/app-release.aab
+            ios-builds/Runner.ipa
           token: ${{ secrets.GITHUB_TOKEN }}
