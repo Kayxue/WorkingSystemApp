@@ -33,7 +33,7 @@ jobs:
         uses: amyu/setup-android@v5
 
       - name: Accept Android Licenses
-        run: yes | sdkmanager --licenses || true
+        run: sdkmanager --licenses || true
 
       - name: Setup Rust
         uses: dtolnay/rust-toolchain@stable
