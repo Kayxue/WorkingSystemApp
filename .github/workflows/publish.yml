@@ -49,7 +49,7 @@ jobs:
   
       - name: Clone Flutter
         run: |
-            git clone --depth 1 --branch 3.27.3 https://github.com/flutter/flutter.git $RUNNER_TEMP/flutter
+            git clone --depth 1 --branch stable https://github.com/flutter/flutter.git $RUNNER_TEMP/flutter
             echo "$RUNNER_TEMP/flutter/bin" >> $GITHUB_PATH
 
       - name: Install and Check Flutter
