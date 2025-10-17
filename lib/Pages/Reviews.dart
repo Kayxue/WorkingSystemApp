@@ -54,24 +54,22 @@ class _ReviewsState extends State<Reviews> {
         padding: EdgeInsets.only(top: 16, right: 16, left: 16, bottom: 8),
         child: PagingListener(
           controller: _pagingController,
-          builder: (context, state, fetchNextPage) => Expanded(
-            child: RefreshIndicator(
-              onRefresh: () => Future.sync(() => _pagingController.refresh()),
-              child: PagedListView<int, WorkerReview>(
-                state: state,
-                fetchNextPage: fetchNextPage,
-                builderDelegate: PagedChildBuilderDelegate(
-                  itemBuilder: (context, item, index) => Card(
-                    clipBehavior: Clip.hardEdge,
-                    child: InkWell(
-                      splashColor: Colors.grey.withAlpha(30),
-                      onTap: () {
-                        //TDOO: Add rating page
-                      },
-                      child: ListTile(
-                        title: Text(item.title),
-                        subtitle: Text(item.employer.name),
-                      ),
+          builder: (context, state, fetchNextPage) => RefreshIndicator(
+            onRefresh: () => Future.sync(() => _pagingController.refresh()),
+            child: PagedListView<int, WorkerReview>(
+              state: state,
+              fetchNextPage: fetchNextPage,
+              builderDelegate: PagedChildBuilderDelegate(
+                itemBuilder: (context, item, index) => Card(
+                  clipBehavior: Clip.hardEdge,
+                  child: InkWell(
+                    splashColor: Colors.grey.withAlpha(30),
+                    onTap: () {
+                      //TDOO: Add rating page
+                    },
+                    child: ListTile(
+                      title: Text(item.title),
+                      subtitle: Text(item.employer.name),
                     ),
                   ),
                 ),
