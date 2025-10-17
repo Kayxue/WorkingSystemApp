@@ -1,14 +1,11 @@
 import 'dart:convert' show jsonDecode;
 
 import 'package:flutter/material.dart';
-import 'package:flutter_rating_bar/flutter_rating_bar.dart';
 import 'package:infinite_scroll_pagination/infinite_scroll_pagination.dart';
 import 'package:rhttp/rhttp.dart';
 import 'package:working_system_app/Others/Utils.dart';
 import 'package:working_system_app/Types/WorkerGivenReviewReturn.dart';
 import 'package:working_system_app/Types/WorkerRatings.dart';
-import 'package:working_system_app/Types/WorkerReview.dart';
-import 'package:working_system_app/Types/WorkerReviewReturn.dart';
 
 class GivenReview extends StatefulWidget {
   final String sessionKey;
