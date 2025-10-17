@@ -32,25 +32,16 @@ jobs:
       - name: Setup Android SDK
         uses: amyu/setup-android@v5
 
-      - name: Accept Android Licenses
-        run: sdkmanager --licenses || true
-
       - name: Setup Rust
         uses: dtolnay/rust-toolchain@stable
         with:
           toolchain: stable
           targets: aarch64-linux-android,armv7-linux-androideabi,x86_64-linux-android,i686-linux-android
 
-      - name: Install dependencies from Apt
-        run: |
-            sudo apt-get update -y
-
-            sudo apt-get install -y curl git unzip xz-utils zip libglu1-mesa
-  
-      - name: Clone Flutter
-        run: |
-            git clone --depth 1 --branch stable https://github.com/flutter/flutter.git $RUNNER_TEMP/flutter
-            echo "$RUNNER_TEMP/flutter/bin" >> $GITHUB_PATH
+      - name: Setup Flutter SDK
+        uses: subosito/flutter-action@v2
+        with:
+          channel: master
 
       - name: Install and Check Flutter
         run: flutter doctor
