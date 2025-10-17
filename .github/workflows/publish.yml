@@ -17,7 +17,7 @@ permissions:
 jobs:
   build-android:
     name: Build Android (APK & AAB)
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04-arm
     environment: BuildEnv
     steps:
       - name: Checkout repository
@@ -30,7 +30,7 @@ jobs:
           java-version: '21'
 
       - name: Setup Android SDK
-        uses: android-actions/setup-android@v3
+        uses: amyu/setup-android@v5
 
       - name: Setup Rust
         uses: dtolnay/rust-toolchain@stable
@@ -41,9 +41,50 @@ jobs:
       - name: Setup Flutter SDK
         uses: subosito/flutter-action@v2
         with:
-          channel: stable
+          channel: master
+      
+      - name: Force Pre-cache Android Artifacts
+        run: |
+          flutter precache --android
+          flutter clean
 
-      - name: Check Flutter
+      - name: Fix Flutter Cache for ARM64
+        run: |
+          echo "Fixing Flutter cache artifacts for ARM64 architecture..."
+          
+          # Detect Flutter installation path
+          FLUTTER_BIN=$(which flutter)
+          FLUTTER_ROOT=$(dirname $(dirname "$FLUTTER_BIN"))
+          FLUTTER_CACHE="$FLUTTER_ROOT/bin/cache/artifacts/engine"
+          
+          echo "Flutter binary: $FLUTTER_BIN"
+          echo "Flutter root: $FLUTTER_ROOT"
+          echo "Flutter cache: $FLUTTER_CACHE"
+          
+          # Check if cache directory exists
+          if [ -d "$FLUTTER_CACHE" ]; then
+            echo "Found Flutter cache directory"
+            
+            # Find all directories ending with linux-x64 and create arm64 copies
+            find "$FLUTTER_CACHE" -type d -name "*linux-x64" 2>/dev/null | while read x64_dir; do
+              arm64_dir="${x64_dir%-x64}-arm64"
+              
+              if [ ! -e "$arm64_dir" ]; then
+                echo "✓ Creating ARM64 version: $(basename $(dirname $arm64_dir))/$(basename $arm64_dir)"
+                cp -r "$x64_dir" "$arm64_dir"
+              else
+                echo "→ ARM64 version already exists: $(basename $(dirname $arm64_dir))/$(basename $arm64_dir)"
+              fi
+            done
+            
+            echo "✅ Cache fix completed successfully"
+          else
+            echo "❌ Flutter cache directory not found at $FLUTTER_CACHE"
+            echo "Available directories in Flutter root:"
+            ls -la "$FLUTTER_ROOT" 2>/dev/null || echo "Flutter root not accessible"
+          fi
+
+      - name: Install and Check Flutter
         run: flutter doctor
       
       - name: Install Dependencies
