@@ -28,6 +28,9 @@ jobs:
         with:
           distribution: 'temurin'
           java-version: '21'
+      
+      - name: Setup Android SDK
+        uses: android-actions/setup-android@v3
 
       - name: Setup Rust
         uses: dtolnay/rust-toolchain@stable
@@ -73,6 +76,32 @@ jobs:
 
       - name: Build App Bundle
         run: flutter build appbundle --release --build-name="${{ github.event.inputs.version || github.ref_name }}" --build-number="${{ github.run_number }}"
+
+      - name: Verify Build Outputs
+        run: |
+          echo "Checking for APK file..."
+          if [ -f "build/app/outputs/flutter-apk/app-release.apk" ]; then
+            echo "✅ APK found: build/app/outputs/flutter-apk/app-release.apk"
+            ls -lh build/app/outputs/flutter-apk/app-release.apk
+          else
+            echo "❌ APK not found at expected location"
+            echo "Contents of build/app/outputs/flutter-apk/:"
+            ls -la build/app/outputs/flutter-apk/ || echo "Directory does not exist"
+            echo "Contents of build/app/outputs/:"
+            ls -la build/app/outputs/ || echo "Directory does not exist"
+            exit 1
+          fi
+          
+          echo "Checking for AAB file..."
+          if [ -f "build/app/outputs/bundle/release/app-release.aab" ]; then
+            echo "✅ AAB found: build/app/outputs/bundle/release/app-release.aab"
+            ls -lh build/app/outputs/bundle/release/app-release.aab
+          else
+            echo "❌ AAB not found at expected location"
+            echo "Contents of build/app/outputs/bundle/release/:"
+            ls -la build/app/outputs/bundle/release/ || echo "Directory does not exist"
+            exit 1
+          fi
 
       - name: Upload Android Artifacts
         uses: actions/upload-artifact@v4
@@ -153,16 +182,28 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Download Android Artifacts
-        uses: actions/download-artifact@v4
+        uses: actions/download-artifact@v5
         with:
           name: android-builds
           path: android-builds
 
       - name: Download iOS Artifacts
-        uses: actions/download-artifact@v4
+        uses: actions/download-artifact@v5
         with:
           name: ios-builds
           path: ios-builds
+
+      - name: Verify Downloaded Artifacts
+        run: |
+          echo "=== Android Artifacts ==="
+          echo "Contents of android-builds directory:"
+          find android-builds -type f -name "*.apk" -o -name "*.aab" | head -10
+          ls -la android-builds/ || echo "android-builds directory not found"
+          
+          echo "=== iOS Artifacts ==="
+          echo "Contents of ios-builds directory:"
+          find ios-builds -type f -name "*.ipa" | head -10
+          ls -la ios-builds/ || echo "ios-builds directory not found"
 
       - name: Get Release Version
         id: version
@@ -173,6 +214,46 @@ jobs:
             echo "version=${{ github.ref_name }}" >> $GITHUB_OUTPUT
           fi
 
+      - name: Prepare Release Files
+        run: |
+          echo "Preparing release files..."
+          
+          # Find and copy APK file
+          APK_FILE=$(find android-builds -name "*.apk" -type f | head -1)
+          if [ -n "$APK_FILE" ]; then
+            echo "Found APK: $APK_FILE"
+            cp "$APK_FILE" ./app-release.apk
+            echo "✅ APK file prepared"
+          else
+            echo "❌ No APK file found in android-builds"
+            exit 1
+          fi
+          
+          # Find and copy AAB file
+          AAB_FILE=$(find android-builds -name "*.aab" -type f | head -1)
+          if [ -n "$AAB_FILE" ]; then
+            echo "Found AAB: $AAB_FILE"
+            cp "$AAB_FILE" ./app-release.aab
+            echo "✅ AAB file prepared"
+          else
+            echo "❌ No AAB file found in android-builds"
+            exit 1
+          fi
+          
+          # Find and copy IPA file
+          IPA_FILE=$(find ios-builds -name "*.ipa" -type f | head -1)
+          if [ -n "$IPA_FILE" ]; then
+            echo "Found IPA: $IPA_FILE"
+            cp "$IPA_FILE" ./Runner.ipa
+            echo "✅ IPA file prepared"
+          else
+            echo "❌ No IPA file found in ios-builds"
+            exit 1
+          fi
+          
+          echo "Release files prepared:"
+          ls -lh app-release.apk app-release.aab Runner.ipa
+
       - name: Create Release
         uses: softprops/action-gh-release@v2
         with:
@@ -181,7 +262,7 @@ jobs:
           draft: false
           prerelease: false
           files: |
-            android-builds/app-release.apk
-            android-builds/app-release.aab
-            ios-builds/Runner.ipa
+            app-release.apk
+            app-release.aab
+            Runner.ipa
           token: ${{ secrets.GITHUB_TOKEN }}
