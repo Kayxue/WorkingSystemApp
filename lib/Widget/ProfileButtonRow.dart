@@ -45,7 +45,7 @@ class ProfileButtonRow extends StatelessWidget {
         CircleButton(
           iconColor: Colors.black,
           icon: Icons.star,
-          text: "Employer Reviews",
+          text: "Gig Reviews",
           onPressed: () => Navigator.of(context).push<void>(
             MaterialPageRoute(
               builder: (context) => Reviews(sessionKey: sessionKey),
