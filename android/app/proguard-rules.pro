@@ -35,3 +35,17 @@
 # Rust FFI rules
 -keep class **.rust.** { *; }
 -keep class **.*Native* { *; }
+
+# Google Play Core (for deferred components and split install)
+-keep class com.google.android.play.core.** { *; }
+-dontwarn com.google.android.play.core.**
+
+# OkHttp (used by image cropping libraries)
+-keep class okhttp3.** { *; }
+-keep interface okhttp3.** { *; }
+-dontwarn okhttp3.**
+-dontwarn okio.**
+
+# UCrop library
+-keep class com.yalantis.ucrop.** { *; }
+-dontwarn com.yalantis.ucrop.**
