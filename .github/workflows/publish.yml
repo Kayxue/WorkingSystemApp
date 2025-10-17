@@ -28,15 +28,12 @@ jobs:
         with:
           distribution: 'temurin'
           java-version: '21'
-      
+
       - name: Setup Android SDK
-        uses: android-actions/setup-android@v3
-        with:
-          packages: |
-            platform-tools
-            platforms;android-34
-            build-tools;34.0.0
-            ndk;29.0.13846066
+        uses: amyu/setup-android@v5
+
+      - name: Accept Android Licenses
+        run: yes | sdkmanager --licenses || true
 
       - name: Setup Rust
         uses: dtolnay/rust-toolchain@stable
@@ -52,9 +49,6 @@ jobs:
 
       - name: Checkout flutter
         run: flutter doctor
-      
-      - name: Accept Android Licenses
-        run: yes | sdkmanager --licenses || true
       
       - name: Install Dependencies
         run: flutter pub get
