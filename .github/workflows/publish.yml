@@ -32,16 +32,11 @@ jobs:
       - name: Setup Android SDK
         uses: android-actions/setup-android@v3
         with:
-          packages: 'platform-tools'
-
-      - name: Install Android SDK packages
-        run: |
-          echo "Installing Android SDK packages..."
-          yes | $ANDROID_HOME/cmdline-tools/latest/bin/sdkmanager --licenses || true
-          $ANDROID_HOME/cmdline-tools/latest/bin/sdkmanager --install \
-            "platform-tools" \
-            "build-tools;34.0.0" || true
-          echo "Android SDK packages installation completed"
+          packages: |
+            platform-tools
+            platforms;android-34
+            build-tools;34.0.0
+            ndk;29.0.13846066
 
       - name: Setup Rust
         uses: dtolnay/rust-toolchain@stable
@@ -59,7 +54,7 @@ jobs:
         run: flutter doctor
       
       - name: Accept Android Licenses
-        run: yes | $ANDROID_HOME/cmdline-tools/latest/bin/sdkmanager --licenses || true
+        run: yes | sdkmanager --licenses || true
       
       - name: Install Dependencies
         run: flutter pub get
