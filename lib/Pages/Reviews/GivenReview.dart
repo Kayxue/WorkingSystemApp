@@ -1,23 +1,26 @@
 import 'dart:convert' show jsonDecode;
 
 import 'package:flutter/material.dart';
+import 'package:flutter_rating_bar/flutter_rating_bar.dart';
 import 'package:infinite_scroll_pagination/infinite_scroll_pagination.dart';
 import 'package:rhttp/rhttp.dart';
 import 'package:working_system_app/Others/Utils.dart';
+import 'package:working_system_app/Types/WorkerGivenReviewReturn.dart';
+import 'package:working_system_app/Types/WorkerRatings.dart';
 import 'package:working_system_app/Types/WorkerReview.dart';
 import 'package:working_system_app/Types/WorkerReviewReturn.dart';
 
-class PendingReview extends StatefulWidget {
+class GivenReview extends StatefulWidget {
   final String sessionKey;
 
-  const PendingReview({super.key, required this.sessionKey});
+  const GivenReview({super.key, required this.sessionKey});
 
   @override
-  State<PendingReview> createState() => _PendingReviewState();
+  State<GivenReview> createState() => _GivenReviewState();
 }
 
-class _PendingReviewState extends State<PendingReview> {
-  late final _pagingController = PagingController<int, WorkerReview>(
+class _GivenReviewState extends State<GivenReview> {
+  late final _pagingController = PagingController<int, WorkerRatings>(
     getNextPageKey: (state) =>
         state.lastPageIsEmpty ? null : state.nextIntPageKey,
     fetchPage: (pageKey) async {
@@ -26,9 +29,9 @@ class _PendingReviewState extends State<PendingReview> {
     },
   );
 
-  Future<List<WorkerReview>> fetchWorks({int page = 1}) async {
+  Future<List<WorkerRatings>> fetchWorks({int page = 1}) async {
     final response = await Utils.client.get(
-      "/rating/list/worker?page=$page",
+      "/rating/my-ratings/worker?page=$page",
       headers: HttpHeaders.rawMap({
         "platform": "mobile",
         "cookie": widget.sessionKey,
@@ -42,8 +45,8 @@ class _PendingReviewState extends State<PendingReview> {
       return [];
     }
     final respond = jsonDecode(response.body) as Map<String, dynamic>;
-    final parsed = WorkerReviewReturn.fromJson(respond);
-    return parsed.ratableGigs;
+    final parsed = WorkerGivenReviewReturn.fromJson(respond);
+    return parsed.myRatings;
   }
 
   @override
@@ -54,7 +57,7 @@ class _PendingReviewState extends State<PendingReview> {
         controller: _pagingController,
         builder: (context, state, fetchNextPage) => RefreshIndicator(
           onRefresh: () => Future.sync(() => _pagingController.refresh()),
-          child: PagedListView<int, WorkerReview>(
+          child: PagedListView<int, WorkerRatings>(
             state: state,
             fetchNextPage: fetchNextPage,
             builderDelegate: PagedChildBuilderDelegate(
@@ -63,11 +66,22 @@ class _PendingReviewState extends State<PendingReview> {
                 child: InkWell(
                   splashColor: Colors.grey.withAlpha(30),
                   onTap: () {
-                    //TDOO: I don't know
+                    //TDOO: Add rating page
                   },
                   child: ListTile(
-                    title: Text(item.title),
-                    subtitle: Text(item.employer.name),
+                    title: Text(item.gig.title),
+                    subtitle: Text(item.comment),
+                    trailing: Row(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        Text(
+                          item.ratingValue.toStringAsFixed(1),
+                          style: TextStyle(fontSize: 24, color: Colors.amber),
+                        ),
+                        SizedBox(width: 4),
+                        Icon(Icons.star, color: Colors.amber),
+                      ],
+                    ),
                   ),
                 ),
               ),

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:working_system_app/Pages/Reviews/GivenReview.dart';
 import 'package:working_system_app/Pages/Reviews/PendingReview.dart';
 
 class Reviews extends StatelessWidget {
@@ -24,7 +25,7 @@ class Reviews extends StatelessWidget {
         body: TabBarView(
           children: [
             PendingReview(sessionKey: sessionKey),
-            Center(child: Text("Already Given Reviews")),
+            GivenReview(sessionKey: sessionKey),
           ],
         ),
       ),
