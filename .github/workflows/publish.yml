@@ -41,7 +41,7 @@ jobs:
       - name: Setup Flutter SDK
         uses: subosito/flutter-action@v2
         with:
-          channel: master
+          channel: stable
       
       - name: Force Pre-cache Android Artifacts
         run: |
