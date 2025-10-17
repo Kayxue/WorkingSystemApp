@@ -30,7 +30,7 @@ jobs:
           java-version: '21'
       
       - name: Setup Android SDK
-        uses: android-actions/setup-android@v3
+        uses: android-actions/setup-android@v3.1.0
 
       - name: Setup Rust
         uses: dtolnay/rust-toolchain@stable
@@ -44,11 +44,30 @@ jobs:
           channel: master
           flutter-version: latest
 
-      - name: Checkout flutter
+      - name: Verify Flutter Setup
         run: flutter doctor
       
       - name: Accept Android Licenses
         run: yes | $ANDROID_HOME/cmdline-tools/latest/bin/sdkmanager --licenses || true
+      
+      - name: Install Required Android Packages
+        run: |
+          echo "Installing required Android packages..."
+          $ANDROID_HOME/cmdline-tools/latest/bin/sdkmanager --install "platform-tools" "platforms;android-34" "build-tools;34.0.0" "ndk;29.0.13846066" || true
+          echo "Android packages installation completed"
+      
+      - name: Verify Android SDK Setup
+        run: |
+          echo "Android SDK Home: $ANDROID_HOME"
+          echo "Android SDK Contents:"
+          ls -la $ANDROID_HOME/
+          echo "Command line tools:"
+          ls -la $ANDROID_HOME/cmdline-tools/
+          echo "SDK Manager version:"
+          $ANDROID_HOME/cmdline-tools/latest/bin/sdkmanager --version || echo "SDK Manager not found"
+      
+      - name: Clean Flutter Project
+        run: flutter clean
       
       - name: Install Dependencies
         run: flutter pub get
