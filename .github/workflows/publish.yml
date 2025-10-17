@@ -262,7 +262,7 @@ jobs:
           fi
           
           echo "Release files prepared:"
-          ls -lh "${REPO_NAME}-${VERSION}.*"
+          ls -lh ${REPO_NAME}-${VERSION}.*
 
       - name: Create Release
         uses: softprops/action-gh-release@v2
