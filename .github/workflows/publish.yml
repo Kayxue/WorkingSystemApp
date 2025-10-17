@@ -17,7 +17,7 @@ permissions:
 jobs:
   build-android:
     name: Build Android (APK & AAB)
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04-arm
     environment: BuildEnv
     steps:
       - name: Checkout repository
@@ -38,12 +38,15 @@ jobs:
           toolchain: stable
           targets: aarch64-linux-android,armv7-linux-androideabi,x86_64-linux-android,i686-linux-android
 
-      - name: Setup Flutter SDK
-        uses: flutter-actions/setup-flutter@v4
+      - name: Set up Flutter
+        uses: subosito/flutter-action@v2
         with:
-          channel: stable
-          version: latest
+          channel: master
+          flutter-version: latest
 
+      - name: Checkout flutter
+        run: flutter doctor
+      
       - name: Accept Android Licenses
         run: yes | $ANDROID_HOME/cmdline-tools/latest/bin/sdkmanager --licenses || true
       
