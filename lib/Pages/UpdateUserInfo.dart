@@ -170,6 +170,7 @@ class _UpdateUserInfoState extends State<UpdateUserInfo>
                         onChanged: (value) => setState(() {
                           widget.workerProfile.firstName = value;
                         }),
+                        onTapOutside: (event) => FocusManager.instance.primaryFocus?.unfocus(),
                       ),
                       SizedBox(height: 16),
                       TextField(
@@ -180,6 +181,7 @@ class _UpdateUserInfoState extends State<UpdateUserInfo>
                         onChanged: (value) => setState(() {
                           widget.workerProfile.lastName = value;
                         }),
+                        onTapOutside: (event) => FocusManager.instance.primaryFocus?.unfocus(),
                       ),
                       SizedBox(height: 16),
                       TextField(
@@ -190,6 +192,7 @@ class _UpdateUserInfoState extends State<UpdateUserInfo>
                         onChanged: (value) => setState(() {
                           widget.workerProfile.phoneNumber = value;
                         }),
+                        onTapOutside: (event) => FocusManager.instance.primaryFocus?.unfocus(),
                       ),
                       SizedBox(height: 16),
                       Text('Highest education', style: TextStyle(fontSize: 16)),
@@ -238,6 +241,7 @@ class _UpdateUserInfoState extends State<UpdateUserInfo>
                               ? null
                               : value;
                         }),
+                        onTapOutside: (event) => FocusManager.instance.primaryFocus?.unfocus(),
                       ),
                       SizedBox(height: 16),
                       TextField(
@@ -248,6 +252,7 @@ class _UpdateUserInfoState extends State<UpdateUserInfo>
                               ? null
                               : value;
                         }),
+                        onTapOutside: (event) => FocusManager.instance.primaryFocus?.unfocus(),
                       ),
                       SizedBox(height: 16),
                       Text('Study status', style: TextStyle(fontSize: 16)),
