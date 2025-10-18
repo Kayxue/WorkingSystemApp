@@ -51,7 +51,8 @@ class _FilterBarState extends State<FilterBar> {
             border: OutlineInputBorder(),
           ),
           onChanged: (value) => widget.textSearchObservable.add(value),
-          onTapOutside: (event) => FocusManager.instance.primaryFocus?.unfocus(),
+          onTapOutside: (event) =>
+              FocusManager.instance.primaryFocus?.unfocus(),
         ),
         const SizedBox(height: 10),
         Row(

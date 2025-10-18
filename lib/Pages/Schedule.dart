@@ -111,16 +111,26 @@ class _ScheduleState extends State<Schedule> {
 
   void _updateSelectedDayAppointments(DateTime selectedDate) {
     if (_getCalendarDataSource().appointments == null) return;
-    List<CustomAppointment> allAppointments =
-        _getCalendarDataSource().appointments!.cast<CustomAppointment>();
+    List<CustomAppointment> allAppointments = _getCalendarDataSource()
+        .appointments!
+        .cast<CustomAppointment>();
 
     final selectedApps = allAppointments.where((appointment) {
       final DateTime start = appointment.startTime;
       final DateTime end = appointment.endTime;
-      final DateTime selectedStartOfDay =
-          DateTime(selectedDate.year, selectedDate.month, selectedDate.day);
+      final DateTime selectedStartOfDay = DateTime(
+        selectedDate.year,
+        selectedDate.month,
+        selectedDate.day,
+      );
       final DateTime selectedEndOfDay = DateTime(
-          selectedDate.year, selectedDate.month, selectedDate.day, 23, 59, 59);
+        selectedDate.year,
+        selectedDate.month,
+        selectedDate.day,
+        23,
+        59,
+        59,
+      );
       return (start.isBefore(selectedEndOfDay) ||
               start.isAtSameMomentAs(selectedEndOfDay)) &&
           (end.isAfter(selectedStartOfDay) ||
@@ -191,7 +201,9 @@ class _ScheduleState extends State<Schedule> {
                           WidgetsBinding.instance.addPostFrameCallback((_) {
                             setState(() {
                               currentSelectedDate = details.date!;
-                              _updateSelectedDayAppointments(currentSelectedDate);
+                              _updateSelectedDayAppointments(
+                                currentSelectedDate,
+                              );
                               if (agendaScrollController.hasClients) {
                                 agendaScrollController.jumpTo(0);
                               }
@@ -214,7 +226,6 @@ class _ScheduleState extends State<Schedule> {
                             currentSelectedDate,
                             viewDate.year,
                             viewDate.month,
-                            
                           );
                           setState(() {
                             currentSelectedDate = adjustedDate;
@@ -231,14 +242,13 @@ class _ScheduleState extends State<Schedule> {
                   Padding(
                     padding: const EdgeInsets.symmetric(vertical: 8.0),
                     child: Text(
-                      DateFormat('MMMM d, yyyy')
-                          .format(currentSelectedDate),
+                      DateFormat('MMMM d, yyyy').format(currentSelectedDate),
                       style: TextStyle(
                         fontSize: 18,
                         fontWeight: FontWeight.bold,
                       ),
                     ),
-                  ),      
+                  ),
                   Expanded(
                     child: selectedDayAppointments.isEmpty
                         ? Center(
@@ -322,33 +332,35 @@ class _AgendaItem extends StatelessWidget {
   final CustomAppointment appointment;
   final DateTime selectedDate;
 
-  const _AgendaItem({
-    required this.appointment,
-    required this.selectedDate,
-  });
+  const _AgendaItem({required this.appointment, required this.selectedDate});
 
   String _calculateDayOffset() {
     final startDay = DateTime(
-        appointment.startTime.year,
-        appointment.startTime.month,
-        appointment.startTime.day);
+      appointment.startTime.year,
+      appointment.startTime.month,
+      appointment.startTime.day,
+    );
     final selectedDay = DateTime(
-        selectedDate.year, selectedDate.month, selectedDate.day);
+      selectedDate.year,
+      selectedDate.month,
+      selectedDate.day,
+    );
     final diff = selectedDay.difference(startDay).inDays;
     return 'Day ${diff + 1} / ${appointment.endTime.difference(startDay).inDays + 1}';
   }
 
   @override
   Widget build(BuildContext context) {
-    final String timeFormat = DateFormat('jm').format(appointment.startTime) + ' - ' + DateFormat('jm').format(appointment.endTime);
+    final String timeFormat =
+        '${DateFormat('jm').format(appointment.startTime)} - ${DateFormat('jm').format(appointment.endTime)}';
     return InkWell(
       onTap: () {
-        //navigate to schedule gig detail page 
+        //navigate to schedule gig detail page
         Navigator.of(context).push(
           MaterialPageRoute(
             builder: (context) => ScheduleGigDetails(
               gigId: appointment.gigId,
-              title: appointment.subject
+              title: appointment.subject,
             ),
           ),
         );
@@ -366,7 +378,7 @@ class _AgendaItem extends StatelessWidget {
                 crossAxisAlignment: CrossAxisAlignment.end,
                 children: [
                   Text(
-                    DateFormat('j').format(appointment.startTime), 
+                    DateFormat('j').format(appointment.startTime),
                     style: TextStyle(
                       fontSize: 14,
                       fontWeight: FontWeight.w600,
@@ -375,23 +387,20 @@ class _AgendaItem extends StatelessWidget {
                   ),
                   Text(
                     _calculateDayOffset(),
-                    style: TextStyle(
-                      fontSize: 12,
-                      color: Colors.grey,
-                    ),
+                    style: TextStyle(fontSize: 12, color: Colors.grey),
                   ),
                 ],
               ),
-            ),           
+            ),
             SizedBox(width: 8),
             Expanded(
-              child: Container( 
+              child: Container(
                 padding: const EdgeInsets.symmetric(horizontal: 2.0),
                 decoration: BoxDecoration(
                   border: Border.all(color: appointment.color, width: 4),
                   color: appointment.color,
                   borderRadius: BorderRadius.circular(8),
-                ),       
+                ),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
@@ -405,10 +414,7 @@ class _AgendaItem extends StatelessWidget {
                     ),
                     Text(
                       timeFormat,
-                      style: TextStyle(
-                        fontSize: 16,
-                        color: Colors.grey[600],
-                      ),
+                      style: TextStyle(fontSize: 16, color: Colors.grey[600]),
                     ),
                   ],
                 ),

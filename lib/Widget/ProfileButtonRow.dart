@@ -13,7 +13,7 @@ class ProfileButtonRow extends StatelessWidget {
   final Function refetchProfile;
   final WorkerProfile profile;
 
-  ProfileButtonRow({
+  const ProfileButtonRow({
     super.key,
     required this.sessionKey,
     required this.clearSessionKey,

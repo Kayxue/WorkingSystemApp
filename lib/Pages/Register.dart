@@ -14,8 +14,7 @@ class Register extends StatefulWidget {
   State<Register> createState() => _RegisterState();
 }
 
-class _RegisterState extends State<Register>
-    with TickerProviderStateMixin {
+class _RegisterState extends State<Register> with TickerProviderStateMixin {
   WorkerRegisterForm registerForm = WorkerRegisterForm();
   String confirmPassword = '';
 

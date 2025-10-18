@@ -29,7 +29,8 @@ class MyApplicationsPage extends StatefulWidget {
   State<MyApplicationsPage> createState() => _MyApplicationsPageState();
 }
 
-class _MyApplicationsPageState extends State<MyApplicationsPage> with SingleTickerProviderStateMixin {
+class _MyApplicationsPageState extends State<MyApplicationsPage>
+    with SingleTickerProviderStateMixin {
   late TabController _tabController;
   final int _limit = 30;
 
@@ -63,7 +64,8 @@ class _MyApplicationsPageState extends State<MyApplicationsPage> with SingleTick
 
     _tabStates.forEach((index, state) {
       state.scrollController.addListener(() {
-        if (state.scrollController.position.pixels >= state.scrollController.position.maxScrollExtent - 100 &&
+        if (state.scrollController.position.pixels >=
+                state.scrollController.position.maxScrollExtent - 100 &&
             state.hasMore &&
             !state.isLoadingMore) {
           _fetchApplications(tabIndex: index);
@@ -77,11 +79,16 @@ class _MyApplicationsPageState extends State<MyApplicationsPage> with SingleTick
   @override
   void dispose() {
     _tabController.dispose();
-    _tabStates.values.forEach((state) => state.scrollController.dispose());
+    for (var state in _tabStates.values) {
+      state.scrollController.dispose();
+    }
     super.dispose();
   }
 
-  Future<void> _fetchApplications({required int tabIndex, bool isRefresh = false}) async {
+  Future<void> _fetchApplications({
+    required int tabIndex,
+    bool isRefresh = false,
+  }) async {
     final state = _tabStates[tabIndex]!;
     final status = _tabIndexToStatus[tabIndex]!;
 
@@ -102,9 +109,7 @@ class _MyApplicationsPageState extends State<MyApplicationsPage> with SingleTick
     try {
       final response = await Utils.client.get(
         '/application/my-applications?limit=$_limit&offset=${state.offset}&status=$status',
-        headers: HttpHeaders.rawMap({
-          'cookie': widget.sessionKey,
-        })
+        headers: HttpHeaders.rawMap({'cookie': widget.sessionKey}),
       );
 
       if (response.statusCode == 200) {
@@ -117,14 +122,16 @@ class _MyApplicationsPageState extends State<MyApplicationsPage> with SingleTick
         });
       } else {
         ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('Failed to load applications: ${response.body}')),
+          SnackBar(
+            content: Text('Failed to load applications: ${response.body}'),
+          ),
         );
         setState(() => state.hasMore = false);
       }
     } catch (e) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('An error occurred: $e')),
-      );
+      ScaffoldMessenger.of(
+        context,
+      ).showSnackBar(SnackBar(content: Text('An error occurred: $e')));
       setState(() => state.hasMore = false);
     } finally {
       setState(() {
@@ -138,10 +145,8 @@ class _MyApplicationsPageState extends State<MyApplicationsPage> with SingleTick
     try {
       final response = await Utils.client.put(
         '/application/$gigId/confirm',
-        headers: HttpHeaders.rawMap({
-          'cookie': widget.sessionKey,
-        }),
-        body: HttpBody.json({'action': action})
+        headers: HttpHeaders.rawMap({'cookie': widget.sessionKey}),
+        body: HttpBody.json({'action': action}),
       );
 
       if (response.statusCode == 200) {
@@ -155,9 +160,9 @@ class _MyApplicationsPageState extends State<MyApplicationsPage> with SingleTick
         );
       }
     } catch (e) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('An error occurred: $e')),
-      );
+      ScaffoldMessenger.of(
+        context,
+      ).showSnackBar(SnackBar(content: Text('An error occurred: $e')));
     }
   }
 
@@ -165,15 +170,13 @@ class _MyApplicationsPageState extends State<MyApplicationsPage> with SingleTick
     try {
       final response = await Utils.client.post(
         '/application/cancel/$applicationId',
-        headers: HttpHeaders.rawMap({
-          'cookie': widget.sessionKey,
-        }),
+        headers: HttpHeaders.rawMap({'cookie': widget.sessionKey}),
       );
 
       if (response.statusCode == 200) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text('Application withdrawn!')),
-        );
+        ScaffoldMessenger.of(
+          context,
+        ).showSnackBar(const SnackBar(content: Text('Application withdrawn!')));
         _fetchApplications(tabIndex: _tabController.index, isRefresh: true);
       } else {
         ScaffoldMessenger.of(context).showSnackBar(
@@ -181,48 +184,28 @@ class _MyApplicationsPageState extends State<MyApplicationsPage> with SingleTick
         );
       }
     } catch (e) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('An error occurred: $e')),
-      );
+      ScaffoldMessenger.of(
+        context,
+      ).showSnackBar(SnackBar(content: Text('An error occurred: $e')));
     }
   }
 
   @override
   Widget build(BuildContext context) {
-    final double screenWidth = MediaQuery.of(context).size.width;
-    const double tabSizeRatio = 0.15;
-    final double tabWidth = screenWidth * tabSizeRatio;
-    
     return Scaffold(
       appBar: AppBar(
-        title: const Text('我的申請', style: TextStyle(fontWeight: FontWeight.bold)),
+        title: const Text('我的申請'),
         backgroundColor: Colors.white,
         foregroundColor: Colors.black,
         elevation: 1,
-        titleSpacing: 0.0,  
+        titleSpacing: 0.0,
         bottom: TabBar(
           controller: _tabController,
-          labelColor: Colors.blue,
-          unselectedLabelColor: Colors.black,
-          indicatorColor: Colors.blue,
-          isScrollable: true,
           tabs: [
-            SizedBox(
-              width: tabWidth,
-              child: const Tab(text: '待回覆'),
-            ),
-            SizedBox(
-              width: tabWidth,
-              child: const Tab(text: '待雇主處理'),
-            ),
-            SizedBox(
-              width: tabWidth,
-              child: const Tab(text: '已確認'),
-            ),
-            SizedBox(
-              width: tabWidth,
-              child: const Tab(text: '已拒絕'),
-            ),
+            const Tab(text: '未回覆'),
+            const Tab(text: '審核中'),
+            const Tab(text: '已接受'),
+            const Tab(text: '已拒絕'),
           ],
         ),
       ),
@@ -242,12 +225,13 @@ class _MyApplicationsPageState extends State<MyApplicationsPage> with SingleTick
 
     if (state.applications.isEmpty) {
       return RefreshIndicator(
-        onRefresh: () => _fetchApplications(tabIndex: tabIndex, isRefresh: true),
+        onRefresh: () =>
+            _fetchApplications(tabIndex: tabIndex, isRefresh: true),
         child: Stack(
-          children: [ 
+          children: [
             ListView(), // Required for RefreshIndicator to work on empty list
             const Center(child: Text('沒有相關的申請記錄')),
-          ], 
+          ],
         ),
       );
     }
@@ -268,8 +252,10 @@ class _MyApplicationsPageState extends State<MyApplicationsPage> with SingleTick
           final app = state.applications[index];
           return ApplicationCard(
             application: app,
-            onAccept: () => _handleApplicationAction(app.applicationId, 'accept'),
-            onReject: () => _handleApplicationAction(app.applicationId, 'reject'),
+            onAccept: () =>
+                _handleApplicationAction(app.applicationId, 'accept'),
+            onReject: () =>
+                _handleApplicationAction(app.applicationId, 'reject'),
             onWithdraw: () => _withdrawApplication(app.applicationId),
           );
         },
@@ -307,25 +293,37 @@ class ApplicationCard extends StatelessWidget {
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 Expanded(
-                    child: Text(application.employerName,
-                        style: const TextStyle(fontSize: 14, color: Colors.grey),
-                        overflow: TextOverflow.ellipsis)),
+                  child: Text(
+                    application.employerName,
+                    style: const TextStyle(fontSize: 14, color: Colors.grey),
+                    overflow: TextOverflow.ellipsis,
+                  ),
+                ),
                 _buildStatusTag(application.status),
               ],
             ),
             const SizedBox(height: 8),
-            Text(application.gigTitle, style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
+            Text(
+              application.gigTitle,
+              style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+            ),
             const SizedBox(height: 8),
-            Text('工作日期: ${application.workDate}', style: const TextStyle(fontSize: 14, color: Colors.grey)),
+            Text(
+              '工作日期: ${application.workDate}',
+              style: const TextStyle(fontSize: 14, color: Colors.grey),
+            ),
             const SizedBox(height: 15),
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                Text('申請於: ${application.appliedAt.split('T')[0]}', style: const TextStyle(fontSize: 12, color: Colors.grey)),
+                Text(
+                  '申請於: ${application.appliedAt.split('T')[0]}',
+                  style: const TextStyle(fontSize: 12, color: Colors.grey),
+                ),
                 if (_buildActionButtons(context).isNotEmpty)
                   Row(children: _buildActionButtons(context)),
               ],
-            )
+            ),
           ],
         ),
       ),
@@ -368,7 +366,10 @@ class ApplicationCard extends StatelessWidget {
         text = status;
         color = Colors.grey;
     }
-    return Text(text, style: TextStyle(color: color, fontWeight: FontWeight.bold));
+    return Text(
+      text,
+      style: TextStyle(color: color, fontWeight: FontWeight.bold),
+    );
   }
 
   List<Widget> _buildActionButtons(BuildContext context) {
@@ -380,7 +381,9 @@ class ApplicationCard extends StatelessWidget {
           ElevatedButton(onPressed: onAccept, child: const Text('接受')),
         ];
       case 'pending_employer_review':
-        return [OutlinedButton(onPressed: onWithdraw, child: const Text('取消申請'))];
+        return [
+          OutlinedButton(onPressed: onWithdraw, child: const Text('取消申請')),
+        ];
       default:
         return [];
     }

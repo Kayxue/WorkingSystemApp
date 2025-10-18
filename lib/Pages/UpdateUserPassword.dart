@@ -93,7 +93,8 @@ class _UpdateUserPasswordState extends State<UpdateUserPassword> {
                             currentPassword = value;
                           }),
                           obscureText: true,
-                          onTapOutside: (event) => FocusManager.instance.primaryFocus?.unfocus(),
+                          onTapOutside: (event) =>
+                              FocusManager.instance.primaryFocus?.unfocus(),
                         ),
                         const SizedBox(height: 16),
                         TextField(
@@ -102,7 +103,8 @@ class _UpdateUserPasswordState extends State<UpdateUserPassword> {
                             newPassword = value;
                           }),
                           obscureText: true,
-                          onTapOutside: (event) => FocusManager.instance.primaryFocus?.unfocus(),
+                          onTapOutside: (event) =>
+                              FocusManager.instance.primaryFocus?.unfocus(),
                         ),
                         const SizedBox(height: 16),
                         TextField(
@@ -113,7 +115,8 @@ class _UpdateUserPasswordState extends State<UpdateUserPassword> {
                             confirmPassword = value;
                           }),
                           obscureText: true,
-                          onTapOutside: (event) => FocusManager.instance.primaryFocus?.unfocus(),
+                          onTapOutside: (event) =>
+                              FocusManager.instance.primaryFocus?.unfocus(),
                         ),
                       ],
                     ),
