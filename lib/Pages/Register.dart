@@ -5,7 +5,7 @@ import 'package:flutter_slidable/flutter_slidable.dart';
 import 'package:multi_dropdown/multi_dropdown.dart';
 import 'package:rhttp/rhttp.dart';
 import 'package:working_system_app/Others/Utils.dart';
-import 'package:working_system_app/Types/WorkerRegisterForm.dart';
+import 'package:working_system_app/Types/JSONObject/WorkerRegisterForm.dart';
 import 'package:working_system_app/Widget/JobExperienceEditor.dart';
 
 class Register extends StatefulWidget {
@@ -285,8 +285,8 @@ class _RegisterState extends State<Register>
                         removeJobExperience: removeJobExperience,
                         addJobExperience: addJobExperience,
                         editJobExperience: editJobExperience,
-                        jobExperience: registerForm.jobExperience,
-                        controller: slidableController,
+                        experienceList: registerForm.jobExperience,
+                        tickerProvider: this,
                       ),
                       SizedBox(height: 16),
                     ],

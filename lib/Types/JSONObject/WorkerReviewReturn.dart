@@ -1,6 +1,6 @@
 import 'package:json_annotation/json_annotation.dart';
-import 'package:working_system_app/Types/Pagination.dart';
-import 'package:working_system_app/Types/WorkerReview.dart';
+import 'package:working_system_app/Types/JSONObject/Pagination.dart';
+import 'package:working_system_app/Types/JSONObject/WorkerReview.dart';
 
 part 'WorkerReviewReturn.g.dart';
 

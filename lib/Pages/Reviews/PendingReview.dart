@@ -4,8 +4,8 @@ import 'package:flutter/material.dart';
 import 'package:infinite_scroll_pagination/infinite_scroll_pagination.dart';
 import 'package:rhttp/rhttp.dart';
 import 'package:working_system_app/Others/Utils.dart';
-import 'package:working_system_app/Types/WorkerReview.dart';
-import 'package:working_system_app/Types/WorkerReviewReturn.dart';
+import 'package:working_system_app/Types/JSONObject/WorkerReview.dart';
+import 'package:working_system_app/Types/JSONObject/WorkerReviewReturn.dart';
 
 class PendingReview extends StatefulWidget {
   final String sessionKey;

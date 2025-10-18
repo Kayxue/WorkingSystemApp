@@ -6,8 +6,8 @@ import 'dart:convert';
 
 import 'package:working_system_app/Others/Utils.dart';
 import 'package:working_system_app/Pages/GigDetail.dart';
-import 'package:working_system_app/Types/Gigs.dart';
-import 'package:working_system_app/Types/PublicGigsReturn.dart';
+import 'package:working_system_app/Types/JSONObject/Gigs.dart';
+import 'package:working_system_app/Types/JSONObject/PublicGigsReturn.dart';
 import 'package:working_system_app/Widget/FilterBar.dart';
 
 class FindWorks extends StatefulWidget {

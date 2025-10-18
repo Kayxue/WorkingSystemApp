@@ -3,7 +3,7 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:rhttp/rhttp.dart';
 import 'package:working_system_app/Others/Utils.dart';
-import 'package:working_system_app/Types/WorkerProfile.dart';
+import 'package:working_system_app/Types/JSONObject/WorkerProfile.dart';
 import 'package:flutter/services.dart';
 import 'package:working_system_app/Widget/LoadingIndicator.dart';
 import 'package:working_system_app/Widget/ProfileButtonRow.dart';

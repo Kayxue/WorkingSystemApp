@@ -4,8 +4,8 @@ import 'dart:convert';
 
 import 'package:working_system_app/Others/Utils.dart';
 import 'package:working_system_app/Pages/TakeAttendance.dart';
-import 'package:working_system_app/Types/AttendanceToday.dart';
-import 'package:working_system_app/Types/AttendanceGigInfo.dart';
+import 'package:working_system_app/Types/JSONObject/AttendanceToday.dart';
+import 'package:working_system_app/Types/JSONObject/AttendanceGigInfo.dart';
 import 'package:working_system_app/Widget/LoadingIndicator.dart';
 
 class AttendanceList extends StatefulWidget {

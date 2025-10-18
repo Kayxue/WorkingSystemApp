@@ -1,7 +1,7 @@
 import 'package:json_annotation/json_annotation.dart';
-import 'package:working_system_app/Types/Employer.dart';
-import 'package:working_system_app/Types/EnvironmentPhoto.dart';
-import 'package:working_system_app/Types/Requirements.dart';
+import 'package:working_system_app/Types/JSONObject/Employer.dart';
+import 'package:working_system_app/Types/JSONObject/EnvironmentPhoto.dart';
+import 'package:working_system_app/Types/JSONObject/Requirements.dart';
 
 part 'GigDetails.g.dart';
 

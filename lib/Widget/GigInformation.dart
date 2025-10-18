@@ -2,7 +2,7 @@ import 'package:animated_read_more_text/animated_read_more_text.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:url_launcher/url_launcher_string.dart';
-import 'package:working_system_app/Types/GigDetails.dart';
+import 'package:working_system_app/Types/JSONObject/GigDetails.dart';
 import 'package:maps_launcher/maps_launcher.dart';
 import 'package:working_system_app/Widget/EnvironmentPhotoGallery.dart';
 import 'package:mailto/mailto.dart';

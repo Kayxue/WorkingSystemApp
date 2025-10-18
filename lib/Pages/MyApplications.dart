@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:rhttp/rhttp.dart';
-import 'package:working_system_app/Types/UserApplication.dart';
-import '../Types/Application.dart';
+import 'package:working_system_app/Types/JSONObject/UserApplication.dart';
+import '../Types/JSONObject/Application.dart';
 import '../Others/Utils.dart';
 import 'dart:convert';
 

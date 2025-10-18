@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:working_system_app/Pages/Reviews.dart';
 import 'package:working_system_app/Pages/UpdateUserInfo.dart';
 import 'package:working_system_app/Pages/UpdateUserPassword.dart';
-import 'package:working_system_app/Types/WorkerProfile.dart';
+import 'package:working_system_app/Types/JSONObject/WorkerProfile.dart';
 import 'package:working_system_app/Widget/CircleButton.dart';
 
 class ProfileButtonRow extends StatelessWidget {
