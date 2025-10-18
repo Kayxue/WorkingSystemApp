@@ -4,7 +4,7 @@ import 'package:working_system_app/Pages/Reviews.dart';
 import 'package:working_system_app/Pages/UpdateUserInfo.dart';
 import 'package:working_system_app/Pages/UpdateUserPassword.dart';
 import 'package:working_system_app/Types/JSONObject/WorkerProfile.dart';
-import 'package:working_system_app/Widget/CircleButton.dart';
+import 'package:working_system_app/Widget/IconButton.dart';
 
 class ProfileButtonRow extends StatelessWidget {
   final String sessionKey;
@@ -27,7 +27,7 @@ class ProfileButtonRow extends StatelessWidget {
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceEvenly,
       children: [
-        CircleButton(
+        ButtonWithIcon(
           iconColor: Colors.black,
           icon: Icons.business_center,
           text: "Job Requests",
@@ -42,7 +42,7 @@ class ProfileButtonRow extends StatelessWidget {
             );
           },
         ),
-        CircleButton(
+        ButtonWithIcon(
           iconColor: Colors.black,
           icon: Icons.star,
           text: "Gig Reviews",
@@ -52,7 +52,7 @@ class ProfileButtonRow extends StatelessWidget {
             ),
           ),
         ),
-        CircleButton(
+        ButtonWithIcon(
           iconColor: Colors.black,
           icon: Icons.account_box,
           text: "Update Profile",
@@ -76,7 +76,7 @@ class ProfileButtonRow extends StatelessWidget {
             }
           },
         ),
-        CircleButton(
+        ButtonWithIcon(
           iconColor: Colors.black,
           icon: Icons.password,
           text: "Update Password",
