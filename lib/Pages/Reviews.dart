@@ -17,8 +17,8 @@ class Reviews extends StatelessWidget {
           title: const Text("Gig Reviews"),
           bottom: TabBar(
             tabs: [
-              Tab(text: "Pending"),
-              Tab(text: "Already Given"),
+              Tab(text: "Unreviewed"),
+              Tab(text: "Reviewed"),
             ],
           ),
         ),

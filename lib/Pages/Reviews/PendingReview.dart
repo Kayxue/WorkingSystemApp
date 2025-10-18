@@ -68,6 +68,10 @@ class _PendingReviewState extends State<PendingReview> {
                   child: ListTile(
                     title: Text(item.title),
                     subtitle: Text(item.employer.name),
+                    trailing: const Text(
+                      "Unreviewed",
+                      style: TextStyle(fontSize: 16, color: Colors.red),
+                    ),
                   ),
                 ),
               ),
