@@ -77,12 +77,12 @@ class _GivenReviewState extends State<GivenReview> {
                             Text(
                               item.ratingValue.toStringAsFixed(1),
                               style: TextStyle(
-                                fontSize: 24,
+                                fontSize: 20,
                                 color: Colors.amber,
                               ),
                             ),
                             SizedBox(width: 4),
-                            Icon(Icons.star, color: Colors.amber),
+                            Icon(Icons.star, color: Colors.amber, size: 20),
                           ],
                         ),
                       ),
