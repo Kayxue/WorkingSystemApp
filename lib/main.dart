@@ -1,5 +1,6 @@
 import 'package:apple_like_avatar_generator/apple_like_avatar_generator.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:working_system_app/Others/Utils.dart';
 import 'package:working_system_app/Pages/FindWorks.dart';
@@ -19,6 +20,10 @@ void main() async {
   await AppleLikeAvatarGenerator.init();
   await FCMService.initialize();
   await NotificationManager.initialize();
+  SystemChrome.setPreferredOrientations([
+    DeviceOrientation.portraitUp,
+    DeviceOrientation.portraitDown,
+  ]);
   runApp(const MyApp());
 }
 
