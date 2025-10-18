@@ -83,7 +83,7 @@ class JobExperienceEditor extends StatelessWidget {
                       TextButton(
                         onPressed: () async {
                           for (final item in jobExperience) {
-                            await item.controller.close();
+                            item.controller.close();
                           }
                           if (!context.mounted) return;
                           final (newExperience, _) = await showTextInputDialog(

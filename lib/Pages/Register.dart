@@ -1,7 +1,6 @@
 import 'dart:convert';
 
 import 'package:flutter/material.dart';
-import 'package:flutter_slidable/flutter_slidable.dart';
 import 'package:multi_dropdown/multi_dropdown.dart';
 import 'package:rhttp/rhttp.dart';
 import 'package:working_system_app/Others/Utils.dart';
@@ -16,10 +15,9 @@ class Register extends StatefulWidget {
 }
 
 class _RegisterState extends State<Register>
-    with SingleTickerProviderStateMixin {
+    with TickerProviderStateMixin {
   WorkerRegisterForm registerForm = WorkerRegisterForm();
   String confirmPassword = '';
-  SlidableController? slidableController;
 
   void removeJobExperience(String experience) {
     setState(() {
@@ -96,7 +94,6 @@ class _RegisterState extends State<Register>
   @override
   void initState() {
     super.initState();
-    slidableController = SlidableController(this);
   }
 
   @override

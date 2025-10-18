@@ -1,7 +1,6 @@
 import 'dart:typed_data';
 
 import 'package:flutter/material.dart';
-import 'package:flutter_slidable/flutter_slidable.dart';
 import 'package:rhttp/rhttp.dart';
 import 'package:working_system_app/Others/Utils.dart';
 import 'package:working_system_app/Types/JSONObject/WorkerProfile.dart';
@@ -36,7 +35,7 @@ class UpdateUserInfo extends StatefulWidget {
 }
 
 class _UpdateUserInfoState extends State<UpdateUserInfo>
-    with SingleTickerProviderStateMixin {
+    with TickerProviderStateMixin {
   TextEditingController firstNameController = TextEditingController();
   TextEditingController lastNameController = TextEditingController();
   TextEditingController phoneNumberController = TextEditingController();
@@ -44,7 +43,6 @@ class _UpdateUserInfoState extends State<UpdateUserInfo>
   TextEditingController majorController = TextEditingController();
   MultiSelectController<String> certificatesController =
       MultiSelectController<String>();
-  SlidableController? slidableController;
   Uint8List? avatarBytes;
   String? nameAvatarToChange;
   bool updateAvatar = false;
@@ -138,7 +136,6 @@ class _UpdateUserInfoState extends State<UpdateUserInfo>
         );
       });
     }
-    slidableController = SlidableController(this);
   }
 
   @override
