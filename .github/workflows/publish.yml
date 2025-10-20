@@ -275,4 +275,4 @@ jobs:
             ${{ github.event.repository.name }}-${{ steps.version.outputs.version }}.apk
             ${{ github.event.repository.name }}-${{ steps.version.outputs.version }}.aab
             ${{ github.event.repository.name }}-${{ steps.version.outputs.version }}.ipa
-          token: ${{ secrets.GITHUB_TOKEN }}
+          token: ${{ secrets.RELEASE_PAT }}
