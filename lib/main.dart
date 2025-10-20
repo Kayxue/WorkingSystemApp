@@ -149,4 +149,3 @@ class _ApplicationBaseState extends State<ApplicationBase> {
     );
   }
 }
-
