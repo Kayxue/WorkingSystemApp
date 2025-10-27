@@ -74,7 +74,7 @@ class JobExperienceEditor extends StatelessWidget {
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
                       const Text(
-                        "Job Experience",
+                        "Job Experience (Swipe left on item to edit/delete)",
                         style: TextStyle(
                           fontSize: 16,
                           fontWeight: FontWeight.bold,
