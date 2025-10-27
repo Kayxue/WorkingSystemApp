@@ -1,11 +1,12 @@
 import 'dart:convert' show jsonDecode;
 
+import 'package:animated_read_more_text/animated_read_more_text.dart';
 import 'package:flutter/material.dart';
 import 'package:infinite_scroll_pagination/infinite_scroll_pagination.dart';
 import 'package:rhttp/rhttp.dart';
 import 'package:working_system_app/Others/Utils.dart';
-import 'package:working_system_app/Types/WorkerGivenReviewReturn.dart';
-import 'package:working_system_app/Types/WorkerRatings.dart';
+import 'package:working_system_app/Types/JSONObject/WorkerGivenReviewReturn.dart';
+import 'package:working_system_app/Types/JSONObject/WorkerRatings.dart';
 
 class GivenReview extends StatefulWidget {
   final String sessionKey;
@@ -62,23 +63,40 @@ class _GivenReviewState extends State<GivenReview> {
                 clipBehavior: Clip.hardEdge,
                 child: InkWell(
                   splashColor: Colors.grey.withAlpha(30),
-                  onTap: () {
-                    //TDOO: Add rating page
-                  },
-                  child: ListTile(
-                    title: Text(item.gig.title),
-                    subtitle: Text(item.comment),
-                    trailing: Row(
-                      mainAxisSize: MainAxisSize.min,
-                      children: [
-                        Text(
-                          item.ratingValue.toStringAsFixed(1),
-                          style: TextStyle(fontSize: 24, color: Colors.amber),
+                  onTap: () {},
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      ListTile(
+                        title: Text(item.gig.title),
+                        trailing: Row(
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            Text(
+                              item.ratingValue.toStringAsFixed(1),
+                              style: TextStyle(
+                                fontSize: 20,
+                                color: Colors.amber,
+                              ),
+                            ),
+                            SizedBox(width: 4),
+                            Icon(Icons.star, color: Colors.amber, size: 20),
+                          ],
                         ),
-                        SizedBox(width: 4),
-                        Icon(Icons.star, color: Colors.amber),
-                      ],
-                    ),
+                      ),
+                      Padding(
+                        padding: const EdgeInsets.only(
+                          left: 16,
+                          right: 16,
+                          bottom: 16,
+                        ),
+                        child: AnimatedReadMoreText(
+                          item.comment ?? "No comments provided.",
+                          maxLines: 2,
+                          textStyle: TextStyle(fontSize: 16, color: item.comment != null ? Colors.black : Colors.grey),
+                        ),
+                      ),
+                    ],
                   ),
                 ),
               ),

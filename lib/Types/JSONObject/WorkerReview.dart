@@ -1,5 +1,5 @@
 import 'package:json_annotation/json_annotation.dart';
-import 'package:working_system_app/Types/WorkerReviewEmployer.dart';
+import 'package:working_system_app/Types/JSONObject/WorkerReviewEmployer.dart';
 
 part 'WorkerReview.g.dart';
 

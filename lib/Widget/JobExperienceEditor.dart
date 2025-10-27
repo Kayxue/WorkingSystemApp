@@ -1,21 +1,28 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
+import 'package:working_system_app/Types/JobExperienceItem.dart';
 
 class JobExperienceEditor extends StatelessWidget {
   final Function(String) removeJobExperience;
   final Function(String) addJobExperience;
   final Function(String, String) editJobExperience;
-  final List<String> jobExperience;
-  final SlidableController? controller;
+  final List<JobExperienceItem> jobExperience;
 
-  const JobExperienceEditor({
+  JobExperienceEditor({
     super.key,
     required this.removeJobExperience,
     required this.addJobExperience,
     required this.editJobExperience,
-    required this.jobExperience,
-    required this.controller,
-  });
+    required List<String> experienceList,
+    required TickerProvider tickerProvider,
+  }) : jobExperience = experienceList
+           .map(
+             (experience) => JobExperienceItem(
+               experience: experience,
+               controller: SlidableController(tickerProvider),
+             ),
+           )
+           .toList();
 
   Future<(String, String?)> showTextInputDialog(
     BuildContext context,
@@ -75,7 +82,9 @@ class JobExperienceEditor extends StatelessWidget {
                       ),
                       TextButton(
                         onPressed: () async {
-                          await controller!.close();
+                          for (final item in jobExperience) {
+                            item.controller.close();
+                          }
                           if (!context.mounted) return;
                           final (newExperience, _) = await showTextInputDialog(
                             context,
@@ -99,13 +108,14 @@ class JobExperienceEditor extends StatelessWidget {
                   ...[
                     for (final experience in jobExperience)
                       Slidable(
-                        controller: controller,
+                        controller: experience.controller,
                         key: ValueKey(experience),
                         endActionPane: ActionPane(
                           motion: DrawerMotion(),
                           extentRatio: 0.6,
                           dismissible: DismissiblePane(
-                            onDismissed: () => removeJobExperience(experience),
+                            onDismissed: () =>
+                                removeJobExperience(experience.experience),
                           ),
                           children: [
                             SlidableAction(
@@ -117,11 +127,11 @@ class JobExperienceEditor extends StatelessWidget {
                                 ) = await showTextInputDialog(
                                   context,
                                   false,
-                                  experience,
+                                  experience.experience,
                                 );
                                 if (editedExperience.isNotEmpty) {
                                   editJobExperience(
-                                    experience,
+                                    experience.experience,
                                     editedExperience,
                                   );
                                 }
@@ -133,7 +143,8 @@ class JobExperienceEditor extends StatelessWidget {
                             ),
                             SlidableAction(
                               flex: 1,
-                              onPressed: (_) => removeJobExperience(experience),
+                              onPressed: (_) =>
+                                  removeJobExperience(experience.experience),
                               backgroundColor: Colors.red,
                               foregroundColor: Colors.white,
                               icon: Icons.delete,
@@ -143,7 +154,7 @@ class JobExperienceEditor extends StatelessWidget {
                         ),
                         child: SizedBox(
                           height: 50,
-                          child: ListTile(title: Text(experience)),
+                          child: ListTile(title: Text(experience.experience)),
                         ),
                       ),
                   ],

@@ -1,9 +1,10 @@
 import 'dart:convert';
+import 'dart:developer';
 
 import 'package:flutter/material.dart';
 import 'package:rhttp/rhttp.dart';
 import 'package:working_system_app/Others/Utils.dart';
-import 'package:working_system_app/Types/GigDetails.dart';
+import 'package:working_system_app/Types/JSONObject/GigDetails.dart';
 import 'package:working_system_app/Widget/GigInformation.dart';
 import 'package:working_system_app/Widget/LoadingIndicator.dart';
 
@@ -32,14 +33,21 @@ class _GigDetailState extends State<GigDetail> {
   Future<GigDetails?> fetchGigDetail(String gigId) async {
     final response = await Utils.client.get(
       "/gig/public/$gigId",
-      headers: const HttpHeaders.rawMap({"platform": "mobile"}),
+      headers: HttpHeaders.rawMap({
+        "platform": "mobile", 
+        "cookie": widget.sessionKey,
+      }),
     );
     if (!mounted) return null;
     if (response.statusCode != 200) {
       //TODO: Handle error
     }
     final respond = jsonDecode(response.body) as Map<String, dynamic>;
-    final parsed = GigDetails.fromJson(respond);
+    var parsed = GigDetails.fromJson(respond);
+    parsed.hasConflict ??= false;
+    parsed.hasPendingConflict ??= false;
+    log('hasConflict: ${parsed.hasConflict}');
+    log('hasPendingConflict: ${parsed.hasPendingConflict}');
     return parsed;
   }
 
@@ -136,22 +144,32 @@ class _GigDetailState extends State<GigDetail> {
               child: Column(
                 children: [
                   GigInformation(gigdetail: gigdetail!),
-                  SizedBox(height: 16),
+                  const SizedBox(height: 16),
                   SizedBox(
                     width: double.infinity,
                     child: FilledButton(
-                      onPressed: widget.sessionKey.isEmpty
+                      onPressed: widget.sessionKey.isEmpty ||
+                              gigdetail!.hasConflict == true ||
+                              gigdetail!.applicationStatus ==
+                                  'pending_employer_review' ||
+                              gigdetail!.applicationStatus ==
+                                  'pending_worker_confirmation'
                           ? null
                           : () async {
                               await sendApplication();
                               if (!context.mounted) return;
                               Navigator.of(context).pop();
                             },
-                      child: Text(
-                        widget.sessionKey.isEmpty
-                            ? "Please login to apply to this gig"
-                            : "Apply",
-                      ),
+                      child: Text(widget.sessionKey.isEmpty
+                                ? "Please login to apply to this gig"
+                                : gigdetail!.applicationStatus == 'pending_employer_review' ||
+                                 gigdetail!.applicationStatus == 'pending_worker_confirmation' || 
+                                 gigdetail!.applicationStatus == 'worker_confirmed'
+                                    ? "You have already applied to this job"
+                                    : gigdetail!.hasConflict == true
+                                        ? "There is a confirm job conflict with this job"
+                                        : "Apply"
+                              ),
                     ),
                   ),
                   const SizedBox(height: 32),

@@ -1,5 +1,5 @@
 import 'package:json_annotation/json_annotation.dart';
-import 'package:working_system_app/Types/ProfilePhoto.dart';
+import 'package:working_system_app/Types/JSONObject/ProfilePhoto.dart';
 
 part 'Employer.g.dart';
 

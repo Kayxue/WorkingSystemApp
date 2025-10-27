@@ -2,7 +2,7 @@ import 'package:animated_read_more_text/animated_read_more_text.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:url_launcher/url_launcher_string.dart';
-import 'package:working_system_app/Types/GigDetails.dart';
+import 'package:working_system_app/Types/JSONObject/GigDetails.dart';
 import 'package:maps_launcher/maps_launcher.dart';
 import 'package:working_system_app/Widget/EnvironmentPhotoGallery.dart';
 import 'package:mailto/mailto.dart';
@@ -26,6 +26,24 @@ class GigInformation extends StatelessWidget {
               ),
             ),
             const SizedBox(height: 8),
+            if (gigdetail.hasPendingConflict == true &&
+                !(gigdetail.hasConflict == true ||
+                    gigdetail.applicationStatus == 'pending_employer_review' ||
+                    gigdetail.applicationStatus == 'pending_worker_confirmation' ||
+                    gigdetail.applicationStatus == 'worker_confirmed'))
+              Container(
+                width: double.infinity,
+                padding: const EdgeInsets.all(8.0),
+                decoration: BoxDecoration(
+                  color: Colors.amber,
+                  borderRadius: BorderRadius.circular(8.0),
+                ),
+                child: const Text(
+                  'This job has a pending conflict with another application.',
+                  style: TextStyle(color: Colors.black),
+                  textAlign: TextAlign.center,
+                ),
+              ),
             Card(
               child: ListTile(
                 title: const Text(

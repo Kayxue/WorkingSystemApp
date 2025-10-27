@@ -1,6 +1,6 @@
 import 'package:json_annotation/json_annotation.dart';
-import 'package:working_system_app/Types/ProfilePhoto.dart';
-import 'package:working_system_app/Types/RatingStats.dart';
+import 'package:working_system_app/Types/JSONObject/ProfilePhoto.dart';
+import 'package:working_system_app/Types/JSONObject/RatingStats.dart';
 
 part 'WorkerProfile.g.dart';
 

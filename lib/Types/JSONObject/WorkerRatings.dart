@@ -1,6 +1,6 @@
 import 'package:json_annotation/json_annotation.dart';
-import 'package:working_system_app/Types/WorkerRatingGig.dart';
-import 'package:working_system_app/Types/WorkerReviewEmployer.dart';
+import 'package:working_system_app/Types/JSONObject/WorkerRatingGig.dart';
+import 'package:working_system_app/Types/JSONObject/WorkerReviewEmployer.dart';
 
 part 'WorkerRatings.g.dart';
 
@@ -10,7 +10,7 @@ class WorkerRatings {
   WorkerReviewEmployer employer;
   WorkerRatingGig gig;
   double ratingValue;
-  String comment;
+  String? comment;
   DateTime createdAt;
 
   WorkerRatings({

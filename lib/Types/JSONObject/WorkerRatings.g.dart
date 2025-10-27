@@ -14,7 +14,7 @@ WorkerRatings _$WorkerRatingsFromJson(Map<String, dynamic> json) =>
       ),
       gig: WorkerRatingGig.fromJson(json['gig'] as Map<String, dynamic>),
       ratingValue: (json['ratingValue'] as num).toDouble(),
-      comment: json['comment'] as String,
+      comment: json['comment'] as String?,
       createdAt: DateTime.parse(json['createdAt'] as String),
     );
 

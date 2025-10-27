@@ -1,10 +1,9 @@
 import 'dart:typed_data';
 
 import 'package:flutter/material.dart';
-import 'package:flutter_slidable/flutter_slidable.dart';
 import 'package:rhttp/rhttp.dart';
 import 'package:working_system_app/Others/Utils.dart';
-import 'package:working_system_app/Types/WorkerProfile.dart';
+import 'package:working_system_app/Types/JSONObject/WorkerProfile.dart';
 import 'package:multi_dropdown/multi_dropdown.dart';
 import 'package:working_system_app/Widget/AvatarEditor.dart';
 import 'package:working_system_app/Widget/JobExperienceEditor.dart';
@@ -36,7 +35,7 @@ class UpdateUserInfo extends StatefulWidget {
 }
 
 class _UpdateUserInfoState extends State<UpdateUserInfo>
-    with SingleTickerProviderStateMixin {
+    with TickerProviderStateMixin {
   TextEditingController firstNameController = TextEditingController();
   TextEditingController lastNameController = TextEditingController();
   TextEditingController phoneNumberController = TextEditingController();
@@ -44,7 +43,6 @@ class _UpdateUserInfoState extends State<UpdateUserInfo>
   TextEditingController majorController = TextEditingController();
   MultiSelectController<String> certificatesController =
       MultiSelectController<String>();
-  SlidableController? slidableController;
   Uint8List? avatarBytes;
   String? nameAvatarToChange;
   bool updateAvatar = false;
@@ -138,7 +136,17 @@ class _UpdateUserInfoState extends State<UpdateUserInfo>
         );
       });
     }
-    slidableController = SlidableController(this);
+  }
+
+  @override
+  void dispose() {
+    firstNameController.dispose();
+    lastNameController.dispose();
+    phoneNumberController.dispose();
+    schoolNameController.dispose();
+    majorController.dispose();
+    certificatesController.dispose();
+    super.dispose();
   }
 
   @override
@@ -170,6 +178,8 @@ class _UpdateUserInfoState extends State<UpdateUserInfo>
                         onChanged: (value) => setState(() {
                           widget.workerProfile.firstName = value;
                         }),
+                        onTapOutside: (event) =>
+                            FocusManager.instance.primaryFocus?.unfocus(),
                       ),
                       SizedBox(height: 16),
                       TextField(
@@ -180,6 +190,8 @@ class _UpdateUserInfoState extends State<UpdateUserInfo>
                         onChanged: (value) => setState(() {
                           widget.workerProfile.lastName = value;
                         }),
+                        onTapOutside: (event) =>
+                            FocusManager.instance.primaryFocus?.unfocus(),
                       ),
                       SizedBox(height: 16),
                       TextField(
@@ -190,6 +202,8 @@ class _UpdateUserInfoState extends State<UpdateUserInfo>
                         onChanged: (value) => setState(() {
                           widget.workerProfile.phoneNumber = value;
                         }),
+                        onTapOutside: (event) =>
+                            FocusManager.instance.primaryFocus?.unfocus(),
                       ),
                       SizedBox(height: 16),
                       Text('Highest education', style: TextStyle(fontSize: 16)),
@@ -238,6 +252,8 @@ class _UpdateUserInfoState extends State<UpdateUserInfo>
                               ? null
                               : value;
                         }),
+                        onTapOutside: (event) =>
+                            FocusManager.instance.primaryFocus?.unfocus(),
                       ),
                       SizedBox(height: 16),
                       TextField(
@@ -248,6 +264,8 @@ class _UpdateUserInfoState extends State<UpdateUserInfo>
                               ? null
                               : value;
                         }),
+                        onTapOutside: (event) =>
+                            FocusManager.instance.primaryFocus?.unfocus(),
                       ),
                       SizedBox(height: 16),
                       Text('Study status', style: TextStyle(fontSize: 16)),
@@ -318,8 +336,8 @@ class _UpdateUserInfoState extends State<UpdateUserInfo>
                         removeJobExperience: removeJobExperience,
                         addJobExperience: addJobExperience,
                         editJobExperience: editJobExperience,
-                        jobExperience: widget.workerProfile.jobExperience,
-                        controller: slidableController,
+                        experienceList: widget.workerProfile.jobExperience,
+                        tickerProvider: this,
                       ),
                       SizedBox(height: 16),
                     ],

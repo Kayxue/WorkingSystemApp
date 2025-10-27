@@ -34,6 +34,9 @@ GigDetails _$GigDetailsFromJson(Map<String, dynamic> json) => GigDetails(
       : DateTime.parse(json['unlistedAt'] as String),
   updatedAt: DateTime.parse(json['updatedAt'] as String),
   employer: Employer.fromJson(json['employer'] as Map<String, dynamic>),
+  applicationStatus: json['applicationStatus'] as String? ?? "not_applied",
+  hasConflict: json['hasConflict'] as bool?,
+  hasPendingConflict: json['hasPendingConflict'] as bool?,
 );
 
 Map<String, dynamic> _$GigDetailsToJson(GigDetails instance) =>
@@ -61,4 +64,7 @@ Map<String, dynamic> _$GigDetailsToJson(GigDetails instance) =>
       'unlistedAt': instance.unlistedAt?.toIso8601String(),
       'updatedAt': instance.updatedAt.toIso8601String(),
       'employer': instance.employer.toJson(),
+      'applicationStatus': instance.applicationStatus,
+      'hasConflict': instance.hasConflict,
+      'hasPendingConflict': instance.hasPendingConflict,
     };

@@ -1,16 +1,19 @@
 import 'package:apple_like_avatar_generator/apple_like_avatar_generator.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:working_system_app/Others/Utils.dart';
 import 'package:working_system_app/Pages/FindWorks.dart';
 import 'package:working_system_app/Pages/Login.dart';
 import 'package:working_system_app/Pages/Personal.dart';
 import 'package:working_system_app/Pages/Schedule.dart';
+import 'package:working_system_app/Pages/Notification.dart';
 import 'package:working_system_app/Widget/BottomBar.dart';
 import 'package:working_system_app/Services/FCMService.dart';
 import 'package:working_system_app/Services/NotificationManager.dart';
 import 'package:rhttp/rhttp.dart';
 import 'package:working_system_app/src/rust/frb_generated.dart';
+import 'package:flutter/src/widgets/notification_listener.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -19,6 +22,10 @@ void main() async {
   await AppleLikeAvatarGenerator.init();
   await FCMService.initialize();
   await NotificationManager.initialize();
+  SystemChrome.setPreferredOrientations([
+    DeviceOrientation.portraitUp,
+    DeviceOrientation.portraitDown,
+  ]);
   runApp(const MyApp());
 }
 
@@ -129,6 +136,7 @@ class _ApplicationBaseState extends State<ApplicationBase> {
                   clearSessionKey: clearSessionKey,
                 ),
                 Schedule(sessionKey: sessionKey),
+                NotificationPage(sessionKey: sessionKey),
                 Personal(
                   sessionKey: sessionKey,
                   clearSessionKey: clearSessionKey,

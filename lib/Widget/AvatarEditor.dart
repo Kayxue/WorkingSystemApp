@@ -4,7 +4,7 @@ import 'package:apple_like_avatar_generator/apple_like_avatar_generator.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:image_cropper/image_cropper.dart';
-import 'package:working_system_app/Types/WorkerProfile.dart';
+import 'package:working_system_app/Types/JSONObject/WorkerProfile.dart';
 import 'package:working_system_app/src/rust/api/core.dart';
 
 class AvatarUpdater extends StatelessWidget {

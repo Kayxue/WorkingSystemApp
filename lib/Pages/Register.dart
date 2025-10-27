@@ -1,11 +1,10 @@
 import 'dart:convert';
 
 import 'package:flutter/material.dart';
-import 'package:flutter_slidable/flutter_slidable.dart';
 import 'package:multi_dropdown/multi_dropdown.dart';
 import 'package:rhttp/rhttp.dart';
 import 'package:working_system_app/Others/Utils.dart';
-import 'package:working_system_app/Types/WorkerRegisterForm.dart';
+import 'package:working_system_app/Types/JSONObject/WorkerRegisterForm.dart';
 import 'package:working_system_app/Widget/JobExperienceEditor.dart';
 
 class Register extends StatefulWidget {
@@ -15,11 +14,9 @@ class Register extends StatefulWidget {
   State<Register> createState() => _RegisterState();
 }
 
-class _RegisterState extends State<Register>
-    with SingleTickerProviderStateMixin {
+class _RegisterState extends State<Register> with TickerProviderStateMixin {
   WorkerRegisterForm registerForm = WorkerRegisterForm();
   String confirmPassword = '';
-  SlidableController? slidableController;
 
   void removeJobExperience(String experience) {
     setState(() {
@@ -96,7 +93,6 @@ class _RegisterState extends State<Register>
   @override
   void initState() {
     super.initState();
-    slidableController = SlidableController(this);
   }
 
   @override
@@ -285,8 +281,8 @@ class _RegisterState extends State<Register>
                         removeJobExperience: removeJobExperience,
                         addJobExperience: addJobExperience,
                         editJobExperience: editJobExperience,
-                        jobExperience: registerForm.jobExperience,
-                        controller: slidableController,
+                        experienceList: registerForm.jobExperience,
+                        tickerProvider: this,
                       ),
                       SizedBox(height: 16),
                     ],

@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:photo_view/photo_view.dart';
-import 'package:working_system_app/Types/GigDetails.dart';
+import 'package:working_system_app/Types/JSONObject/GigDetails.dart';
 
 class EnvironmentPhotoGallery extends StatelessWidget {
   final GigDetails gigDetail;

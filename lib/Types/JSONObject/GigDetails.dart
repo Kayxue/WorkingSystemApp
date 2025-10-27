@@ -1,7 +1,7 @@
 import 'package:json_annotation/json_annotation.dart';
-import 'package:working_system_app/Types/Employer.dart';
-import 'package:working_system_app/Types/EnvironmentPhoto.dart';
-import 'package:working_system_app/Types/Requirements.dart';
+import 'package:working_system_app/Types/JSONObject/Employer.dart';
+import 'package:working_system_app/Types/JSONObject/EnvironmentPhoto.dart';
+import 'package:working_system_app/Types/JSONObject/Requirements.dart';
 
 part 'GigDetails.g.dart';
 
@@ -28,6 +28,9 @@ class GigDetails {
   DateTime? unlistedAt;
   DateTime updatedAt;
   Employer employer;
+  String applicationStatus;
+  bool? hasConflict;
+  bool? hasPendingConflict;
 
   GigDetails({
     required this.gigId,
@@ -51,6 +54,9 @@ class GigDetails {
     this.unlistedAt,
     required this.updatedAt,
     required this.employer,
+    this.applicationStatus = "not_applied",
+    required this.hasConflict,
+    required this.hasPendingConflict,
   });
 
   factory GigDetails.fromJson(Map<String, dynamic> json) =>
