@@ -13,7 +13,6 @@ import 'package:working_system_app/Services/FCMService.dart';
 import 'package:working_system_app/Services/NotificationManager.dart';
 import 'package:rhttp/rhttp.dart';
 import 'package:working_system_app/src/rust/frb_generated.dart';
-import 'package:flutter/src/widgets/notification_listener.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();

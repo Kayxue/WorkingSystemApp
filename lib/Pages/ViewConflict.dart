@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:rhttp/rhttp.dart';
 import 'dart:convert';
-import 'package:maps_launcher/maps_launcher.dart';
 import '../Others/Utils.dart';
 import 'package:working_system_app/Pages/ScheduleGigDetails.dart';
 import 'package:working_system_app/Widget/LoadingIndicator.dart';
