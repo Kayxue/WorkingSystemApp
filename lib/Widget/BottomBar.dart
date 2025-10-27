@@ -31,6 +31,10 @@ class BottomBar extends StatelessWidget {
                 label: 'Schedule',
               ),
               NavigationDestination(
+                icon: Icon(Icons.notifications),
+                label: 'Notifications',
+              ),
+              NavigationDestination(
                 icon: Icon(Icons.person),
                 label: 'Personal',
               ),
