@@ -1,4 +1,5 @@
 import 'package:json_annotation/json_annotation.dart';
+import 'package:working_system_app/Types/JSONObject/ProfilePhoto.dart';
 
 part 'WorkerReviewEmployer.g.dart';
 
@@ -6,6 +7,7 @@ part 'WorkerReviewEmployer.g.dart';
 class WorkerReviewEmployer {
   String employerId;
   String name;
+  ProfilePhoto? employerPhoto;
 
   WorkerReviewEmployer({required this.employerId, required this.name});
 
