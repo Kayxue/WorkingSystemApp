@@ -139,6 +139,17 @@ class _UpdateUserInfoState extends State<UpdateUserInfo>
   }
 
   @override
+  void dispose() {
+    firstNameController.dispose();
+    lastNameController.dispose();
+    phoneNumberController.dispose();
+    schoolNameController.dispose();
+    majorController.dispose();
+    certificatesController.dispose();
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(title: const Text('Update Information')),

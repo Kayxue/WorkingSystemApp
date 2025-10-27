@@ -2,7 +2,7 @@ import 'package:json_annotation/json_annotation.dart';
 
 part 'GivingReviewBody.g.dart';
 
-@JsonSerializable(explicitToJson: true)
+@JsonSerializable(explicitToJson: true, includeIfNull: false)
 class GivingReviewBody {
   int ratingValue;
   String? comment;

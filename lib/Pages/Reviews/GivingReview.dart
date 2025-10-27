@@ -37,6 +37,7 @@ class _GivingReviewState extends State<GivingReview> {
     if (response.statusCode == 201) {
       return (true, null);
     }
+    debugPrint("Response body: ${response.body}");
     try {
       final bodyJson = jsonDecode(response.body) as Map<String, dynamic>;
       final errors = (bodyJson["errors"] as List<dynamic>)
@@ -75,7 +76,7 @@ class _GivingReviewState extends State<GivingReview> {
                         ),
                       ),
                       SizedBox(height: 16),
-                      Text("Your rating:"),
+                      Text("Your rating:",style: TextStyle(fontWeight: FontWeight.bold,fontSize: 16),),
                       SizedBox(height: 8),
                       RatingBar.builder(
                         allowHalfRating: false,
@@ -96,14 +97,17 @@ class _GivingReviewState extends State<GivingReview> {
                         maxLines: 4,
                         decoration: InputDecoration(
                           border: OutlineInputBorder(),
-                          hintText: 'Leave a comment (optional)',
-                          labelText: 'Comment',
+                          hintText: 'Leave a comment',
+                          labelText: 'Comment (optional)',
+                          alignLabelWithHint: true,
                         ),
                         onChanged: (text) {
                           setState(() {
                             reviewBody.comment = text.isEmpty ? null : text;
                           });
                         },
+                        onTapOutside: (event) =>
+                            FocusManager.instance.primaryFocus?.unfocus(),
                       ),
                     ],
                   ),

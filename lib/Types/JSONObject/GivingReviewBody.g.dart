@@ -15,5 +15,5 @@ GivingReviewBody _$GivingReviewBodyFromJson(Map<String, dynamic> json) =>
 Map<String, dynamic> _$GivingReviewBodyToJson(GivingReviewBody instance) =>
     <String, dynamic>{
       'ratingValue': instance.ratingValue,
-      'comment': instance.comment,
+      'comment': ?instance.comment,
     };

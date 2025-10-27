@@ -10,7 +10,7 @@ class WorkerRatings {
   WorkerReviewEmployer employer;
   WorkerRatingGig gig;
   double ratingValue;
-  String comment;
+  String? comment;
   DateTime createdAt;
 
   WorkerRatings({

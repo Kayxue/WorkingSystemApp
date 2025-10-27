@@ -279,6 +279,7 @@ class _ScheduleState extends State<Schedule> {
   @override
   void dispose() {
     agendaScrollController.dispose();
+    calendarController.dispose();
     super.dispose();
   }
 

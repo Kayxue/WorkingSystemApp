@@ -63,9 +63,7 @@ class _GivenReviewState extends State<GivenReview> {
                 clipBehavior: Clip.hardEdge,
                 child: InkWell(
                   splashColor: Colors.grey.withAlpha(30),
-                  onTap: () {
-                    //TDOO: Add rating page
-                  },
+                  onTap: () {},
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
@@ -93,9 +91,9 @@ class _GivenReviewState extends State<GivenReview> {
                           bottom: 16,
                         ),
                         child: AnimatedReadMoreText(
-                          item.comment,
+                          item.comment ?? "No comments provided.",
                           maxLines: 2,
-                          textStyle: TextStyle(fontSize: 16),
+                          textStyle: TextStyle(fontSize: 16, color: item.comment != null ? Colors.black : Colors.grey),
                         ),
                       ),
                     ],

@@ -92,6 +92,8 @@ class _FindWorksState extends State<FindWorks> {
   @override
   void dispose() {
     _pagingController.dispose();
+    textSearchObservable.close();
+    districtController.dispose();
     super.dispose();
   }
 

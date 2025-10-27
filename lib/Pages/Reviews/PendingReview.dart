@@ -4,13 +4,17 @@ import 'package:flutter/material.dart';
 import 'package:infinite_scroll_pagination/infinite_scroll_pagination.dart';
 import 'package:rhttp/rhttp.dart';
 import 'package:working_system_app/Others/Utils.dart';
+import 'package:working_system_app/Pages/Reviews/GivingReview.dart';
 import 'package:working_system_app/Types/JSONObject/WorkerReview.dart';
 import 'package:working_system_app/Types/JSONObject/WorkerReviewReturn.dart';
 
 class PendingReview extends StatefulWidget {
   final String sessionKey;
 
-  const PendingReview({super.key, required this.sessionKey});
+  const PendingReview({
+    super.key,
+    required this.sessionKey,
+  });
 
   @override
   State<PendingReview> createState() => _PendingReviewState();
@@ -62,8 +66,24 @@ class _PendingReviewState extends State<PendingReview> {
                 clipBehavior: Clip.hardEdge,
                 child: InkWell(
                   splashColor: Colors.grey.withAlpha(30),
-                  onTap: () {
-                    //TDOO: I don't know
+                  onTap: () async {
+                    final result = await Navigator.of(context).push<bool>(
+                      MaterialPageRoute(
+                        builder: (context) => GivingReview(
+                          unreviewedGig: item,
+                          sessionKey: widget.sessionKey,
+                        ),
+                      ),
+                    );
+                    if (result == true) {
+                      if (!context.mounted) return;
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        const SnackBar(
+                          content: Text("Review submitted successfully."),
+                        ),
+                      );
+                      _pagingController.refresh();
+                    }
                   },
                   child: ListTile(
                     title: Text(item.title),
