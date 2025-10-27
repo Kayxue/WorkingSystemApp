@@ -232,7 +232,7 @@ class _ViewConflictState extends State<ViewConflict> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('${widget.gigTitle} 衝突申請'),
+        title: Text('${widget.gigTitle}衝突'),
         backgroundColor: Colors.transparent,
         scrolledUnderElevation: 0.0,
       ),
@@ -243,13 +243,13 @@ class _ViewConflictState extends State<ViewConflict> {
               child: Padding(
                 padding: const EdgeInsets.all(16.0),
                 child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
+                  crossAxisAlignment: CrossAxisAlignment.center,
                   children: [
                     Text(
                       (widget.conflictType == 'confirmed'
                           ? '以下的工作和您的申請有衝突'
-                          : '以下的工作申請和您的申請有衝突，請確認後再進行操作'),
-                      style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold, color: Colors.red),
+                          : '以下的工作申請和您目前的申請有衝突'),
+                      style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold, color: Colors.red),
                       
                     ),
                     const SizedBox(height: 16),

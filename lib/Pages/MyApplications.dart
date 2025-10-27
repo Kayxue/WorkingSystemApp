@@ -377,7 +377,7 @@ class ApplicationCard extends StatelessWidget {
                     child: Row(
                       children: [
                         const Text(
-                          '此申請與其他申請的工作時間有衝突。點擊右方按鈕查看詳情。',
+                          '此申請與其他申請的工作時間有衝突。',
                           style: TextStyle(
                             color: Colors.red, 
                             fontWeight: FontWeight.bold

@@ -66,7 +66,12 @@ class JobExperienceEditor extends StatelessWidget {
           child: Card(
             clipBehavior: Clip.antiAlias,
             child: Padding(
-              padding: const EdgeInsets.all(16.0),
+              padding: const EdgeInsets.only(
+                right: 16.0,
+                left: 20,
+                top: 8,
+                bottom: 16,
+              ),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
@@ -74,7 +79,7 @@ class JobExperienceEditor extends StatelessWidget {
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
                       const Text(
-                        "Job Experience (Swipe left on item to edit/delete)",
+                        "Job Experience",
                         style: TextStyle(
                           fontSize: 16,
                           fontWeight: FontWeight.bold,
@@ -158,6 +163,11 @@ class JobExperienceEditor extends StatelessWidget {
                         ),
                       ),
                   ],
+                  SizedBox(height: 8),
+                  Text(
+                    "Swipe left on item to edit/delete",
+                    style: TextStyle(fontSize: 12, color: Colors.grey),
+                  ),
                 ],
               ),
             ),
