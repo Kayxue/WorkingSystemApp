@@ -1,6 +1,10 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_rating_bar/flutter_rating_bar.dart';
 import 'package:intl/intl.dart';
+import 'package:rhttp/rhttp.dart';
+import 'package:working_system_app/Others/Utils.dart';
 import 'package:working_system_app/Types/JSONObject/GivingReviewBody.dart';
 import 'package:working_system_app/Types/JSONObject/WorkerReview.dart';
 
@@ -20,6 +24,32 @@ class GivingReview extends StatefulWidget {
 
 class _GivingReviewState extends State<GivingReview> {
   GivingReviewBody reviewBody = GivingReviewBody(ratingValue: 0, comment: null);
+
+  Future<(bool, String?)> submitReview() async {
+    final response = await Utils.client.post(
+      "/rating/employer/${widget.unreviewedGig.employer.employerId}/gig/${widget.unreviewedGig.gigId}",
+      headers: HttpHeaders.rawMap({
+        "platform": "mobile",
+        "cookie": widget.sessionKey,
+      }),
+      body: HttpBody.json(reviewBody.toJson()),
+    );
+    if (response.statusCode == 201) {
+      return (true, null);
+    }
+    try {
+      final bodyJson = jsonDecode(response.body) as Map<String, dynamic>;
+      final errors = (bodyJson["errors"] as List<dynamic>)
+          .map((e) => e as Map<String, dynamic>)
+          .toList();
+      final errorMessages = errors
+          .map((e) => e["message"] as String)
+          .join("\n");
+      return (false, errorMessages);
+    } on FormatException {
+      return (false, response.body);
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -85,7 +115,30 @@ class _GivingReviewState extends State<GivingReview> {
               children: [
                 Expanded(
                   child: FilledButton(
-                    onPressed: () async {},
+                    onPressed: () async {
+                      final updateResult = await submitReview();
+                      if (updateResult.$1) {
+                        if (!context.mounted) return;
+                        Navigator.of(context).pop(true);
+                      } else {
+                        if (!context.mounted) return;
+                        await showDialog(
+                          context: context,
+                          builder: (context) {
+                            return AlertDialog(
+                              title: const Text("Can't submit review"),
+                              content: Text(updateResult.$2!),
+                              actions: [
+                                TextButton(
+                                  onPressed: () => Navigator.of(context).pop(),
+                                  child: const Text("OK"),
+                                ),
+                              ],
+                            );
+                          },
+                        );
+                      }
+                    },
                     child: Text("Review"),
                   ),
                 ),
