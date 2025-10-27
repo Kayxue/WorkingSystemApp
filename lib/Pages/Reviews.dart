@@ -2,17 +2,37 @@ import 'package:flutter/material.dart';
 import 'package:working_system_app/Pages/Reviews/GivenReview.dart';
 import 'package:working_system_app/Pages/Reviews/PendingReview.dart';
 
-class Reviews extends StatelessWidget {
+class Reviews extends StatefulWidget {
   final String sessionKey;
 
   const Reviews({super.key, required this.sessionKey});
 
   @override
+  State<Reviews> createState() => _ReviewsState();
+}
+
+class _ReviewsState extends State<Reviews> with SingleTickerProviderStateMixin {
+  late TabController _tabController;
+
+  @override
+  void initState() {
+    super.initState();
+    _tabController = TabController(length: 2, vsync: this);
+  }
+
+  @override
+  void dispose() {
+    _tabController.dispose();
+    super.dispose();
+  }
+
+  void moveToPage(int index) {
+    _tabController.animateTo(index);
+  }
+
+  @override
   Widget build(BuildContext context) {
-    return DefaultTabController(
-      initialIndex: 0,
-      length: 2,
-      child: Scaffold(
+    return Scaffold(
         appBar: AppBar(
           title: const Text("Gig Reviews"),
           bottom: TabBar(
@@ -20,15 +40,16 @@ class Reviews extends StatelessWidget {
               Tab(text: "Unreviewed"),
               Tab(text: "Reviewed"),
             ],
+            controller: _tabController,
           ),
         ),
         body: TabBarView(
+          controller: _tabController,
           children: [
-            PendingReview(sessionKey: sessionKey),
-            GivenReview(sessionKey: sessionKey),
+            PendingReview(sessionKey: widget.sessionKey, moveToPage: moveToPage),
+            GivenReview(sessionKey: widget.sessionKey),
           ],
         ),
-      ),
-    );
+      );
   }
 }

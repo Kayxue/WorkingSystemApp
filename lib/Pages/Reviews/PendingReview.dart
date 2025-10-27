@@ -10,10 +10,12 @@ import 'package:working_system_app/Types/JSONObject/WorkerReviewReturn.dart';
 
 class PendingReview extends StatefulWidget {
   final String sessionKey;
+  final Function(int) moveToPage;
 
   const PendingReview({
     super.key,
     required this.sessionKey,
+    required this.moveToPage,
   });
 
   @override
@@ -82,7 +84,7 @@ class _PendingReviewState extends State<PendingReview> {
                           content: Text("Review submitted successfully."),
                         ),
                       );
-                      _pagingController.refresh();
+                      widget.moveToPage(1);
                     }
                   },
                   child: ListTile(
