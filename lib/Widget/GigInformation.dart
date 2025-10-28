@@ -7,11 +7,21 @@ import 'package:maps_launcher/maps_launcher.dart';
 import 'package:working_system_app/Widget/EnvironmentPhotoGallery.dart';
 import 'package:mailto/mailto.dart';
 import 'package:url_launcher/url_launcher.dart';
+import 'package:working_system_app/Pages/ViewConflict.dart';
 
 class GigInformation extends StatelessWidget {
   final GigDetails gigdetail;
+  final bool applicationGig;
+  final String sessionKey;
+  final String applicationId;
 
-  const GigInformation({super.key, required this.gigdetail});
+  const GigInformation({
+    super.key, 
+    required this.gigdetail,
+    this.applicationGig = false,
+    this.sessionKey = "",
+    this.applicationId = "",
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -44,6 +54,39 @@ class GigInformation extends StatelessWidget {
                   textAlign: TextAlign.center,
                 ),
               ),
+
+            if (applicationGig == true 
+            && (gigdetail.hasConflict == true || gigdetail.hasPendingConflict == true)
+            && (gigdetail.applicationStatus == 'pending_employer_review' || gigdetail.applicationStatus == 'pending_worker_confirmation')
+            )
+              GestureDetector(
+                onTap: () {
+                  Navigator.of(context).push(
+                    MaterialPageRoute(
+                      builder: (context) => ViewConflict(
+                        sessionKey: sessionKey,
+                        applicationId: applicationId,
+                        gigTitle: gigdetail.title,
+                        conflictType: gigdetail.hasConflict == true ? 'confirmed' : 'pending',
+                      ),
+                    ),
+                  );
+                },
+                child: Container(
+                  width: double.infinity,
+                  padding: const EdgeInsets.all(8.0),
+                  decoration: BoxDecoration(
+                    color: Colors.amber,
+                    borderRadius: BorderRadius.circular(8.0),
+                  ),
+                  child: const Text(
+                    '此申請與其他申請有衝突，點擊查看。',
+                    style: TextStyle(color: Colors.black),
+                    textAlign: TextAlign.center,
+                  ),
+                ),
+              ),
+
             Card(
               child: ListTile(
                 title: const Text(

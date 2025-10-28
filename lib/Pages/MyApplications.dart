@@ -5,7 +5,8 @@ import '../Types/JSONObject/Application.dart';
 import '../Others/Utils.dart';
 import 'dart:convert';
 import 'package:working_system_app/Pages/ViewConflict.dart';
-import 'package:working_system_app/Pages/ScheduleGigDetails.dart';
+import 'package:working_system_app/Pages/ApplicationGigDetails.dart';
+import 'dart:developer' as developer;
 
 // Manages the state for a single tab
 class TabState {
@@ -19,12 +20,10 @@ class TabState {
 
 class MyApplicationsPage extends StatefulWidget {
   final String sessionKey;
-  final String userId;
 
   const MyApplicationsPage({
     super.key,
     required this.sessionKey,
-    required this.userId,
   });
 
   @override
@@ -98,14 +97,18 @@ class _MyApplicationsPageState extends State<MyApplicationsPage>
       state.offset = 0;
       state.applications.clear();
       state.hasMore = true;
-      setState(() {
-        state.isLoading = true;
-      });
+      if (mounted) {
+        setState(() {
+          state.isLoading = true;
+        });
+      }
     } else {
       if (state.isLoadingMore || !state.hasMore) return;
-      setState(() {
-        state.isLoadingMore = true;
-      });
+      if (mounted) {
+        setState(() {
+          state.isLoadingMore = true;
+        });
+      }
     }
 
     try {
@@ -116,24 +119,32 @@ class _MyApplicationsPageState extends State<MyApplicationsPage>
 
       if (response.statusCode == 200) {
         final data = UserApplication.fromJson(jsonDecode(response.body));
-        setState(() {
-          if (isRefresh) state.applications.clear();
-          state.applications.addAll(data.applications);
-          state.offset += data.applications.length;
-          state.hasMore = data.pagination.hasMore;
-        });
+        if (mounted) {
+          setState(() {
+            if (isRefresh) state.applications.clear();
+            state.applications.addAll(data.applications);
+            state.offset += data.applications.length;
+            state.hasMore = data.pagination.hasMore;
+          });
+        }
       } else {
-        // Handle error
-        setState(() => state.hasMore = false);
+        if (mounted) setState(() => state.hasMore = false);
       }
     } catch (e) {
-      // Handle error
-      setState(() => state.hasMore = false);
+      if (mounted) setState(() => state.hasMore = false);
     } finally {
-      setState(() {
-        state.isLoading = false;
-        state.isLoadingMore = false;
-      });
+      if (mounted) {
+        setState(() {
+          state.isLoading = false;
+          state.isLoadingMore = false;
+        });
+      }
+    }
+  }
+
+  Future<void> _refreshAllTabs() async {
+    for (final tabIndex in _tabStates.keys) {
+      await _fetchApplications(tabIndex: tabIndex, isRefresh: true);
     }
   }
 
@@ -175,7 +186,7 @@ class _MyApplicationsPageState extends State<MyApplicationsPage>
       );
 
       if (response.statusCode == 200) {
-        _fetchApplications(tabIndex: _tabController.index, isRefresh: true);
+        await _refreshAllTabs();
       } else {
         // Handle error
       }
@@ -195,7 +206,7 @@ class _MyApplicationsPageState extends State<MyApplicationsPage>
       );
 
       if (response.statusCode == 200) {
-        _fetchApplications(tabIndex: _tabController.index, isRefresh: true);
+        await _refreshAllTabs();
       } else {
         // Handle error
       }
@@ -239,8 +250,7 @@ class _MyApplicationsPageState extends State<MyApplicationsPage>
 
     if (state.applications.isEmpty) {
       return RefreshIndicator(
-        onRefresh: () =>
-            _fetchApplications(tabIndex: tabIndex, isRefresh: true),
+        onRefresh: _refreshAllTabs,
         child: Stack(
           children: [
             ListView(), // Required for RefreshIndicator to work on empty list
@@ -251,7 +261,7 @@ class _MyApplicationsPageState extends State<MyApplicationsPage>
     }
 
     return RefreshIndicator(
-      onRefresh: () => _fetchApplications(tabIndex: tabIndex, isRefresh: true),
+      onRefresh: _refreshAllTabs,
       child: ListView.builder(
         controller: state.scrollController,
         padding: const EdgeInsets.all(8.0),
@@ -263,17 +273,16 @@ class _MyApplicationsPageState extends State<MyApplicationsPage>
               child: Center(child: CircularProgressIndicator()),
             );
           }
-          state.applications[index].hasConflict ??= false;
-          state.applications[index].hasPendingConflict ??= false;
           final app = state.applications[index];
+          app.hasConflict ??= false;
+          app.hasPendingConflict ??= false;
           return ApplicationCard(
             sessionKey: widget.sessionKey,
             application: app,
-            onAccept: () =>
-                _handleApplicationAction(app.applicationId, 'accept'),
-            onReject: () =>
-                _handleApplicationAction(app.applicationId, 'reject'),
+            onAccept: () => _handleApplicationAction(app.applicationId, 'accept'),
+            onReject: () => _handleApplicationAction(app.applicationId, 'reject'),
             onWithdraw: () => _withdrawApplication(app.applicationId),
+            onRefresh: _refreshAllTabs,
           );
         },
       ),
@@ -287,6 +296,7 @@ class ApplicationCard extends StatelessWidget {
   final VoidCallback onAccept;
   final VoidCallback onReject;
   final VoidCallback onWithdraw;
+  final Future<void> Function() onRefresh;
 
   const ApplicationCard({
     super.key,
@@ -295,6 +305,7 @@ class ApplicationCard extends StatelessWidget {
     required this.onAccept,
     required this.onReject,
     required this.onWithdraw,
+    required this.onRefresh,
   });
 
   @override
@@ -304,17 +315,26 @@ class ApplicationCard extends StatelessWidget {
       elevation: 2.0,
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8.0)),
       child: InkWell(
-        onTap: () {
-          Navigator.of(context).push(
+        onTap: () async {
+          final result = await Navigator.of(context).push(
             MaterialPageRoute(
-              builder: (context) => ScheduleGigDetails(
+              builder: (context) => ApplicationGigDetails(
                 gigId: application.gigId,
                 title: application.gigTitle,
+                sessionKey: sessionKey,
+                status: application.status,
+                applicationId: application.applicationId,
+                acceptEnabled: application.hasConflict == true ? false : true,
               ),
             ),
-          );          
-        },
-        child: Padding(
+          );
+
+          developer.log('ApplicationGigDetails returned: $result');
+
+          if (result == true) {
+            await onRefresh();
+          }
+        },        child: Padding(
           padding: const EdgeInsets.all(12.0),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
@@ -354,8 +374,8 @@ class ApplicationCard extends StatelessWidget {
               if (application.hasPendingConflict! == true || 
                   application.hasConflict! == true)
                 GestureDetector(
-                  onTap: () {
-                    Navigator.of(context).push(
+                  onTap: () async {
+                    final result = await Navigator.of(context).push(
                       MaterialPageRoute(
                         builder: (context) => ViewConflict(
                           sessionKey: sessionKey,
@@ -365,6 +385,10 @@ class ApplicationCard extends StatelessWidget {
                         ),
                       ),
                     );
+
+                    if (result == true) {
+                      await onRefresh();
+                    }
                   },
                   child: Container(
                     width: double.infinity,
