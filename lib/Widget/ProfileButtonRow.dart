@@ -36,7 +36,6 @@ class ProfileButtonRow extends StatelessWidget {
               MaterialPageRoute(
                 builder: (context) => MyApplicationsPage(
                   sessionKey: sessionKey,
-                  userId: profile.userId,
                 ),
               ),
             );
