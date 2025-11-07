@@ -4,8 +4,8 @@ import 'package:flutter/material.dart';
 import 'package:rhttp/rhttp.dart';
 import 'package:working_system_app/Others/Utils.dart';
 import 'package:working_system_app/Types/JSONObject/GigDetails.dart';
-import 'package:working_system_app/Widget/GigInformation.dart';
-import 'package:working_system_app/Widget/LoadingIndicator.dart';
+import 'package:working_system_app/Widget/GigDetail/GigInformation.dart';
+import 'package:working_system_app/Widget/Others/LoadingIndicator.dart';
 
 class ApplicationGigDetails extends StatefulWidget {
   final String gigId;

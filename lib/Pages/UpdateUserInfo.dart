@@ -5,8 +5,8 @@ import 'package:rhttp/rhttp.dart';
 import 'package:working_system_app/Others/Utils.dart';
 import 'package:working_system_app/Types/JSONObject/WorkerProfile.dart';
 import 'package:multi_dropdown/multi_dropdown.dart';
-import 'package:working_system_app/Widget/AvatarEditor.dart';
-import 'package:working_system_app/Widget/JobExperienceEditor.dart';
+import 'package:working_system_app/Widget/UpdateUserInfo/AvatarEditor.dart';
+import 'package:working_system_app/Widget/UpdateUserInfo/JobExperienceEditor.dart';
 
 class UpdateUserInfo extends StatefulWidget {
   final String sessionKey;
@@ -164,7 +164,7 @@ class _UpdateUserInfoState extends State<UpdateUserInfo>
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      AvatarUpdater(
+                      AvatarEditor(
                         profile: widget.workerProfile,
                         changeAvatar: changeAvatar,
                         avatarBytes: avatarBytes,

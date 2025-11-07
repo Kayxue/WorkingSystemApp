@@ -4,7 +4,7 @@ import 'package:intl/intl.dart';
 import 'package:url_launcher/url_launcher_string.dart';
 import 'package:working_system_app/Types/JSONObject/GigDetails.dart';
 import 'package:maps_launcher/maps_launcher.dart';
-import 'package:working_system_app/Widget/EnvironmentPhotoGallery.dart';
+import 'package:working_system_app/Widget/GigDetail/EnvironmentPhotoGallery.dart';
 import 'package:mailto/mailto.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:working_system_app/Pages/ViewConflict.dart';

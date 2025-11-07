@@ -44,7 +44,7 @@ class ProfileCard extends StatelessWidget {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(
-                      "${profile.lastName}${profile.firstName}",
+                      "${profile.firstName} ${profile.lastName}",
                       style: const TextStyle(
                         color: Colors.white,
                         fontSize: 24,

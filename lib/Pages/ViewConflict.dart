@@ -1,9 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:rhttp/rhttp.dart';
+import 'package:working_system_app/Widget/ViewConflict/GigCard.dart';
+import 'package:working_system_app/Widget/ViewConflict/PendingApplicationCard.dart';
 import 'dart:convert';
 import '../Others/Utils.dart';
-import 'package:working_system_app/Pages/ScheduleGigDetails.dart';
-import 'package:working_system_app/Widget/LoadingIndicator.dart';
+import 'package:working_system_app/Widget/Others/LoadingIndicator.dart';
 import 'package:working_system_app/Types/JSONObject/Conflict/ConflictReturn.dart';
 import 'package:working_system_app/Types/JSONObject/Conflict/ConfirmedGig.dart';
 import 'package:working_system_app/Types/JSONObject/Conflict/PendingApplication.dart';
@@ -24,48 +25,6 @@ class ViewConflict extends StatefulWidget {
 
   @override
   State<ViewConflict> createState() => _ViewConflictState();
-}
-
-Widget _buildStatusTag(String status) {
-  Color color;
-  String text;
-  switch (status) {
-    case 'pending_worker_confirmation':
-      text = '待同意';
-      color = Colors.orange;
-      break;
-    case 'pending_employer_review':
-      text = '待審核';
-      color = Colors.blueGrey;
-      break;
-    case 'worker_confirmed':
-      text = '已通過';
-      color = Colors.green;
-      break;
-    case 'employer_rejected':
-      text = '審核未通過';
-      color = Colors.red;
-      break;
-    case 'worker_declined':
-      text = '已拒絕';
-      color = Colors.red;
-      break;
-    case 'worker_cancelled':
-      text = '已取消';
-      color = Colors.grey;
-      break;
-    case 'system_cancelled':
-      text = '已取消';
-      color = Colors.grey;
-      break;
-    default:
-      text = status;
-      color = Colors.grey;
-  }
-  return Text(
-    text,
-    style: TextStyle(color: color, fontSize: 16),
-  );
 }
 
 class _ViewConflictState extends State<ViewConflict> {
@@ -115,35 +74,30 @@ class _ViewConflictState extends State<ViewConflict> {
     try {
       final response = await Utils.client.get(
         '/application/${widget.applicationId}/conflicts?type=${widget.conflictType}&limit=10&offset=$offset',
-        headers: HttpHeaders.rawMap({
-          "cookie": widget.sessionKey,
-        }),
+        headers: HttpHeaders.rawMap({"cookie": widget.sessionKey}),
       );
 
       if (response.statusCode == 200) {
         final data = ConflictReturn.fromJson(jsonDecode(response.body));
-        setState(
-          () {
-            if (isRefresh) {
-              if (widget.conflictType == 'confirmed') {
-                confirmedConflicts.clear();
-              } else {
-                pendingConflicts.clear();
-              }
-            }
-            
+        setState(() {
+          if (isRefresh) {
             if (widget.conflictType == 'confirmed') {
-              confirmedConflicts.addAll(data.confirmedGigConflicts);
-              offset += data.confirmedGigConflicts.length;
-              hasMore = data.pagination.hasMore;
+              confirmedConflicts.clear();
             } else {
-              pendingConflicts.addAll(data.pendingApplicationConflicts);
-              offset += data.pendingApplicationConflicts.length;
-              hasMore = data.pagination.hasMore;
+              pendingConflicts.clear();
             }
-            
-          },
-        );
+          }
+
+          if (widget.conflictType == 'confirmed') {
+            confirmedConflicts.addAll(data.confirmedGigConflicts);
+            offset += data.confirmedGigConflicts.length;
+            hasMore = data.pagination.hasMore;
+          } else {
+            pendingConflicts.addAll(data.pendingApplicationConflicts);
+            offset += data.pendingApplicationConflicts.length;
+            hasMore = data.pagination.hasMore;
+          }
+        });
       } else {
         // Handle error
         setState(() {
@@ -164,7 +118,6 @@ class _ViewConflictState extends State<ViewConflict> {
   }
 
   Future<void> _rejectApplicationAction(String gigId) async {
-
     final confirmed = await _showConfirmationDialog('確認拒絕', '您確定要拒絕此工作邀請嗎？');
     if (!confirmed || !mounted) return;
 
@@ -249,8 +202,11 @@ class _ViewConflictState extends State<ViewConflict> {
                       (widget.conflictType == 'confirmed'
                           ? '以下的工作和您的申請有衝突'
                           : '以下的工作申請和您目前的申請有衝突'),
-                      style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold, color: Colors.red),
-                      
+                      style: TextStyle(
+                        fontSize: 20,
+                        fontWeight: FontWeight.bold,
+                        color: Colors.red,
+                      ),
                     ),
                     const SizedBox(height: 16),
                     Expanded(
@@ -277,7 +233,7 @@ class _ViewConflictState extends State<ViewConflict> {
           return isLoadingMore ? LoadingIndicator() : Container();
         }
         final gig = confirmedConflicts[index];
-        return GigCard(gig: gig);
+        return GigCard(gig: gig, sessionKey: widget.sessionKey);
       },
     );
   }
@@ -295,199 +251,12 @@ class _ViewConflictState extends State<ViewConflict> {
         }
         final pendingApp = pendingConflicts[index];
         return PendingApplicationCard(
-          app: pendingApp, 
+          app: pendingApp,
           onReject: () => _rejectApplicationAction(pendingApp.gigId),
           onWithdraw: () => _withdrawApplication(pendingApp.applicationId),
+          sessionKey: widget.sessionKey,
         );
       },
     );
   }
-}
-
-class GigCard extends StatelessWidget {
-  final ConfirmedGig gig;
-
-  const GigCard({super.key, required this.gig});
-
-  @override
-  Widget build(BuildContext context) {
-    return GestureDetector(
-      onTap: () {
-        // Navigate to Gig Detail Page
-        Navigator.of(context).push(
-          MaterialPageRoute(
-            builder: (context) => ScheduleGigDetails(
-              gigId: gig.gigId,
-              title: gig.title,
-            ),
-          ),
-        );
-      },
-      child: Card(
-        margin: const EdgeInsets.symmetric(vertical: 8.0),
-        elevation: 2.0,
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8.0)),
-        child: Padding(
-          padding: const EdgeInsets.all(12.0),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  Text(
-                    gig.title,
-                    style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
-                  ),
-                  const Spacer(),
-                  _buildStatusTag('worker_confirmed'),
-                ],
-              ),
-              const SizedBox(height: 2),
-              Text(
-                gig.employerName,
-                style: const TextStyle(fontSize: 14, color: Colors.grey, fontWeight: FontWeight.w500),
-              ),
-              const SizedBox(height: 8),
-              Text.rich(
-                TextSpan(
-                  children: [
-                    TextSpan(
-                      text: '時薪${gig.hourlyRate} ',
-                      style: TextStyle(fontSize: 14, color: Colors.orange[500], fontWeight: FontWeight.w500),
-                    ),
-                    TextSpan(
-                      text: '| ${gig.dateStart} - ${gig.dateEnd} (${gig.timeStart} - ${gig.timeEnd})',
-                      style: TextStyle(fontSize: 14, color: Colors.black, fontWeight: FontWeight.w500),
-                    ),
-                  ],
-                )
-              ),
-              const SizedBox(height: 8),
-              Text(
-                '${gig.city} ${gig.district} ${gig.address}',
-                style: const TextStyle(fontSize: 14, fontWeight: FontWeight.w500),
-              )
-
-            ],
-          ),
-        ),
-      ),
-    ); 
-  }
-}
-
-class PendingApplicationCard extends StatelessWidget {
-  final PendingApplication app;
-  final VoidCallback onReject;
-  final VoidCallback onWithdraw;
-
-  const PendingApplicationCard({
-    super.key, 
-    required this.app,
-    required this.onReject,
-    required this.onWithdraw,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    return GestureDetector(
-      onTap: () {
-        // Navigate to Gig Detail Page
-        Navigator.of(context).push(
-          MaterialPageRoute(
-            builder: (context) => ScheduleGigDetails(
-              gigId: app.gigId,
-              title: app.title,
-            ),
-          ),
-        );
-      },
-      child: Card(
-        margin: const EdgeInsets.symmetric(vertical: 8.0),
-        elevation: 2.0,
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8.0)),
-        child: Padding(
-          padding: const EdgeInsets.all(12.0),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  Text(
-                    app.title,
-                    style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
-                  ),
-                  const Spacer(),
-                  _buildStatusTag(app.status),
-                ],
-              ),
-              const SizedBox(height: 2),
-              Text(
-                app.employerName,
-                style: const TextStyle(fontSize: 14, color: Colors.grey, fontWeight: FontWeight.w500),
-              ),
-              const SizedBox(height: 4),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text.rich(
-                        TextSpan(
-                          children: [
-                            TextSpan(
-                              text: '時薪${app.hourlyRate} ',
-                              style: TextStyle(fontSize: 14, color: Colors.orange[500], fontWeight: FontWeight.w500),
-                            ),
-                            TextSpan(
-                              text: '| ${app.dateStart} - ${app.dateEnd} (${app.timeStart} - ${app.timeEnd})',
-                              style: TextStyle(fontSize: 14, color: Colors.black, fontWeight: FontWeight.w500),
-                            ),
-                          ],
-                        )
-                      ),                  
-                      Text(
-                        '${app.city} ${app.district} ${app.address}',
-                        style: const TextStyle(fontSize: 14, fontWeight: FontWeight.w500),
-                      ),
-                    ]
-                  ),
-                  if (_buildActionButtons(context).isNotEmpty)
-                    Row(children: _buildActionButtons(context)),
-                ],
-              ),
-            ],
-          ),
-        ),
-      ),
-    );
-  }
-
-  List<Widget> _buildActionButtons(BuildContext context) {
-    switch (app.status) {
-      case 'pending_worker_confirmation':
-        return [
-          OutlinedButton(
-            onPressed: onReject,
-            style: OutlinedButton.styleFrom(
-              side: const BorderSide(color: Colors.red),
-            ),
-            child: const Text(
-              '拒絕',
-              style: TextStyle(color: Colors.red, fontWeight: FontWeight.bold)
-            )
-          ),
-        ];
-      case 'pending_employer_review':
-        return [
-          OutlinedButton(onPressed: onWithdraw, child: const Text('取消申請')),
-        ];
-      default:
-        return [];
-    }
-  }
-
 }

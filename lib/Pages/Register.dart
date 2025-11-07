@@ -5,7 +5,7 @@ import 'package:multi_dropdown/multi_dropdown.dart';
 import 'package:rhttp/rhttp.dart';
 import 'package:working_system_app/Others/Utils.dart';
 import 'package:working_system_app/Types/JSONObject/WorkerRegisterForm.dart';
-import 'package:working_system_app/Widget/JobExperienceEditor.dart';
+import 'package:working_system_app/Widget/UpdateUserInfo/JobExperienceEditor.dart';
 
 class Register extends StatefulWidget {
   const Register({super.key});

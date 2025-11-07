@@ -5,10 +5,10 @@ import 'package:rhttp/rhttp.dart';
 import 'package:working_system_app/Others/Utils.dart';
 import 'package:working_system_app/Types/JSONObject/WorkerProfile.dart';
 import 'package:flutter/services.dart';
-import 'package:working_system_app/Widget/LoadingIndicator.dart';
-import 'package:working_system_app/Widget/ProfileButtonRow.dart';
-import 'package:working_system_app/Widget/ProfileCard.dart';
-import 'package:working_system_app/Widget/ProfileInfoList.dart';
+import 'package:working_system_app/Widget/Others/LoadingIndicator.dart';
+import 'package:working_system_app/Widget/Personal/ProfileButtonRow.dart';
+import 'package:working_system_app/Widget/Personal/ProfileCard.dart';
+import 'package:working_system_app/Widget/Personal/ProfileInfoList.dart';
 
 class Personal extends StatefulWidget {
   final String sessionKey;

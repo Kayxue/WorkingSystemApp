@@ -8,7 +8,7 @@ import 'package:working_system_app/Pages/Login.dart';
 import 'package:working_system_app/Pages/Personal.dart';
 import 'package:working_system_app/Pages/Schedule.dart';
 import 'package:working_system_app/Pages/Notification.dart';
-import 'package:working_system_app/Widget/BottomBar.dart';
+import 'package:working_system_app/Widget/Base/BottomBar.dart';
 import 'package:working_system_app/Services/FCMService.dart';
 import 'package:working_system_app/Services/NotificationManager.dart';
 import 'package:rhttp/rhttp.dart';

@@ -3,7 +3,7 @@ import 'package:rhttp/rhttp.dart';
 import 'package:flutter/material.dart';
 import 'package:working_system_app/Others/Utils.dart';
 import 'package:working_system_app/Types/JSONObject/NotificationReturn.dart';
-import 'package:working_system_app/Widget/LoadingIndicator.dart';
+import 'package:working_system_app/Widget/Others/LoadingIndicator.dart';
 import 'package:working_system_app/Types/JSONObject/Notification.dart' as NotificationType;
 import 'package:working_system_app/Pages/MyApplications.dart';
 

@@ -4,7 +4,7 @@ import 'package:working_system_app/Pages/Reviews.dart';
 import 'package:working_system_app/Pages/UpdateUserInfo.dart';
 import 'package:working_system_app/Pages/UpdateUserPassword.dart';
 import 'package:working_system_app/Types/JSONObject/WorkerProfile.dart';
-import 'package:working_system_app/Widget/IconButton.dart';
+import 'package:working_system_app/Widget/Personal/IconButton.dart';
 
 class ProfileButtonRow extends StatelessWidget {
   final String sessionKey;

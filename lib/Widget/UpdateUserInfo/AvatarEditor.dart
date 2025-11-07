@@ -7,14 +7,14 @@ import 'package:image_cropper/image_cropper.dart';
 import 'package:working_system_app/Types/JSONObject/WorkerProfile.dart';
 import 'package:working_system_app/src/rust/api/core.dart';
 
-class AvatarUpdater extends StatelessWidget {
+class AvatarEditor extends StatelessWidget {
   final WorkerProfile profile;
   final Uint8List? avatarBytes;
   final bool updateAvatar;
   final ImagePicker picker = ImagePicker();
   final Function(Uint8List?, String?) changeAvatar;
 
-  AvatarUpdater({
+  AvatarEditor({
     super.key,
     required this.profile,
     required this.changeAvatar,

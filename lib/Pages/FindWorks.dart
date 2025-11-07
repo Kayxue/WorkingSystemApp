@@ -8,7 +8,7 @@ import 'package:working_system_app/Others/Utils.dart';
 import 'package:working_system_app/Pages/GigDetail.dart';
 import 'package:working_system_app/Types/JSONObject/Gigs.dart';
 import 'package:working_system_app/Types/JSONObject/PublicGigsReturn.dart';
-import 'package:working_system_app/Widget/FilterBar.dart';
+import 'package:working_system_app/Widget/FindWorks/FilterBar.dart';
 
 class FindWorks extends StatefulWidget {
   final Map<String, List<String>>? cityDistrictMap;
