@@ -100,7 +100,7 @@ class _PersonalState extends State<Personal> {
                     style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
                   ),
                   SizedBox(height: 8),
-                  ProfileCard(profile: profile),
+                  ProfileCard(profile: profile,sessionKey: widget.sessionKey,),
                   SizedBox(height: 8),
                   Expanded(
                     child: SingleChildScrollView(

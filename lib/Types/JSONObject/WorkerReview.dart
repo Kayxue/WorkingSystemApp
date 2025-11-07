@@ -1,5 +1,5 @@
 import 'package:json_annotation/json_annotation.dart';
-import 'package:working_system_app/Types/JSONObject/WorkerReviewEmployer.dart';
+import 'package:working_system_app/Types/JSONObject/ReviewEmployer.dart';
 
 part 'WorkerReview.g.dart';
 
@@ -9,7 +9,7 @@ class WorkerReview {
   String title;
   DateTime startDate;
   DateTime endDate;
-  WorkerReviewEmployer employer;
+  ReviewEmployer employer;
 
   WorkerReview({
     required this.gigId,

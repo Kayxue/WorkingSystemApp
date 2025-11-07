@@ -3,20 +3,33 @@ import 'dart:typed_data';
 import 'package:apple_like_avatar_generator/apple_like_avatar_generator.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_rating_bar/flutter_rating_bar.dart';
+import 'package:working_system_app/Pages/Personal/EmployerRatings.dart';
 import 'package:working_system_app/Types/JSONObject/WorkerProfile.dart';
 
 class ProfileCard extends StatelessWidget {
   final WorkerProfile profile;
+  final String sessionKey;
 
-  const ProfileCard({super.key, required this.profile});
+  const ProfileCard({
+    super.key,
+    required this.profile,
+    required this.sessionKey,
+  });
 
   @override
-  Widget build(Object context) {
+  Widget build(BuildContext context) {
     return Card(
       color: Colors.blue,
       clipBehavior: Clip.hardEdge,
       child: InkWell(
-        onTap: () {},
+        onTap: () {
+          Navigator.of(context).push(
+            MaterialPageRoute(
+              builder: (context) =>
+                  EmployerRatings(profile: profile, sessionKey: sessionKey),
+            ),
+          );
+        },
         child: Container(
           width: double.infinity,
           height: 100,

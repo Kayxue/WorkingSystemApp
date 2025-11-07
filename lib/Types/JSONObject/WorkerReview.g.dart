@@ -11,9 +11,7 @@ WorkerReview _$WorkerReviewFromJson(Map<String, dynamic> json) => WorkerReview(
   title: json['title'] as String,
   startDate: DateTime.parse(json['startDate'] as String),
   endDate: DateTime.parse(json['endDate'] as String),
-  employer: WorkerReviewEmployer.fromJson(
-    json['employer'] as Map<String, dynamic>,
-  ),
+  employer: ReviewEmployer.fromJson(json['employer'] as Map<String, dynamic>),
 );
 
 Map<String, dynamic> _$WorkerReviewToJson(WorkerReview instance) =>

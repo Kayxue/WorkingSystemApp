@@ -5,8 +5,8 @@ import 'package:flutter/material.dart';
 import 'package:infinite_scroll_pagination/infinite_scroll_pagination.dart';
 import 'package:rhttp/rhttp.dart';
 import 'package:working_system_app/Others/Utils.dart';
-import 'package:working_system_app/Types/JSONObject/WorkerGivenReviewReturn.dart';
-import 'package:working_system_app/Types/JSONObject/WorkerRatings.dart';
+import 'package:working_system_app/Types/JSONObject/GivenReviewReturn.dart';
+import 'package:working_system_app/Types/JSONObject/Ratings.dart';
 
 class GivenReview extends StatefulWidget {
   final String sessionKey;
@@ -18,7 +18,7 @@ class GivenReview extends StatefulWidget {
 }
 
 class _GivenReviewState extends State<GivenReview> {
-  late final _pagingController = PagingController<int, WorkerRatings>(
+  late final _pagingController = PagingController<int, Ratings>(
     getNextPageKey: (state) =>
         state.lastPageIsEmpty ? null : state.nextIntPageKey,
     fetchPage: (pageKey) async {
@@ -27,7 +27,7 @@ class _GivenReviewState extends State<GivenReview> {
     },
   );
 
-  Future<List<WorkerRatings>> fetchWorks({int page = 1}) async {
+  Future<List<Ratings>> fetchWorks({int page = 1}) async {
     final response = await Utils.client.get(
       "/rating/my-ratings/worker?page=$page",
       headers: HttpHeaders.rawMap({
@@ -43,8 +43,8 @@ class _GivenReviewState extends State<GivenReview> {
       return [];
     }
     final respond = jsonDecode(response.body) as Map<String, dynamic>;
-    final parsed = WorkerGivenReviewReturn.fromJson(respond);
-    return parsed.myRatings;
+    final parsed = GivenReviewReturn.fromJson(respond);
+    return parsed.ratings;
   }
 
   @override
@@ -55,7 +55,7 @@ class _GivenReviewState extends State<GivenReview> {
         controller: _pagingController,
         builder: (context, state, fetchNextPage) => RefreshIndicator(
           onRefresh: () => Future.sync(() => _pagingController.refresh()),
-          child: PagedListView<int, WorkerRatings>(
+          child: PagedListView<int, Ratings>(
             state: state,
             fetchNextPage: fetchNextPage,
             builderDelegate: PagedChildBuilderDelegate(
@@ -69,6 +69,7 @@ class _GivenReviewState extends State<GivenReview> {
                     children: [
                       ListTile(
                         title: Text(item.gig.title),
+                        subtitle: Text("Employer: ${item.employer.name}", style: TextStyle(fontSize: 12,color: Colors.grey.shade700)),
                         trailing: Row(
                           mainAxisSize: MainAxisSize.min,
                           children: [
