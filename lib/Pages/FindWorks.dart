@@ -100,7 +100,7 @@ class _FindWorksState extends State<FindWorks> {
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: EdgeInsets.only(top: 16, right: 16, left: 16, bottom: 8),
+      padding: EdgeInsets.only(top: 16, right: 16, left: 16),
       child: Column(
         children: [
           FilterBar(

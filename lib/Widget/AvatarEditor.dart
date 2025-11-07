@@ -103,42 +103,6 @@ class AvatarUpdater extends StatelessWidget {
                   return;
                 }
                 debugPrint('Selected image path: ${image.path}');
-                ImageInformation info = await getImageInformation(image.path);
-                debugPrint(
-                  'Image info - Width: ${info.width}, Height: ${info.height}, Format: ${info.format}, Ratio: ${info.ratio}',
-                );
-                if (info.ratio == 1) {
-                  if (!context.mounted) return;
-                  final (filename, imageSize) = await getImageNameAndSize(
-                    image.path,
-                  );
-                  if (imageSize > 2) {
-                    // Show dialog
-                    await showDialog(
-                      context: context,
-                      builder: (context) => AlertDialog(
-                        title: Text('Image Too Large'),
-                        content: Text(
-                          'Please select an image smaller than 2MB.',
-                        ),
-                        actions: [
-                          TextButton(
-                            onPressed: () => Navigator.of(context).pop(),
-                            child: Text('OK'),
-                          ),
-                        ],
-                      ),
-                    );
-                    return;
-                  }
-                  final imageBytes = await readImage(image.path);
-                  final convertedFilename = await changeFilenameExtension(
-                    filename,
-                    "png",
-                  );
-                  changeAvatar(imageBytes, convertedFilename);
-                  return;
-                }
                 CroppedFile? croppedFile = await ImageCropper().cropImage(
                   sourcePath: image.path,
                   aspectRatio: CropAspectRatio(ratioX: 1, ratioY: 1),

@@ -6,9 +6,6 @@
 import '../frb_generated.dart';
 import 'package:flutter_rust_bridge/flutter_rust_bridge_for_generated.dart';
 
-Future<ImageInformation> getImageInformation(String path) =>
-    RustLib.instance.api.crateApiCoreGetImageInformation(path: path);
-
 Future<Uint8List> readImage(String path) =>
     RustLib.instance.api.crateApiCoreReadImage(path: path);
 
@@ -20,31 +17,3 @@ Future<String> changeFilenameExtension(String filename, String extension_) =>
       filename: filename,
       extension_: extension_,
     );
-
-class ImageInformation {
-  final int width;
-  final int height;
-  final double ratio;
-  final String format;
-
-  const ImageInformation({
-    required this.width,
-    required this.height,
-    required this.ratio,
-    required this.format,
-  });
-
-  @override
-  int get hashCode =>
-      width.hashCode ^ height.hashCode ^ ratio.hashCode ^ format.hashCode;
-
-  @override
-  bool operator ==(Object other) =>
-      identical(this, other) ||
-      other is ImageInformation &&
-          runtimeType == other.runtimeType &&
-          width == other.width &&
-          height == other.height &&
-          ratio == other.ratio &&
-          format == other.format;
-}
