@@ -58,7 +58,6 @@ class _EmployerRatingsState extends State<EmployerRatings> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      extendBodyBehindAppBar: true,
       appBar: AppBar(forceMaterialTransparency: true),
       body: Padding(
         padding: EdgeInsets.only(left: 16, right: 16),
