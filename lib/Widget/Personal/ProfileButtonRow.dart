@@ -30,7 +30,7 @@ class ProfileButtonRow extends StatelessWidget {
         ButtonWithIcon(
           iconColor: Colors.black,
           icon: Icons.business_center,
-          text: "Gigs Applications",
+          text: "Gigs Requests",
           onPressed: () {
             Navigator.of(context).push(
               MaterialPageRoute(
