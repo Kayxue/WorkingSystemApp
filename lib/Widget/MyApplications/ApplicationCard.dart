@@ -1,7 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:rhttp/rhttp.dart';
 import 'package:working_system_app/Others/Constant.dart';
-import 'package:working_system_app/Others/Utils.dart';
 import 'package:working_system_app/Pages/ApplicationGigDetails.dart';
 import 'package:working_system_app/Pages/ViewConflict.dart';
 import 'package:working_system_app/Types/JSONObject/Application.dart';
@@ -10,12 +8,16 @@ class ApplicationCard extends StatefulWidget {
   final String sessionKey;
   final Application application;
   final Function(int) moveToPage;
+    final Function(String,String) handleActions;
+  final Function(String) handleWithdraw;
 
   const ApplicationCard({
     super.key,
     required this.sessionKey,
     required this.application,
     required this.moveToPage,
+    required this.handleActions,
+    required this.handleWithdraw
   });
 
   @override
@@ -23,80 +25,6 @@ class ApplicationCard extends StatefulWidget {
 }
 
 class _ApplicationCardState extends State<ApplicationCard> {
-  Future<bool> _showConfirmationDialog(String title, String content) async {
-    final result = await showDialog<bool>(
-      context: context,
-      builder: (BuildContext context) {
-        return AlertDialog(
-          title: Text(title),
-          content: Text(content),
-          actions: <Widget>[
-            TextButton(
-              child: const Text('取消'),
-              onPressed: () => Navigator.of(context).pop(false),
-            ),
-            TextButton(
-              child: const Text('確認'),
-              onPressed: () => Navigator.of(context).pop(true),
-            ),
-          ],
-        );
-      },
-    );
-    return result ?? false;
-  }
-
-  Future<void> handleApplicationAction(
-    String applicationId,
-    String action,
-  ) async {
-    final title = action == 'accept' ? '確認接受' : '確認婉拒';
-    final content = action == 'accept' ? '您確定要接受此工作邀請嗎？' : '您確定要婉拒此工作邀請嗎？';
-
-    final confirmed = await _showConfirmationDialog(title, content);
-    if (!confirmed || !mounted) return;
-
-    try {
-      final response = await Utils.client.put(
-        '/application/$applicationId/confirm',
-        headers: HttpHeaders.rawMap({'cookie': widget.sessionKey}),
-        body: HttpBody.json({'action': action}),
-      );
-
-      if (response.statusCode == 200) {
-        if (action == 'accept') {
-          await widget.moveToPage(2);
-        } else {
-          await widget.moveToPage(3);
-        }
-      } else {
-        // Handle error
-      }
-    } catch (e) {
-      // Handle error
-    }
-  }
-
-  Future<void> withdrawApplication(String applicationId) async {
-    final confirmed = await _showConfirmationDialog('確認取消申請', '您確定要取消這個工作申請嗎？');
-    if (!confirmed || !mounted) return;
-
-    try {
-      final response = await Utils.client.post(
-        '/application/cancel/$applicationId',
-        headers: HttpHeaders.rawMap({'cookie': widget.sessionKey}),
-      );
-
-      if (response.statusCode == 200) {
-        await widget.moveToPage(3);
-      } else {
-        // Handle error
-      }
-    } catch (e) {
-      // Handle error
-    }
-  }
-
   @override
   Widget build(BuildContext context) {
     return Card(
@@ -252,7 +180,7 @@ class _ApplicationCardState extends State<ApplicationCard> {
       case 'pending_worker_confirmation':
         return [
           OutlinedButton(
-            onPressed: () async => handleApplicationAction(
+            onPressed: () async => widget.handleActions(
               widget.application.applicationId,
               'reject',
             ),
@@ -266,7 +194,7 @@ class _ApplicationCardState extends State<ApplicationCard> {
           ),
           const SizedBox(width: 8),
           ElevatedButton(
-            onPressed: () async => handleApplicationAction(
+            onPressed: () async => widget.handleActions(
               widget.application.applicationId,
               'accept',
             ),
@@ -286,7 +214,7 @@ class _ApplicationCardState extends State<ApplicationCard> {
         return [
           OutlinedButton(
             onPressed: () async =>
-                withdrawApplication(widget.application.applicationId),
+                widget.handleWithdraw(widget.application.applicationId),
             child: const Text('取消申請'),
           ),
         ];

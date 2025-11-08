@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:rhttp/rhttp.dart';
 import 'package:working_system_app/Others/Constant.dart';
+import 'package:working_system_app/Others/Utils.dart';
 import 'package:working_system_app/Pages/MyApplication/ApplicationList.dart';
 
 class MyApplications extends StatefulWidget {
@@ -31,6 +33,80 @@ class _MyApplicationStates extends State<MyApplications>
     _tabController.animateTo(index);
   }
 
+  Future<bool> _showConfirmationDialog(String title, String content) async {
+    final result = await showDialog<bool>(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: Text(title),
+          content: Text(content),
+          actions: <Widget>[
+            TextButton(
+              child: const Text('取消'),
+              onPressed: () => Navigator.of(context).pop(false),
+            ),
+            TextButton(
+              child: const Text('確認'),
+              onPressed: () => Navigator.of(context).pop(true),
+            ),
+          ],
+        );
+      },
+    );
+    return result ?? false;
+  }
+
+  Future<void> _handleApplicationAction(
+    String applicationId,
+    String action,
+  ) async {
+    final title = action == 'accept' ? '確認接受' : '確認婉拒';
+    final content = action == 'accept' ? '您確定要接受此工作邀請嗎？' : '您確定要婉拒此工作邀請嗎？';
+
+    final confirmed = await _showConfirmationDialog(title, content);
+    if (!confirmed || !mounted) return;
+
+    try {
+      final response = await Utils.client.put(
+        '/application/$applicationId/confirm',
+        headers: HttpHeaders.rawMap({'cookie': widget.sessionKey}),
+        body: HttpBody.json({'action': action}),
+      );
+
+      if (response.statusCode == 200) {
+        if (action == 'accept') {
+          moveToPage(2);
+        } else {
+          moveToPage(3);
+        }
+      } else {
+        // Handle error
+      }
+    } catch (e) {
+      // Handle error
+    }
+  }
+
+  Future<void> _withdrawApplication(String applicationId) async {
+    final confirmed = await _showConfirmationDialog('確認取消申請', '您確定要取消這個工作申請嗎？');
+    if (!confirmed || !mounted) return;
+
+    try {
+      final response = await Utils.client.post(
+        '/application/cancel/$applicationId',
+        headers: HttpHeaders.rawMap({'cookie': widget.sessionKey}),
+      );
+
+      if (response.statusCode == 200) {
+        moveToPage(3);
+      } else {
+        // Handle error
+      }
+    } catch (e) {
+      // Handle error
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -53,21 +129,29 @@ class _MyApplicationStates extends State<MyApplications>
             currentPageStatus: ApplicationStatus.pendingWorkerConfirmation,
             sessionKey: widget.sessionKey,
             moveToPage: moveToPage,
+            handleActions: _handleApplicationAction,
+            handleWithdraw: _withdrawApplication,
           ),
           ApplicationList(
             currentPageStatus: ApplicationStatus.pendingEmployerReview,
             sessionKey: widget.sessionKey,
             moveToPage: moveToPage,
+            handleActions: _handleApplicationAction,
+            handleWithdraw: _withdrawApplication,
           ),
           ApplicationList(
             currentPageStatus: ApplicationStatus.workerConfirmed,
             sessionKey: widget.sessionKey,
             moveToPage: moveToPage,
+            handleActions: _handleApplicationAction,
+            handleWithdraw: _withdrawApplication,
           ),
           ApplicationList(
             currentPageStatus: ApplicationStatus.inActive,
             sessionKey: widget.sessionKey,
             moveToPage: moveToPage,
+            handleActions: _handleApplicationAction,
+            handleWithdraw: _withdrawApplication,
           ),
         ],
       ),

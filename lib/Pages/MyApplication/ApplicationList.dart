@@ -13,12 +13,16 @@ class ApplicationList extends StatefulWidget {
   final ApplicationStatus currentPageStatus;
   final String sessionKey;
   final Function(int) moveToPage;
+  final Function(String,String) handleActions;
+  final Function(String) handleWithdraw;
 
   const ApplicationList({
     super.key,
     required this.currentPageStatus,
     required this.sessionKey,
     required this.moveToPage,
+    required this.handleActions,
+    required this.handleWithdraw
   });
 
   @override
@@ -73,6 +77,8 @@ class _ApplicationListState extends State<ApplicationList> {
                 sessionKey: widget.sessionKey,
                 application: item,
                 moveToPage: widget.moveToPage,
+                handleActions: widget.handleActions,
+                handleWithdraw: widget.handleWithdraw,
               ),
             ),
           ),
