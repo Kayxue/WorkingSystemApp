@@ -37,6 +37,7 @@ class MyApp extends StatelessWidget {
       title: 'Find Your Gigs',
       debugShowCheckedModeBanner: false,
       theme: ThemeData(
+        fontFamily: "MiSans",
         colorScheme: ColorScheme.fromSeed(seedColor: Colors.blue),
       ),
       home: const ApplicationBase(),
