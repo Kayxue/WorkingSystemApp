@@ -35,7 +35,7 @@ class _ApplicationGigDetailsState extends State<ApplicationGigDetails> {
 
   Future<GigDetails?> fetchGigDetail(String gigId) async {
     final response = await Utils.client.get(
-      "/gig/public/$gigId",
+      "/gig/worker/$gigId",
       headers: HttpHeaders.rawMap({
         "cookie": widget.sessionKey,
       }),
