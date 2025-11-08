@@ -32,3 +32,14 @@ enum StatusTag {
 
   factory StatusTag.getValue(String status) => stringStatusMap[status]!;
 }
+
+enum ApplicationStatus{
+  pendingWorkerConfirmation(statusStr: "pending_worker_confirmation"),
+  pendingEmployerReview(statusStr: "pending_employer_review"),
+  workerConfirmed(statusStr: "worker_confirmed"),
+  inActive(statusStr: "inactive");
+
+  const ApplicationStatus({required this.statusStr});
+
+  final String statusStr;
+}

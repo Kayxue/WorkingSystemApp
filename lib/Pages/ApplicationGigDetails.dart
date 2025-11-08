@@ -92,7 +92,7 @@ class _ApplicationGigDetailsState extends State<ApplicationGigDetails> {
             content: Text(action == 'accept' ? '工作已接受' : '工作已婉拒'),
           ),
         );
-        Navigator.of(context).pop(true);
+        Navigator.of(context).pop(action == 'accept');
       } else {
         ScaffoldMessenger.of(context).showSnackBar(
           const SnackBar(
@@ -127,7 +127,7 @@ class _ApplicationGigDetailsState extends State<ApplicationGigDetails> {
             content: Text('申請已取消'),
           ),
         );
-        Navigator.of(context).pop(true);
+        Navigator.of(context).pop(false);
       } else {
         ScaffoldMessenger.of(context).showSnackBar(
           const SnackBar(

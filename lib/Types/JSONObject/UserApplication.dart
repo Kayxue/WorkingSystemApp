@@ -1,13 +1,13 @@
 import 'package:json_annotation/json_annotation.dart';
+import 'package:working_system_app/Types/JSONObject/Pagination.dart';
 import 'Application.dart';
-import 'ApplicationPagination.dart';
 
 part 'UserApplication.g.dart';
 
 @JsonSerializable(explicitToJson: true)
 class UserApplication {
   List<Application> applications;
-  ApplicationPagination pagination;
+  Pagination pagination;
 
   UserApplication({
     required this.applications,

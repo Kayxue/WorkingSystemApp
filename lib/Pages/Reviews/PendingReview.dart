@@ -27,12 +27,12 @@ class _PendingReviewState extends State<PendingReview> {
     getNextPageKey: (state) =>
         state.lastPageIsEmpty ? null : state.nextIntPageKey,
     fetchPage: (pageKey) async {
-      final result = await fetchWorks(page: pageKey);
+      final result = await fetchPendingReview(page: pageKey);
       return result;
     },
   );
 
-  Future<List<WorkerReview>> fetchWorks({int page = 1}) async {
+  Future<List<WorkerReview>> fetchPendingReview({int page = 1}) async {
     final response = await Utils.client.get(
       "/rating/list/worker?page=$page",
       headers: HttpHeaders.rawMap({

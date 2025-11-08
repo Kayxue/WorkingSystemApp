@@ -2,7 +2,7 @@ import 'package:json_annotation/json_annotation.dart';
 import 'package:working_system_app/Types/JSONObject/Conflict/CurrentApplication.dart';
 import 'package:working_system_app/Types/JSONObject/Conflict/ConfirmedGig.dart';
 import 'package:working_system_app/Types/JSONObject/Conflict/PendingApplication.dart';
-import 'package:working_system_app/Types/JSONObject/ApplicationPagination.dart';
+import 'package:working_system_app/Types/JSONObject/Pagination.dart';
 
 part 'ConflictReturn.g.dart';
 
@@ -11,7 +11,7 @@ class ConflictReturn {
   CurrentApplication application;
   List<ConfirmedGig> confirmedGigConflicts;
   List<PendingApplication> pendingApplicationConflicts;
-  ApplicationPagination pagination;
+  Pagination pagination;
 
   ConflictReturn({
     required this.application,

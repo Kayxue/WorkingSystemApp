@@ -224,7 +224,7 @@ class _NotificationPageState extends State<NotificationPage> {
                         mark([notification.notificationId], "markRead");
                         if (notification.type == 'application') {
                           Navigator.of(context).push(MaterialPageRoute(
-                            builder: (context) => MyApplicationsPage(
+                            builder: (context) => MyApplications(
                               sessionKey: widget.sessionKey,
                             ),
                           ));

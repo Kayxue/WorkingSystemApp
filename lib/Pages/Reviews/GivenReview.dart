@@ -22,12 +22,12 @@ class _GivenReviewState extends State<GivenReview> {
     getNextPageKey: (state) =>
         state.lastPageIsEmpty ? null : state.nextIntPageKey,
     fetchPage: (pageKey) async {
-      final result = await fetchWorks(page: pageKey);
+      final result = await fetchGivenReviews(page: pageKey);
       return result;
     },
   );
 
-  Future<List<Ratings>> fetchWorks({int page = 1}) async {
+  Future<List<Ratings>> fetchGivenReviews({int page = 1}) async {
     final response = await Utils.client.get(
       "/rating/my-ratings/worker?page=$page",
       headers: HttpHeaders.rawMap({

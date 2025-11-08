@@ -11,7 +11,7 @@ UserApplication _$UserApplicationFromJson(Map<String, dynamic> json) =>
       applications: (json['applications'] as List<dynamic>)
           .map((e) => Application.fromJson(e as Map<String, dynamic>))
           .toList(),
-      pagination: ApplicationPagination.fromJson(
+      pagination: Pagination.fromJson(
         json['pagination'] as Map<String, dynamic>,
       ),
     );
