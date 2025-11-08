@@ -47,8 +47,16 @@ class _ViewConflictState extends State<ViewConflict> {
             const SizedBox(height: 16),
             Expanded(
               child: widget.conflictType == 'confirmed'
-                  ? ConfirmedList(sessionKey: widget.sessionKey, conflictType: widget.conflictType, applicationId: widget.applicationId)
-                  : PendingList(sessionKey: widget.sessionKey, conflictType: widget.conflictType, applicationId: widget.applicationId),
+                  ? ConfirmedList(
+                      sessionKey: widget.sessionKey,
+                      conflictType: widget.conflictType,
+                      applicationId: widget.applicationId,
+                    )
+                  : PendingList(
+                      sessionKey: widget.sessionKey,
+                      conflictType: widget.conflictType,
+                      applicationId: widget.applicationId,
+                    ),
             ),
           ],
         ),

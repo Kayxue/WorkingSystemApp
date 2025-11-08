@@ -33,7 +33,7 @@ enum StatusTag {
   factory StatusTag.getValue(String status) => stringStatusMap[status]!;
 }
 
-enum ApplicationStatus{
+enum ApplicationStatus {
   pendingWorkerConfirmation(statusStr: "pending_worker_confirmation"),
   pendingEmployerReview(statusStr: "pending_employer_review"),
   workerConfirmed(statusStr: "worker_confirmed"),

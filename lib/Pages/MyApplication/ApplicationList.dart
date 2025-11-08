@@ -13,7 +13,7 @@ class ApplicationList extends StatefulWidget {
   final ApplicationStatus currentPageStatus;
   final String sessionKey;
   final Function(int) moveToPage;
-  final Function(String,String) handleActions;
+  final Function(String, String) handleActions;
   final Function(String) handleWithdraw;
 
   const ApplicationList({
@@ -22,7 +22,7 @@ class ApplicationList extends StatefulWidget {
     required this.sessionKey,
     required this.moveToPage,
     required this.handleActions,
-    required this.handleWithdraw
+    required this.handleWithdraw,
   });
 
   @override

@@ -34,7 +34,7 @@ class _GigDetailState extends State<GigDetail> {
     final response = await Utils.client.get(
       "/gig/public/$gigId",
       headers: HttpHeaders.rawMap({
-        "platform": "mobile", 
+        "platform": "mobile",
         "cookie": widget.sessionKey,
       }),
     );
@@ -148,7 +148,8 @@ class _GigDetailState extends State<GigDetail> {
                   SizedBox(
                     width: double.infinity,
                     child: FilledButton(
-                      onPressed: widget.sessionKey.isEmpty ||
+                      onPressed:
+                          widget.sessionKey.isEmpty ||
                               gigdetail!.hasConflict == true ||
                               gigdetail!.applicationStatus ==
                                   'pending_employer_review' ||
@@ -160,16 +161,20 @@ class _GigDetailState extends State<GigDetail> {
                               if (!context.mounted) return;
                               Navigator.of(context).pop();
                             },
-                      child: Text(widget.sessionKey.isEmpty
-                                ? "Please login to apply to this gig"
-                                : gigdetail!.applicationStatus == 'pending_employer_review' ||
-                                 gigdetail!.applicationStatus == 'pending_worker_confirmation' || 
-                                 gigdetail!.applicationStatus == 'worker_confirmed'
-                                    ? "You have already applied to this job"
-                                    : gigdetail!.hasConflict == true
-                                        ? "There is a confirm job conflict with this job"
-                                        : "Apply"
-                              ),
+                      child: Text(
+                        widget.sessionKey.isEmpty
+                            ? "Please login to apply to this gig"
+                            : gigdetail!.applicationStatus ==
+                                      'pending_employer_review' ||
+                                  gigdetail!.applicationStatus ==
+                                      'pending_worker_confirmation' ||
+                                  gigdetail!.applicationStatus ==
+                                      'worker_confirmed'
+                            ? "You have already applied to this job"
+                            : gigdetail!.hasConflict == true
+                            ? "There is a confirm job conflict with this job"
+                            : "Apply",
+                      ),
                     ),
                   ),
                   const SizedBox(height: 32),

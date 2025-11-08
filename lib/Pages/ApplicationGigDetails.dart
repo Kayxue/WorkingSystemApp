@@ -36,9 +36,7 @@ class _ApplicationGigDetailsState extends State<ApplicationGigDetails> {
   Future<GigDetails?> fetchGigDetail(String gigId) async {
     final response = await Utils.client.get(
       "/gig/worker/$gigId",
-      headers: HttpHeaders.rawMap({
-        "cookie": widget.sessionKey,
-      }),
+      headers: HttpHeaders.rawMap({"cookie": widget.sessionKey}),
     );
     if (!mounted) return null;
     if (response.statusCode != 200) {
@@ -48,6 +46,7 @@ class _ApplicationGigDetailsState extends State<ApplicationGigDetails> {
     final parsed = GigDetails.fromJson(respond);
     return parsed;
   }
+
   Future<bool> _showConfirmationDialog(String title, String content) async {
     final result = await showDialog<bool>(
       context: context,
@@ -71,7 +70,10 @@ class _ApplicationGigDetailsState extends State<ApplicationGigDetails> {
     return result ?? false;
   }
 
-  Future<void> _handleApplicationAction(String applicationId, String action) async {
+  Future<void> _handleApplicationAction(
+    String applicationId,
+    String action,
+  ) async {
     final title = action == 'accept' ? '確認接受' : '確認婉拒';
     final content = action == 'accept' ? '您確定要接受此工作邀請嗎？' : '您確定要婉拒此工作邀請嗎？';
 
@@ -88,25 +90,19 @@ class _ApplicationGigDetailsState extends State<ApplicationGigDetails> {
       if (!mounted) return;
       if (response.statusCode == 200) {
         ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            content: Text(action == 'accept' ? '工作已接受' : '工作已婉拒'),
-          ),
+          SnackBar(content: Text(action == 'accept' ? '工作已接受' : '工作已婉拒')),
         );
         Navigator.of(context).pop(action == 'accept');
       } else {
-        ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(
-            content: Text('操作失敗，請稍後再試'),
-          ),
-        );
+        ScaffoldMessenger.of(
+          context,
+        ).showSnackBar(const SnackBar(content: Text('操作失敗，請稍後再試')));
       }
     } catch (e) {
       if (!mounted) return;
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-          content: Text('發生錯誤，請稍後再試'),
-        ),
-      );
+      ScaffoldMessenger.of(
+        context,
+      ).showSnackBar(const SnackBar(content: Text('發生錯誤，請稍後再試')));
     }
   }
 
@@ -122,26 +118,20 @@ class _ApplicationGigDetailsState extends State<ApplicationGigDetails> {
 
       if (!mounted) return;
       if (response.statusCode == 200) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(
-            content: Text('申請已取消'),
-          ),
-        );
+        ScaffoldMessenger.of(
+          context,
+        ).showSnackBar(const SnackBar(content: Text('申請已取消')));
         Navigator.of(context).pop(false);
       } else {
-        ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(
-            content: Text('操作失敗，請稍後再試'),
-          ),
-        );
+        ScaffoldMessenger.of(
+          context,
+        ).showSnackBar(const SnackBar(content: Text('操作失敗，請稍後再試')));
       }
     } catch (e) {
       if (!mounted) return;
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-          content: Text('發生錯誤，請稍後再試'),
-        ),
-      );
+      ScaffoldMessenger.of(
+        context,
+      ).showSnackBar(const SnackBar(content: Text('發生錯誤，請稍後再試')));
     }
   }
 
@@ -174,17 +164,19 @@ class _ApplicationGigDetailsState extends State<ApplicationGigDetails> {
         mainAxisAlignment: MainAxisAlignment.spaceEvenly,
         children: [
           ElevatedButton(
-            onPressed: () => _handleApplicationAction(widget.applicationId, 'reject'),
+            onPressed: () =>
+                _handleApplicationAction(widget.applicationId, 'reject'),
             style: ElevatedButton.styleFrom(
               fixedSize: Size(MediaQuery.of(context).size.width * 0.4, 50),
-              side: const BorderSide(
-                color: Colors.red,
-                width: 1,
-              ),
+              side: const BorderSide(color: Colors.red, width: 1),
             ),
             child: const Text(
               '拒絕',
-              style: TextStyle(color: Colors.red, fontWeight: FontWeight.bold, fontSize: 16)
+              style: TextStyle(
+                color: Colors.red,
+                fontWeight: FontWeight.bold,
+                fontSize: 16,
+              ),
             ),
           ),
           ElevatedButton(
@@ -201,9 +193,9 @@ class _ApplicationGigDetailsState extends State<ApplicationGigDetails> {
             child: Text(
               '接受',
               style: TextStyle(
-                color: widget.acceptEnabled ? Colors.green : Colors.grey, 
-                fontWeight: FontWeight.bold, 
-                fontSize: 16
+                color: widget.acceptEnabled ? Colors.green : Colors.grey,
+                fontWeight: FontWeight.bold,
+                fontSize: 16,
               ),
             ),
           ),
@@ -215,17 +207,14 @@ class _ApplicationGigDetailsState extends State<ApplicationGigDetails> {
         style: ElevatedButton.styleFrom(
           fixedSize: Size(MediaQuery.of(context).size.width * 0.9, 50),
         ),
-        child: Text(
-          switch (widget.status) {
-            'employer_rejected' => '被拒絕',
-            'worker_confirmed' => '已接受',
-            'worker_declined' =>  '已拒絕',
-            'worker_cancelled' => '已取消',
-            'system_cancelled' => '已取消',
-            _ => '取消申請',
-          },
-          style: TextStyle(color: Colors.grey, fontSize: 16),
-        ),
+        child: Text(switch (widget.status) {
+          'employer_rejected' => '被拒絕',
+          'worker_confirmed' => '已接受',
+          'worker_declined' => '已拒絕',
+          'worker_cancelled' => '已取消',
+          'system_cancelled' => '已取消',
+          _ => '取消申請',
+        }, style: TextStyle(color: Colors.grey, fontSize: 16)),
       );
     }
   }
@@ -237,10 +226,15 @@ class _ApplicationGigDetailsState extends State<ApplicationGigDetails> {
       body: isLoading
           ? LoadingIndicator()
           : Padding(
-              padding: const EdgeInsets.only(left: 16, right: 16, bottom: 16  ),
+              padding: const EdgeInsets.only(left: 16, right: 16, bottom: 16),
               child: Column(
                 children: [
-                  GigInformation(gigdetail: gigdetail!, applicationGig: true, sessionKey: widget.sessionKey, applicationId: widget.applicationId),
+                  GigInformation(
+                    gigdetail: gigdetail!,
+                    applicationGig: true,
+                    sessionKey: widget.sessionKey,
+                    applicationId: widget.applicationId,
+                  ),
                   const SizedBox(height: 16),
                   _buildActionButtons(),
                 ],

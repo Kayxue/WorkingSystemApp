@@ -4,15 +4,13 @@ import 'package:flutter/material.dart';
 import 'package:working_system_app/Others/Utils.dart';
 import 'package:working_system_app/Types/JSONObject/NotificationReturn.dart';
 import 'package:working_system_app/Widget/Others/LoadingIndicator.dart';
-import 'package:working_system_app/Types/JSONObject/Notification.dart' as NotificationType;
+import 'package:working_system_app/Types/JSONObject/Notification.dart'
+    as NotificationType;
 import 'package:working_system_app/Pages/MyApplications.dart';
 
 class NotificationPage extends StatefulWidget {
   final String sessionKey;
-  const NotificationPage({
-    super.key,
-    required this.sessionKey,
-  });
+  const NotificationPage({super.key, required this.sessionKey});
 
   @override
   State<NotificationPage> createState() => _NotificationPageState();
@@ -55,14 +53,13 @@ class _NotificationPageState extends State<NotificationPage> {
     try {
       final response = await Utils.client.get(
         '/notifications/list?limit=$_limit&offset=$_offset',
-        headers: HttpHeaders.rawMap({
-          'cookie': widget.sessionKey,
-        }),
+        headers: HttpHeaders.rawMap({'cookie': widget.sessionKey}),
       );
 
       if (response.statusCode == 200) {
-        final notificationReturn =
-            NotificationReturn.fromJson(jsonDecode(response.body)['data']);
+        final notificationReturn = NotificationReturn.fromJson(
+          jsonDecode(response.body)['data'],
+        );
         setState(() {
           _notifications.addAll(notificationReturn.notifications);
           _hasMore = notificationReturn.pagination.hasMore;
@@ -87,9 +84,7 @@ class _NotificationPageState extends State<NotificationPage> {
     try {
       final response = await Utils.client.put(
         '/notifications/mark-as-read?isRead=${action == "markRead" ? "true" : "false"}',
-        headers: HttpHeaders.rawMap({
-          'cookie': widget.sessionKey,
-        }),
+        headers: HttpHeaders.rawMap({'cookie': widget.sessionKey}),
         body: HttpBody.json({"notificationIds": notificationId}),
       );
 
@@ -111,15 +106,14 @@ class _NotificationPageState extends State<NotificationPage> {
     try {
       final response = await Utils.client.delete(
         '/notifications/${NotificationId}',
-        headers: HttpHeaders.rawMap({
-          'cookie': widget.sessionKey,
-        }),
+        headers: HttpHeaders.rawMap({'cookie': widget.sessionKey}),
       );
 
       if (response.statusCode == 200) {
         setState(() {
           _notifications.removeWhere(
-              (notification) => notification.notificationId == NotificationId);
+            (notification) => notification.notificationId == NotificationId,
+          );
         });
       }
     } catch (e) {
@@ -178,140 +172,136 @@ class _NotificationPageState extends State<NotificationPage> {
               color: Colors.transparent,
               child: const Text(
                 'Notifications',
-                style: TextStyle(
-                  fontSize: 24,
-                  fontWeight: FontWeight.bold,
-                ),
+                style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
               ),
             ),
           ),
           SliverList(
-            delegate: SliverChildBuilderDelegate(
-              (context, index) {
-                if (index == _notifications.length) {
-                  return const LoadingIndicator();
-                }
-                final notification = _notifications[index];
-                return Stack(
-                  children: [
-                    ListTile(
-                      tileColor: notification.isRead
-                          ? Colors.transparent
-                          : Colors.blue.shade50,
-                      leading: Icon(_getIconForType(notification.type)),
-                      title: Text(
-                        notification.title,
-                        style: TextStyle(
-                          fontWeight: FontWeight.bold,
-                        ),
-                      ),
-                      subtitle: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Text(notification.message),
-                          const SizedBox(height: 4),
-                          Text(
-                            formatTimeAgo(notification.createdAt),
-                            style: const TextStyle(
-                              fontSize: 12,
-                              color: Colors.grey,
-                            ),
+            delegate: SliverChildBuilderDelegate((context, index) {
+              if (index == _notifications.length) {
+                return const LoadingIndicator();
+              }
+              final notification = _notifications[index];
+              return Stack(
+                children: [
+                  ListTile(
+                    tileColor: notification.isRead
+                        ? Colors.transparent
+                        : Colors.blue.shade50,
+                    leading: Icon(_getIconForType(notification.type)),
+                    title: Text(
+                      notification.title,
+                      style: TextStyle(fontWeight: FontWeight.bold),
+                    ),
+                    subtitle: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(notification.message),
+                        const SizedBox(height: 4),
+                        Text(
+                          formatTimeAgo(notification.createdAt),
+                          style: const TextStyle(
+                            fontSize: 12,
+                            color: Colors.grey,
                           ),
-                        ],
-                      ),
-                      trailing: const SizedBox(width: 20),
-                      onTap: () {
-                        mark([notification.notificationId], "markRead");
-                        if (notification.type == 'application') {
-                          Navigator.of(context).push(MaterialPageRoute(
-                            builder: (context) => MyApplications(
-                              sessionKey: widget.sessionKey,
-                            ),
-                          ));
-                        }
+                        ),
+                      ],
+                    ),
+                    trailing: const SizedBox(width: 20),
+                    onTap: () {
+                      mark([notification.notificationId], "markRead");
+                      if (notification.type == 'application') {
+                        Navigator.of(context).push(
+                          MaterialPageRoute(
+                            builder: (context) =>
+                                MyApplications(sessionKey: widget.sessionKey),
+                          ),
+                        );
+                      }
+                    },
+                  ),
+                  Positioned(
+                    top: 8.0,
+                    right: 0,
+                    child: IconButton(
+                      onPressed: () {
+                        showModalBottomSheet<void>(
+                          context: context,
+                          builder: (BuildContext context) {
+                            return Column(
+                              mainAxisSize: MainAxisSize.min,
+                              children: <Widget>[
+                                Padding(
+                                  padding: const EdgeInsets.all(16.0),
+                                  child: Column(
+                                    children: [
+                                      Icon(
+                                        _getIconForType(notification.type),
+                                        size: 40.0,
+                                      ),
+                                      const SizedBox(height: 12.0),
+                                      Text(
+                                        notification.title,
+                                        textAlign: TextAlign.center,
+                                        style: const TextStyle(
+                                          fontSize: 20,
+                                          fontWeight: FontWeight.bold,
+                                        ),
+                                      ),
+                                      const SizedBox(height: 8.0),
+                                      Text(
+                                        notification.message,
+                                        textAlign: TextAlign.center,
+                                        style: TextStyle(
+                                          fontSize: 16,
+                                          color: Colors.grey[600],
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                                const Divider(),
+                                ListTile(
+                                  leading: const Icon(Icons.mark_email_read),
+                                  title: const Text('Mark as Read'),
+                                  onTap: () {
+                                    mark([
+                                      notification.notificationId,
+                                    ], "markRead");
+                                    Navigator.pop(context);
+                                  },
+                                ),
+                                ListTile(
+                                  leading: const Icon(Icons.mark_email_unread),
+                                  title: const Text('Mark as Unread'),
+                                  onTap: () {
+                                    mark([
+                                      notification.notificationId,
+                                    ], "markUnread");
+                                    Navigator.pop(context);
+                                  },
+                                ),
+                                ListTile(
+                                  leading: const Icon(Icons.delete_forever),
+                                  title: const Text('Delete'),
+                                  onTap: () {
+                                    deleteNotifications(
+                                      notification.notificationId,
+                                    );
+                                    Navigator.pop(context);
+                                  },
+                                ),
+                              ],
+                            );
+                          },
+                        );
                       },
+                      icon: const Icon(Icons.more_horiz),
                     ),
-                    Positioned(
-                      top: 8.0,
-                      right: 0,
-                      child: IconButton(
-                        onPressed: () {
-                          showModalBottomSheet<void>(
-                            context: context,
-                            builder: (BuildContext context) {
-                              return Column(
-                                mainAxisSize: MainAxisSize.min,
-                                children: <Widget>[
-                                  Padding(
-                                    padding: const EdgeInsets.all(16.0),
-                                    child: Column(
-                                      children: [
-                                        Icon(
-                                            _getIconForType(notification.type),
-                                            size: 40.0),
-                                        const SizedBox(height: 12.0),
-                                        Text(
-                                          notification.title,
-                                          textAlign: TextAlign.center,
-                                          style: const TextStyle(
-                                            fontSize: 20,
-                                            fontWeight: FontWeight.bold,
-                                          ),
-                                        ),
-                                        const SizedBox(height: 8.0),
-                                        Text(
-                                          notification.message,
-                                          textAlign: TextAlign.center,
-                                          style: TextStyle(
-                                              fontSize: 16,
-                                              color: Colors.grey[600]),
-                                        ),
-                                      ],
-                                    ),
-                                  ),
-                                  const Divider(),
-                                  ListTile(
-                                    leading:
-                                        const Icon(Icons.mark_email_read),
-                                    title: const Text('Mark as Read'),
-                                    onTap: () {
-                                      mark([notification.notificationId],
-                                          "markRead");
-                                      Navigator.pop(context);
-                                    },
-                                  ),
-                                  ListTile(
-                                    leading: const Icon(
-                                        Icons.mark_email_unread),
-                                    title: const Text('Mark as Unread'),
-                                    onTap: () {
-                                      mark([notification.notificationId],
-                                          "markUnread");
-                                      Navigator.pop(context);
-                                    },
-                                  ),
-                                  ListTile(
-                                    leading: const Icon(Icons.delete_forever),
-                                    title: const Text('Delete'),
-                                    onTap: () {
-                                      deleteNotifications(
-                                          notification.notificationId);
-                                      Navigator.pop(context);
-                                    },
-                                  ),
-                                ],
-                              );
-                            },
-                          );
-                        },
-                        icon: const Icon(Icons.more_horiz),
-                      ),
-                    ),
-                  ],
-                );
-              },
-              childCount: _notifications.length + (_hasMore ? 1 : 0),
-            ),
+                  ),
+                ],
+              );
+            }, childCount: _notifications.length + (_hasMore ? 1 : 0)),
           ),
         ],
       ),

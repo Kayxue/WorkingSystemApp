@@ -33,23 +33,23 @@ class _ReviewsState extends State<Reviews> with SingleTickerProviderStateMixin {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        appBar: AppBar(
-          title: const Text("Gig Reviews"),
-          bottom: TabBar(
-            tabs: [
-              Tab(text: "Unreviewed"),
-              Tab(text: "Reviewed"),
-            ],
-            controller: _tabController,
-          ),
-        ),
-        body: TabBarView(
-          controller: _tabController,
-          children: [
-            PendingReview(sessionKey: widget.sessionKey, moveToPage: moveToPage),
-            GivenReview(sessionKey: widget.sessionKey),
+      appBar: AppBar(
+        title: const Text("Gig Reviews"),
+        bottom: TabBar(
+          tabs: [
+            Tab(text: "Unreviewed"),
+            Tab(text: "Reviewed"),
           ],
+          controller: _tabController,
         ),
-      );
+      ),
+      body: TabBarView(
+        controller: _tabController,
+        children: [
+          PendingReview(sessionKey: widget.sessionKey, moveToPage: moveToPage),
+          GivenReview(sessionKey: widget.sessionKey),
+        ],
+      ),
+    );
   }
 }

@@ -52,6 +52,29 @@ class _GivingReviewState extends State<GivingReview> {
     }
   }
 
+  Future<bool> showConfirmationDialog() async {
+    final result = await showDialog<bool>(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: Text("Submit?"),
+          content: Text("Are you sure you want to submit your review?"),
+          actions: <Widget>[
+            TextButton(
+              child: const Text('No'),
+              onPressed: () => Navigator.of(context).pop(false),
+            ),
+            TextButton(
+              child: const Text('Yes'),
+              onPressed: () => Navigator.of(context).pop(true),
+            ),
+          ],
+        );
+      },
+    );
+    return result ?? false;
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -76,7 +99,13 @@ class _GivingReviewState extends State<GivingReview> {
                         ),
                       ),
                       SizedBox(height: 16),
-                      Text("Your rating:",style: TextStyle(fontWeight: FontWeight.bold,fontSize: 16),),
+                      Text(
+                        "Your rating:",
+                        style: TextStyle(
+                          fontWeight: FontWeight.bold,
+                          fontSize: 16,
+                        ),
+                      ),
                       SizedBox(height: 8),
                       RatingBar.builder(
                         allowHalfRating: false,
@@ -120,6 +149,7 @@ class _GivingReviewState extends State<GivingReview> {
                 Expanded(
                   child: FilledButton(
                     onPressed: () async {
+                      if (!await showConfirmationDialog()) return;
                       final updateResult = await submitReview();
                       if (updateResult.$1) {
                         if (!context.mounted) return;
