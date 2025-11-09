@@ -1,5 +1,5 @@
 use async_trait::async_trait;
-use ezsockets::{Bytes, ClientConfig, ClientExt, Error, Utf8Bytes};
+use ezsockets::{Bytes, ClientConfig, ClientExt, CloseCode, Error, Utf8Bytes};
 use flutter_rust_bridge::DartFnFuture;
 
 // Re-export Client type as opaque
@@ -90,6 +90,14 @@ impl WebSocketClient {
     #[flutter_rust_bridge::frb(positional)]
     pub fn onDisconnect(&mut self, func: impl Fn() -> DartFnFuture<()> + Send + Sync + 'static) {
         self.onDisconnectR = Some(Box::new(func))
+    }
+
+    #[flutter_rust_bridge::frb(sync)]
+    pub fn dispose(self) {
+        self.handle.close(Some(ezsockets::CloseFrame {
+            code: CloseCode::Normal,
+            reason: "User closed the connection".into(),
+        })).ok();
     }
 }
 

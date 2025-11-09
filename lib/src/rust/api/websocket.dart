@@ -18,6 +18,9 @@ abstract class WebSocketClient implements RustOpaqueInterface {
   static Future<void> connect(String url) =>
       RustLib.instance.api.crateApiWebsocketWebSocketClientConnect(url: url);
 
+  @override
+  void dispose();
+
   Future<void> onBinary(FutureOr<void> Function(Uint8List) func);
 
   Future<void> onClose(FutureOr<void> Function(CloseFrame?) func);
