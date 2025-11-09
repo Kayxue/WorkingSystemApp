@@ -68,7 +68,7 @@ class RustLib extends BaseEntrypoint<RustLibApi, RustLibApiImpl, RustLibWire> {
   String get codegenVersion => '2.11.1';
 
   @override
-  int get rustContentHash => 1657989913;
+  int get rustContentHash => -1978261336;
 
   static const kDefaultExternalLibraryLoaderConfig =
       ExternalLibraryLoaderConfig(
@@ -79,18 +79,17 @@ class RustLib extends BaseEntrypoint<RustLibApi, RustLibApiImpl, RustLibWire> {
 }
 
 abstract class RustLibApi extends BaseApi {
-  ClientWebSocketClient crateApiWebsocketWebSocketClientAutoAccessorGetHandle({
+  ArcClientWebSocketClient
+  crateApiWebsocketWebSocketClientAutoAccessorGetHandle({
     required WebSocketClient that,
   });
 
   void crateApiWebsocketWebSocketClientAutoAccessorSetHandle({
     required WebSocketClient that,
-    required ClientWebSocketClient handle,
+    required ArcClientWebSocketClient handle,
   });
 
   Future<void> crateApiWebsocketWebSocketClientConnect({required String url});
-
-  void crateApiWebsocketWebSocketClientDispose({required WebSocketClient that});
 
   Future<void> crateApiWebsocketWebSocketClientOnBinary({
     required WebSocketClient that,
@@ -131,13 +130,13 @@ abstract class RustLibApi extends BaseApi {
   Future<Uint8List> crateApiCoreReadImage({required String path});
 
   RustArcIncrementStrongCountFnType
-  get rust_arc_increment_strong_count_ClientWebSocketClient;
+  get rust_arc_increment_strong_count_ArcClientWebSocketClient;
 
   RustArcDecrementStrongCountFnType
-  get rust_arc_decrement_strong_count_ClientWebSocketClient;
+  get rust_arc_decrement_strong_count_ArcClientWebSocketClient;
 
   CrossPlatformFinalizerArg
-  get rust_arc_decrement_strong_count_ClientWebSocketClientPtr;
+  get rust_arc_decrement_strong_count_ArcClientWebSocketClientPtr;
 
   RustArcIncrementStrongCountFnType
   get rust_arc_increment_strong_count_WebSocketClient;
@@ -158,7 +157,8 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
   });
 
   @override
-  ClientWebSocketClient crateApiWebsocketWebSocketClientAutoAccessorGetHandle({
+  ArcClientWebSocketClient
+  crateApiWebsocketWebSocketClientAutoAccessorGetHandle({
     required WebSocketClient that,
   }) {
     return handler.executeSync(
@@ -173,7 +173,7 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
         },
         codec: SseCodec(
           decodeSuccessData:
-              sse_decode_Auto_Owned_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerClientWebSocketClient,
+              sse_decode_Auto_Owned_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerArcClientWebSocketClient,
           decodeErrorData: null,
         ),
         constMeta:
@@ -194,7 +194,7 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
   @override
   void crateApiWebsocketWebSocketClientAutoAccessorSetHandle({
     required WebSocketClient that,
-    required ClientWebSocketClient handle,
+    required ArcClientWebSocketClient handle,
   }) {
     return handler.executeSync(
       SyncTask(
@@ -204,7 +204,7 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
             that,
             serializer,
           );
-          sse_encode_Auto_Owned_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerClientWebSocketClient(
+          sse_encode_Auto_Owned_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerArcClientWebSocketClient(
             handle,
             serializer,
           );
@@ -261,37 +261,6 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
       );
 
   @override
-  void crateApiWebsocketWebSocketClientDispose({
-    required WebSocketClient that,
-  }) {
-    return handler.executeSync(
-      SyncTask(
-        callFfi: () {
-          final serializer = SseSerializer(generalizedFrbRustBinding);
-          sse_encode_Auto_Owned_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerWebSocketClient(
-            that,
-            serializer,
-          );
-          return pdeCallFfi(generalizedFrbRustBinding, serializer, funcId: 4)!;
-        },
-        codec: SseCodec(
-          decodeSuccessData: sse_decode_unit,
-          decodeErrorData: null,
-        ),
-        constMeta: kCrateApiWebsocketWebSocketClientDisposeConstMeta,
-        argValues: [that],
-        apiImpl: this,
-      ),
-    );
-  }
-
-  TaskConstMeta get kCrateApiWebsocketWebSocketClientDisposeConstMeta =>
-      const TaskConstMeta(
-        debugName: "WebSocketClient_dispose",
-        argNames: ["that"],
-      );
-
-  @override
   Future<void> crateApiWebsocketWebSocketClientOnBinary({
     required WebSocketClient that,
     required FutureOr<void> Function(Uint8List) func,
@@ -311,7 +280,7 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
           pdeCallFfi(
             generalizedFrbRustBinding,
             serializer,
-            funcId: 5,
+            funcId: 4,
             port: port_,
           );
         },
@@ -352,7 +321,7 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
           pdeCallFfi(
             generalizedFrbRustBinding,
             serializer,
-            funcId: 6,
+            funcId: 5,
             port: port_,
           );
         },
@@ -393,7 +362,7 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
           pdeCallFfi(
             generalizedFrbRustBinding,
             serializer,
-            funcId: 7,
+            funcId: 6,
             port: port_,
           );
         },
@@ -435,7 +404,7 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
           pdeCallFfi(
             generalizedFrbRustBinding,
             serializer,
-            funcId: 8,
+            funcId: 7,
             port: port_,
           );
         },
@@ -476,7 +445,7 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
           pdeCallFfi(
             generalizedFrbRustBinding,
             serializer,
-            funcId: 9,
+            funcId: 8,
             port: port_,
           );
         },
@@ -511,7 +480,7 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
           pdeCallFfi(
             generalizedFrbRustBinding,
             serializer,
-            funcId: 10,
+            funcId: 9,
             port: port_,
           );
         },
@@ -544,7 +513,7 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
           pdeCallFfi(
             generalizedFrbRustBinding,
             serializer,
-            funcId: 11,
+            funcId: 10,
             port: port_,
           );
         },
@@ -574,7 +543,7 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
           pdeCallFfi(
             generalizedFrbRustBinding,
             serializer,
-            funcId: 12,
+            funcId: 11,
             port: port_,
           );
         },
@@ -602,7 +571,7 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
           pdeCallFfi(
             generalizedFrbRustBinding,
             serializer,
-            funcId: 13,
+            funcId: 12,
             port: port_,
           );
         },
@@ -793,12 +762,12 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
   }
 
   RustArcIncrementStrongCountFnType
-  get rust_arc_increment_strong_count_ClientWebSocketClient => wire
-      .rust_arc_increment_strong_count_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerClientWebSocketClient;
+  get rust_arc_increment_strong_count_ArcClientWebSocketClient => wire
+      .rust_arc_increment_strong_count_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerArcClientWebSocketClient;
 
   RustArcDecrementStrongCountFnType
-  get rust_arc_decrement_strong_count_ClientWebSocketClient => wire
-      .rust_arc_decrement_strong_count_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerClientWebSocketClient;
+  get rust_arc_decrement_strong_count_ArcClientWebSocketClient => wire
+      .rust_arc_decrement_strong_count_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerArcClientWebSocketClient;
 
   RustArcIncrementStrongCountFnType
   get rust_arc_increment_strong_count_WebSocketClient => wire
@@ -815,12 +784,14 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
   }
 
   @protected
-  ClientWebSocketClient
-  dco_decode_Auto_Owned_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerClientWebSocketClient(
+  ArcClientWebSocketClient
+  dco_decode_Auto_Owned_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerArcClientWebSocketClient(
     dynamic raw,
   ) {
     // Codec=Dco (DartCObject based), see doc to use other codecs
-    return ClientWebSocketClientImpl.frbInternalDcoDecode(raw as List<dynamic>);
+    return ArcClientWebSocketClientImpl.frbInternalDcoDecode(
+      raw as List<dynamic>,
+    );
   }
 
   @protected
@@ -896,12 +867,14 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
   }
 
   @protected
-  ClientWebSocketClient
-  dco_decode_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerClientWebSocketClient(
+  ArcClientWebSocketClient
+  dco_decode_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerArcClientWebSocketClient(
     dynamic raw,
   ) {
     // Codec=Dco (DartCObject based), see doc to use other codecs
-    return ClientWebSocketClientImpl.frbInternalDcoDecode(raw as List<dynamic>);
+    return ArcClientWebSocketClientImpl.frbInternalDcoDecode(
+      raw as List<dynamic>,
+    );
   }
 
   @protected
@@ -1012,12 +985,12 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
   }
 
   @protected
-  ClientWebSocketClient
-  sse_decode_Auto_Owned_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerClientWebSocketClient(
+  ArcClientWebSocketClient
+  sse_decode_Auto_Owned_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerArcClientWebSocketClient(
     SseDeserializer deserializer,
   ) {
     // Codec=Sse (Serialization based), see doc to use other codecs
-    return ClientWebSocketClientImpl.frbInternalSseDecode(
+    return ArcClientWebSocketClientImpl.frbInternalSseDecode(
       sse_decode_usize(deserializer),
       sse_decode_i_32(deserializer),
     );
@@ -1067,12 +1040,12 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
   }
 
   @protected
-  ClientWebSocketClient
-  sse_decode_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerClientWebSocketClient(
+  ArcClientWebSocketClient
+  sse_decode_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerArcClientWebSocketClient(
     SseDeserializer deserializer,
   ) {
     // Codec=Sse (Serialization based), see doc to use other codecs
-    return ClientWebSocketClientImpl.frbInternalSseDecode(
+    return ArcClientWebSocketClientImpl.frbInternalSseDecode(
       sse_decode_usize(deserializer),
       sse_decode_i_32(deserializer),
     );
@@ -1204,13 +1177,13 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
 
   @protected
   void
-  sse_encode_Auto_Owned_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerClientWebSocketClient(
-    ClientWebSocketClient self,
+  sse_encode_Auto_Owned_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerArcClientWebSocketClient(
+    ArcClientWebSocketClient self,
     SseSerializer serializer,
   ) {
     // Codec=Sse (Serialization based), see doc to use other codecs
     sse_encode_usize(
-      (self as ClientWebSocketClientImpl).frbInternalSseEncode(move: true),
+      (self as ArcClientWebSocketClientImpl).frbInternalSseEncode(move: true),
       serializer,
     );
   }
@@ -1337,13 +1310,13 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
 
   @protected
   void
-  sse_encode_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerClientWebSocketClient(
-    ClientWebSocketClient self,
+  sse_encode_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerArcClientWebSocketClient(
+    ArcClientWebSocketClient self,
     SseSerializer serializer,
   ) {
     // Codec=Sse (Serialization based), see doc to use other codecs
     sse_encode_usize(
-      (self as ClientWebSocketClientImpl).frbInternalSseEncode(move: null),
+      (self as ArcClientWebSocketClientImpl).frbInternalSseEncode(move: null),
       serializer,
     );
   }
@@ -1471,14 +1444,14 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
 }
 
 @sealed
-class ClientWebSocketClientImpl extends RustOpaque
-    implements ClientWebSocketClient {
+class ArcClientWebSocketClientImpl extends RustOpaque
+    implements ArcClientWebSocketClient {
   // Not to be used by end users
-  ClientWebSocketClientImpl.frbInternalDcoDecode(List<dynamic> wire)
+  ArcClientWebSocketClientImpl.frbInternalDcoDecode(List<dynamic> wire)
     : super.frbInternalDcoDecode(wire, _kStaticData);
 
   // Not to be used by end users
-  ClientWebSocketClientImpl.frbInternalSseDecode(
+  ArcClientWebSocketClientImpl.frbInternalSseDecode(
     BigInt ptr,
     int externalSizeOnNative,
   ) : super.frbInternalSseDecode(ptr, externalSizeOnNative, _kStaticData);
@@ -1487,15 +1460,15 @@ class ClientWebSocketClientImpl extends RustOpaque
     rustArcIncrementStrongCount: RustLib
         .instance
         .api
-        .rust_arc_increment_strong_count_ClientWebSocketClient,
+        .rust_arc_increment_strong_count_ArcClientWebSocketClient,
     rustArcDecrementStrongCount: RustLib
         .instance
         .api
-        .rust_arc_decrement_strong_count_ClientWebSocketClient,
+        .rust_arc_decrement_strong_count_ArcClientWebSocketClient,
     rustArcDecrementStrongCountPtr: RustLib
         .instance
         .api
-        .rust_arc_decrement_strong_count_ClientWebSocketClientPtr,
+        .rust_arc_decrement_strong_count_ArcClientWebSocketClientPtr,
   );
 }
 
@@ -1518,17 +1491,14 @@ class WebSocketClientImpl extends RustOpaque implements WebSocketClient {
         RustLib.instance.api.rust_arc_decrement_strong_count_WebSocketClientPtr,
   );
 
-  ClientWebSocketClient get handle => RustLib.instance.api
+  ArcClientWebSocketClient get handle => RustLib.instance.api
       .crateApiWebsocketWebSocketClientAutoAccessorGetHandle(that: this);
 
-  set handle(ClientWebSocketClient handle) => RustLib.instance.api
+  set handle(ArcClientWebSocketClient handle) => RustLib.instance.api
       .crateApiWebsocketWebSocketClientAutoAccessorSetHandle(
         that: this,
         handle: handle,
       );
-
-  void dispose() =>
-      RustLib.instance.api.crateApiWebsocketWebSocketClientDispose(that: this);
 
   Future<void> onBinary(FutureOr<void> Function(Uint8List) func) => RustLib
       .instance

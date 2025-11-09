@@ -39,7 +39,7 @@ flutter_rust_bridge::frb_generated_boilerplate!(
     default_rust_auto_opaque = RustAutoOpaqueMoi,
 );
 pub(crate) const FLUTTER_RUST_BRIDGE_CODEGEN_VERSION: &str = "2.11.1";
-pub(crate) const FLUTTER_RUST_BRIDGE_CODEGEN_CONTENT_HASH: i32 = 1657989913;
+pub(crate) const FLUTTER_RUST_BRIDGE_CODEGEN_CONTENT_HASH: i32 = -1978261336;
 
 // Section: executor
 
@@ -117,7 +117,7 @@ fn wire__crate__api__websocket__WebSocketClient_auto_accessor_set_handle_impl(
             let api_that = <RustOpaqueMoi<
                 flutter_rust_bridge::for_generated::RustAutoOpaqueInner<WebSocketClient>,
             >>::sse_decode(&mut deserializer);
-            let api_handle = <Client<WebSocketClient>>::sse_decode(&mut deserializer);
+            let api_handle = <Arc<Client<WebSocketClient>>>::sse_decode(&mut deserializer);
             deserializer.end();
             transform_result_sse::<_, ()>((move || {
                 let mut api_that_guard = None;
@@ -179,38 +179,6 @@ fn wire__crate__api__websocket__WebSocketClient_connect_impl(
                     .await,
                 )
             }
-        },
-    )
-}
-fn wire__crate__api__websocket__WebSocketClient_dispose_impl(
-    ptr_: flutter_rust_bridge::for_generated::PlatformGeneralizedUint8ListPtr,
-    rust_vec_len_: i32,
-    data_len_: i32,
-) -> flutter_rust_bridge::for_generated::WireSyncRust2DartSse {
-    FLUTTER_RUST_BRIDGE_HANDLER.wrap_sync::<flutter_rust_bridge::for_generated::SseCodec, _>(
-        flutter_rust_bridge::for_generated::TaskInfo {
-            debug_name: "WebSocketClient_dispose",
-            port: None,
-            mode: flutter_rust_bridge::for_generated::FfiCallMode::Sync,
-        },
-        move || {
-            let message = unsafe {
-                flutter_rust_bridge::for_generated::Dart2RustMessageSse::from_wire(
-                    ptr_,
-                    rust_vec_len_,
-                    data_len_,
-                )
-            };
-            let mut deserializer =
-                flutter_rust_bridge::for_generated::SseDeserializer::new(message);
-            let api_that = <WebSocketClient>::sse_decode(&mut deserializer);
-            deserializer.end();
-            transform_result_sse::<_, ()>((move || {
-                let output_ok = Result::<_, ()>::Ok({
-                    crate::api::websocket::WebSocketClient::dispose(api_that);
-                })?;
-                Ok(output_ok)
-            })())
         },
     )
 }
@@ -807,7 +775,7 @@ fn decode_DartFn_Inputs_ws_error_Output_unit_AnyhowException(
     }
 }
 flutter_rust_bridge::frb_generated_moi_arc_impl_value!(
-    flutter_rust_bridge::for_generated::RustAutoOpaqueInner<Client<WebSocketClient>>
+    flutter_rust_bridge::for_generated::RustAutoOpaqueInner<Arc<Client<WebSocketClient>>>
 );
 flutter_rust_bridge::frb_generated_moi_arc_impl_value!(
     flutter_rust_bridge::for_generated::RustAutoOpaqueInner<WebSocketClient>
@@ -823,11 +791,11 @@ impl SseDecode for flutter_rust_bridge::for_generated::anyhow::Error {
     }
 }
 
-impl SseDecode for Client<WebSocketClient> {
+impl SseDecode for Arc<Client<WebSocketClient>> {
     // Codec=Sse (Serialization based), see doc to use other codecs
     fn sse_decode(deserializer: &mut flutter_rust_bridge::for_generated::SseDeserializer) -> Self {
         let mut inner = <RustOpaqueMoi<
-            flutter_rust_bridge::for_generated::RustAutoOpaqueInner<Client<WebSocketClient>>,
+            flutter_rust_bridge::for_generated::RustAutoOpaqueInner<Arc<Client<WebSocketClient>>>,
         >>::sse_decode(deserializer);
         return flutter_rust_bridge::for_generated::rust_auto_opaque_decode_owned(inner);
     }
@@ -853,7 +821,7 @@ impl SseDecode for flutter_rust_bridge::DartOpaque {
 
 impl SseDecode
     for RustOpaqueMoi<
-        flutter_rust_bridge::for_generated::RustAutoOpaqueInner<Client<WebSocketClient>>,
+        flutter_rust_bridge::for_generated::RustAutoOpaqueInner<Arc<Client<WebSocketClient>>>,
     >
 {
     // Codec=Sse (Serialization based), see doc to use other codecs
@@ -1006,47 +974,47 @@ fn pde_ffi_dispatcher_primary_impl(
             rust_vec_len,
             data_len,
         ),
-        5 => wire__crate__api__websocket__WebSocketClient_onBinary_impl(
+        4 => wire__crate__api__websocket__WebSocketClient_onBinary_impl(
             port,
             ptr,
             rust_vec_len,
             data_len,
         ),
-        6 => wire__crate__api__websocket__WebSocketClient_onClose_impl(
+        5 => wire__crate__api__websocket__WebSocketClient_onClose_impl(
             port,
             ptr,
             rust_vec_len,
             data_len,
         ),
-        7 => wire__crate__api__websocket__WebSocketClient_onConnectionFailed_impl(
+        6 => wire__crate__api__websocket__WebSocketClient_onConnectionFailed_impl(
             port,
             ptr,
             rust_vec_len,
             data_len,
         ),
-        8 => wire__crate__api__websocket__WebSocketClient_onDisconnect_impl(
+        7 => wire__crate__api__websocket__WebSocketClient_onDisconnect_impl(
             port,
             ptr,
             rust_vec_len,
             data_len,
         ),
-        9 => wire__crate__api__websocket__WebSocketClient_onText_impl(
+        8 => wire__crate__api__websocket__WebSocketClient_onText_impl(
             port,
             ptr,
             rust_vec_len,
             data_len,
         ),
-        10 => wire__crate__api__core__change_filename_extension_impl(
+        9 => wire__crate__api__core__change_filename_extension_impl(
             port,
             ptr,
             rust_vec_len,
             data_len,
         ),
-        11 => {
+        10 => {
             wire__crate__api__core__get_image_name_and_size_impl(port, ptr, rust_vec_len, data_len)
         }
-        12 => wire__crate__api__core__init_app_impl(port, ptr, rust_vec_len, data_len),
-        13 => wire__crate__api__core__read_image_impl(port, ptr, rust_vec_len, data_len),
+        11 => wire__crate__api__core__init_app_impl(port, ptr, rust_vec_len, data_len),
+        12 => wire__crate__api__core__read_image_impl(port, ptr, rust_vec_len, data_len),
         _ => unreachable!(),
     }
 }
@@ -1069,7 +1037,6 @@ fn pde_ffi_dispatcher_sync_impl(
             rust_vec_len,
             data_len,
         ),
-        4 => wire__crate__api__websocket__WebSocketClient_dispose_impl(ptr, rust_vec_len, data_len),
         _ => unreachable!(),
     }
 }
@@ -1077,21 +1044,21 @@ fn pde_ffi_dispatcher_sync_impl(
 // Section: rust2dart
 
 // Codec=Dco (DartCObject based), see doc to use other codecs
-impl flutter_rust_bridge::IntoDart for FrbWrapper<Client<WebSocketClient>> {
+impl flutter_rust_bridge::IntoDart for FrbWrapper<Arc<Client<WebSocketClient>>> {
     fn into_dart(self) -> flutter_rust_bridge::for_generated::DartAbi {
         flutter_rust_bridge::for_generated::rust_auto_opaque_encode::<_, MoiArc<_>>(self.0)
             .into_dart()
     }
 }
 impl flutter_rust_bridge::for_generated::IntoDartExceptPrimitive
-    for FrbWrapper<Client<WebSocketClient>>
+    for FrbWrapper<Arc<Client<WebSocketClient>>>
 {
 }
 
-impl flutter_rust_bridge::IntoIntoDart<FrbWrapper<Client<WebSocketClient>>>
-    for Client<WebSocketClient>
+impl flutter_rust_bridge::IntoIntoDart<FrbWrapper<Arc<Client<WebSocketClient>>>>
+    for Arc<Client<WebSocketClient>>
 {
-    fn into_into_dart(self) -> FrbWrapper<Client<WebSocketClient>> {
+    fn into_into_dart(self) -> FrbWrapper<Arc<Client<WebSocketClient>>> {
         self.into()
     }
 }
@@ -1157,11 +1124,11 @@ impl SseEncode for flutter_rust_bridge::for_generated::anyhow::Error {
     }
 }
 
-impl SseEncode for Client<WebSocketClient> {
+impl SseEncode for Arc<Client<WebSocketClient>> {
     // Codec=Sse (Serialization based), see doc to use other codecs
     fn sse_encode(self, serializer: &mut flutter_rust_bridge::for_generated::SseSerializer) {
         <RustOpaqueMoi<
-            flutter_rust_bridge::for_generated::RustAutoOpaqueInner<Client<WebSocketClient>>,
+            flutter_rust_bridge::for_generated::RustAutoOpaqueInner<Arc<Client<WebSocketClient>>>,
         >>::sse_encode(
             flutter_rust_bridge::for_generated::rust_auto_opaque_encode::<_, MoiArc<_>>(self),
             serializer,
@@ -1185,7 +1152,7 @@ impl SseEncode for flutter_rust_bridge::DartOpaque {
 
 impl SseEncode
     for RustOpaqueMoi<
-        flutter_rust_bridge::for_generated::RustAutoOpaqueInner<Client<WebSocketClient>>,
+        flutter_rust_bridge::for_generated::RustAutoOpaqueInner<Arc<Client<WebSocketClient>>>,
     >
 {
     // Codec=Sse (Serialization based), see doc to use other codecs
@@ -1338,17 +1305,21 @@ mod io {
     flutter_rust_bridge::frb_generated_boilerplate_io!();
 
     #[unsafe(no_mangle)]
-    pub extern "C" fn frbgen_working_system_app_rust_arc_increment_strong_count_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerClientWebSocketClient(
+    pub extern "C" fn frbgen_working_system_app_rust_arc_increment_strong_count_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerArcClientWebSocketClient(
         ptr: *const std::ffi::c_void,
     ) {
-        MoiArc::<flutter_rust_bridge::for_generated::RustAutoOpaqueInner<Client < WebSocketClient >>>::increment_strong_count(ptr as _);
+        MoiArc::<
+            flutter_rust_bridge::for_generated::RustAutoOpaqueInner<Arc<Client<WebSocketClient>>>,
+        >::increment_strong_count(ptr as _);
     }
 
     #[unsafe(no_mangle)]
-    pub extern "C" fn frbgen_working_system_app_rust_arc_decrement_strong_count_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerClientWebSocketClient(
+    pub extern "C" fn frbgen_working_system_app_rust_arc_decrement_strong_count_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerArcClientWebSocketClient(
         ptr: *const std::ffi::c_void,
     ) {
-        MoiArc::<flutter_rust_bridge::for_generated::RustAutoOpaqueInner<Client < WebSocketClient >>>::decrement_strong_count(ptr as _);
+        MoiArc::<
+            flutter_rust_bridge::for_generated::RustAutoOpaqueInner<Arc<Client<WebSocketClient>>>,
+        >::decrement_strong_count(ptr as _);
     }
 
     #[unsafe(no_mangle)]
@@ -1392,17 +1363,21 @@ mod web {
     flutter_rust_bridge::frb_generated_boilerplate_web!();
 
     #[wasm_bindgen]
-    pub fn rust_arc_increment_strong_count_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerClientWebSocketClient(
+    pub fn rust_arc_increment_strong_count_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerArcClientWebSocketClient(
         ptr: *const std::ffi::c_void,
     ) {
-        MoiArc::<flutter_rust_bridge::for_generated::RustAutoOpaqueInner<Client < WebSocketClient >>>::increment_strong_count(ptr as _);
+        MoiArc::<
+            flutter_rust_bridge::for_generated::RustAutoOpaqueInner<Arc<Client<WebSocketClient>>>,
+        >::increment_strong_count(ptr as _);
     }
 
     #[wasm_bindgen]
-    pub fn rust_arc_decrement_strong_count_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerClientWebSocketClient(
+    pub fn rust_arc_decrement_strong_count_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerArcClientWebSocketClient(
         ptr: *const std::ffi::c_void,
     ) {
-        MoiArc::<flutter_rust_bridge::for_generated::RustAutoOpaqueInner<Client < WebSocketClient >>>::decrement_strong_count(ptr as _);
+        MoiArc::<
+            flutter_rust_bridge::for_generated::RustAutoOpaqueInner<Arc<Client<WebSocketClient>>>,
+        >::decrement_strong_count(ptr as _);
     }
 
     #[wasm_bindgen]

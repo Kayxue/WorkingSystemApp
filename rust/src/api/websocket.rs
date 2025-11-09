@@ -1,9 +1,13 @@
+use std::{sync::Arc, time::Duration};
+
 use async_trait::async_trait;
+use ezsockets::client::ClientCloseMode;
 use ezsockets::{Bytes, ClientConfig, ClientExt, CloseCode, Error, Utf8Bytes};
 use flutter_rust_bridge::DartFnFuture;
 
 // Re-export Client type as opaque
 pub use ezsockets::Client;
+use tokio::time::sleep;
 
 // Wrapper types for flutter_rust_bridge code generation
 #[derive(Debug, Clone)]
@@ -35,12 +39,13 @@ impl From<ezsockets::WSError> for WSError {
 }
 
 pub struct WebSocketClient {
-    pub handle: Client<WebSocketClient>,
+    pub handle: Arc<Client<WebSocketClient>>,
     onTextR: Option<Box<dyn Fn(String) -> DartFnFuture<()> + Send + Sync>>,
     onBinaryR: Option<Box<dyn Fn(Vec<u8>) -> DartFnFuture<()> + Send + Sync>>,
     onConnectionFailedR: Option<Box<dyn Fn(WSError) -> DartFnFuture<()> + Send + Sync>>,
     onCloseR: Option<Box<dyn Fn(Option<CloseFrame>) -> DartFnFuture<()> + Send + Sync>>,
     onDisconnectR: Option<Box<dyn Fn() -> DartFnFuture<()> + Send + Sync>>,
+    hearbeatProcess: Option<flutter_rust_bridge::JoinHandle<()>>,
 }
 
 impl WebSocketClient {
@@ -49,12 +54,13 @@ impl WebSocketClient {
         let config = ClientConfig::new(url.as_str());
         let _ = ezsockets::connect(
             |handle| WebSocketClient {
-                handle,
+                handle: Arc::new(handle),
                 onTextR: None,
                 onBinaryR: None,
                 onConnectionFailedR: None,
                 onCloseR: None,
                 onDisconnectR: None,
+                hearbeatProcess: None,
             },
             config,
         )
@@ -93,11 +99,16 @@ impl WebSocketClient {
     }
 
     #[flutter_rust_bridge::frb(sync)]
-    pub fn dispose(self) {
-        self.handle.close(Some(ezsockets::CloseFrame {
-            code: CloseCode::Normal,
-            reason: "User closed the connection".into(),
-        })).ok();
+    pub fn dispose(mut self) {
+        if let Some(handle) = &mut self.hearbeatProcess {
+            handle.abort();
+        }
+        self.handle
+            .close(Some(ezsockets::CloseFrame {
+                code: CloseCode::Normal,
+                reason: "User closed the connection".into(),
+            }))
+            .ok();
     }
 }
 
@@ -122,5 +133,26 @@ impl ClientExt for WebSocketClient {
     async fn on_call(&mut self, call: Self::Call) -> Result<(), Error> {
         let () = call;
         Ok(())
+    }
+
+    async fn on_connect(&mut self) -> Result<(), Error> {
+        let handle = self.handle.clone();
+        self.hearbeatProcess = Some(flutter_rust_bridge::spawn(async move {
+            loop {
+                sleep(Duration::from_secs(10)).await;
+                if let Err(e) = handle.text("bbb") {
+                    eprintln!("Failed to send ping: {}", e);
+                    break;
+                }
+            }
+        }));
+        Ok(())
+    }
+
+    async fn on_connect_fail(&mut self, error: ezsockets::WSError) -> Result<ClientCloseMode, Error> {
+        if let Some(onCF) = &self.onConnectionFailedR {
+            (onCF)(error.into()).await;
+        }
+        Ok(ClientCloseMode::Close)
     }
 }
