@@ -140,7 +140,7 @@ impl ClientExt for WebSocketClient {
         self.hearbeatProcess = Some(flutter_rust_bridge::spawn(async move {
             loop {
                 sleep(Duration::from_secs(10)).await;
-                if let Err(e) = handle.text("bbb") {
+                if let Err(e) = handle.text(r#"{"type":"ping"}"#) {
                     eprintln!("Failed to send ping: {}", e);
                     break;
                 }
@@ -149,7 +149,10 @@ impl ClientExt for WebSocketClient {
         Ok(())
     }
 
-    async fn on_connect_fail(&mut self, error: ezsockets::WSError) -> Result<ClientCloseMode, Error> {
+    async fn on_connect_fail(
+        &mut self,
+        error: ezsockets::WSError,
+    ) -> Result<ClientCloseMode, Error> {
         if let Some(onCF) = &self.onConnectionFailedR {
             (onCF)(error.into()).await;
         }
