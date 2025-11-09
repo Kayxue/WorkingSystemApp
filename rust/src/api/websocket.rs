@@ -1,28 +1,60 @@
 use async_trait::async_trait;
-use ezsockets::{Bytes, Client, ClientConfig, ClientExt, CloseFrame, Error, Utf8Bytes, WSError};
+use ezsockets::{Bytes, ClientConfig, ClientExt, Error, Utf8Bytes};
 use flutter_rust_bridge::DartFnFuture;
+
+// Re-export Client type as opaque
+pub use ezsockets::Client;
+
+// Wrapper types for flutter_rust_bridge code generation
+#[derive(Debug, Clone)]
+pub struct CloseFrame {
+    pub code: u16,
+    pub reason: String,
+}
+
+impl From<ezsockets::CloseFrame> for CloseFrame {
+    fn from(frame: ezsockets::CloseFrame) -> Self {
+        CloseFrame {
+            code: frame.code.into(),
+            reason: frame.reason.to_string(),
+        }
+    }
+}
+
+#[derive(Debug, Clone)]
+pub struct WSError {
+    pub message: String,
+}
+
+impl From<ezsockets::WSError> for WSError {
+    fn from(error: ezsockets::WSError) -> Self {
+        WSError {
+            message: error.to_string(),
+        }
+    }
+}
 
 pub struct WebSocketClient {
     pub handle: Client<WebSocketClient>,
     onTextR: Option<Box<dyn Fn(String) -> DartFnFuture<()> + Send + Sync>>,
     onBinaryR: Option<Box<dyn Fn(Vec<u8>) -> DartFnFuture<()> + Send + Sync>>,
     onConnectionFailedR: Option<Box<dyn Fn(WSError) -> DartFnFuture<()> + Send + Sync>>,
-    onClose: Option<Box<dyn Fn(Option<CloseFrame>) -> DartFnFuture<()> + Send + Sync>>,
-    onDisconnect: Option<Box<dyn Fn() -> DartFnFuture<()> + Send + Sync>>,
+    onCloseR: Option<Box<dyn Fn(Option<CloseFrame>) -> DartFnFuture<()> + Send + Sync>>,
+    onDisconnectR: Option<Box<dyn Fn() -> DartFnFuture<()> + Send + Sync>>,
 }
 
 impl WebSocketClient {
     #[flutter_rust_bridge::frb(positional)]
     pub async fn connect(url: String) {
         let config = ClientConfig::new(url.as_str());
-        ezsockets::connect(
+        let _ = ezsockets::connect(
             |handle| WebSocketClient {
                 handle,
                 onTextR: None,
                 onBinaryR: None,
                 onConnectionFailedR: None,
-                onClose: None,
-                onDisconnect: None,
+                onCloseR: None,
+                onDisconnectR: None,
             },
             config,
         )
@@ -52,12 +84,12 @@ impl WebSocketClient {
         &mut self,
         func: impl Fn(Option<CloseFrame>) -> DartFnFuture<()> + Send + Sync + 'static,
     ) {
-        self.onClose = Some(Box::new(func))
+        self.onCloseR = Some(Box::new(func))
     }
 
     #[flutter_rust_bridge::frb(positional)]
     pub fn onDisconnect(&mut self, func: impl Fn() -> DartFnFuture<()> + Send + Sync + 'static) {
-        self.onDisconnect = Some(Box::new(func))
+        self.onDisconnectR = Some(Box::new(func))
     }
 }
 
@@ -74,7 +106,7 @@ impl ClientExt for WebSocketClient {
 
     async fn on_binary(&mut self, bytes: Bytes) -> Result<(), Error> {
         if let Some(onB) = &self.onBinaryR {
-            onB(bytes.to_vec()).await
+            onB(bytes.to_vec()).await;
         }
         Ok(())
     }

@@ -7,13 +7,7 @@ import '../frb_generated.dart';
 import '../lib.dart';
 import 'package:flutter_rust_bridge/flutter_rust_bridge_for_generated.dart';
 
-// These function are ignored because they are on traits that is not defined in current crate (put an empty `#[frb]` on it to unignore): `on_binary`, `on_call`, `on_text`
-
-// Rust type: RustOpaqueMoi<flutter_rust_bridge::for_generated::RustAutoOpaqueInner<CloseFrame>>
-abstract class CloseFrame implements RustOpaqueInterface {}
-
-// Rust type: RustOpaqueMoi<flutter_rust_bridge::for_generated::RustAutoOpaqueInner<WSError>>
-abstract class WsError implements RustOpaqueInterface {}
+// These function are ignored because they are on traits that is not defined in current crate (put an empty `#[frb]` on it to unignore): `clone`, `clone`, `fmt`, `fmt`, `from`, `from`, `on_binary`, `on_call`, `on_text`
 
 // Rust type: RustOpaqueMoi<flutter_rust_bridge::for_generated::RustAutoOpaqueInner<WebSocketClient>>
 abstract class WebSocketClient implements RustOpaqueInterface {
@@ -28,9 +22,43 @@ abstract class WebSocketClient implements RustOpaqueInterface {
 
   Future<void> onClose(FutureOr<void> Function(CloseFrame?) func);
 
-  Future<void> onConnectionFailed(FutureOr<void> Function(WsError) func);
+  Future<void> onConnectionFailed(FutureOr<void> Function(WSError) func);
 
   Future<void> onDisconnect(FutureOr<void> Function() func);
 
   Future<void> onText(FutureOr<void> Function(String) func);
+}
+
+class CloseFrame {
+  final int code;
+  final String reason;
+
+  const CloseFrame({required this.code, required this.reason});
+
+  @override
+  int get hashCode => code.hashCode ^ reason.hashCode;
+
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      other is CloseFrame &&
+          runtimeType == other.runtimeType &&
+          code == other.code &&
+          reason == other.reason;
+}
+
+class WSError {
+  final String message;
+
+  const WSError({required this.message});
+
+  @override
+  int get hashCode => message.hashCode;
+
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      other is WSError &&
+          runtimeType == other.runtimeType &&
+          message == other.message;
 }
