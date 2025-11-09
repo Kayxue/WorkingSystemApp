@@ -15,6 +15,7 @@ class ViewConflict extends StatefulWidget {
     required this.gigTitle,
     required this.conflictType,
   });
+  
 
   @override
   State<ViewConflict> createState() => _ViewConflictState();
