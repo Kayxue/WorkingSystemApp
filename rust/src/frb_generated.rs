@@ -39,7 +39,7 @@ flutter_rust_bridge::frb_generated_boilerplate!(
     default_rust_auto_opaque = RustAutoOpaqueMoi,
 );
 pub(crate) const FLUTTER_RUST_BRIDGE_CODEGEN_VERSION: &str = "2.11.1";
-pub(crate) const FLUTTER_RUST_BRIDGE_CODEGEN_CONTENT_HASH: i32 = -1978261336;
+pub(crate) const FLUTTER_RUST_BRIDGE_CODEGEN_CONTENT_HASH: i32 = -616551822;
 
 // Section: executor
 
@@ -182,7 +182,7 @@ fn wire__crate__api__websocket__WebSocketClient_connect_impl(
         },
     )
 }
-fn wire__crate__api__websocket__WebSocketClient_onBinary_impl(
+fn wire__crate__api__websocket__WebSocketClient_on_binary_impl(
     port_: flutter_rust_bridge::for_generated::MessagePort,
     ptr_: flutter_rust_bridge::for_generated::PlatformGeneralizedUint8ListPtr,
     rust_vec_len_: i32,
@@ -190,7 +190,7 @@ fn wire__crate__api__websocket__WebSocketClient_onBinary_impl(
 ) {
     FLUTTER_RUST_BRIDGE_HANDLER.wrap_normal::<flutter_rust_bridge::for_generated::SseCodec, _, _>(
         flutter_rust_bridge::for_generated::TaskInfo {
-            debug_name: "WebSocketClient_onBinary",
+            debug_name: "WebSocketClient_on_binary",
             port: Some(port_),
             mode: flutter_rust_bridge::for_generated::FfiCallMode::Normal,
         },
@@ -228,7 +228,7 @@ fn wire__crate__api__websocket__WebSocketClient_onBinary_impl(
                     }
                     let mut api_that_guard = api_that_guard.unwrap();
                     let output_ok = Result::<_, ()>::Ok({
-                        crate::api::websocket::WebSocketClient::onBinary(
+                        crate::api::websocket::WebSocketClient::on_binary(
                             &mut *api_that_guard,
                             api_func,
                         );
@@ -239,7 +239,7 @@ fn wire__crate__api__websocket__WebSocketClient_onBinary_impl(
         },
     )
 }
-fn wire__crate__api__websocket__WebSocketClient_onClose_impl(
+fn wire__crate__api__websocket__WebSocketClient_on_close_impl(
     port_: flutter_rust_bridge::for_generated::MessagePort,
     ptr_: flutter_rust_bridge::for_generated::PlatformGeneralizedUint8ListPtr,
     rust_vec_len_: i32,
@@ -247,7 +247,7 @@ fn wire__crate__api__websocket__WebSocketClient_onClose_impl(
 ) {
     FLUTTER_RUST_BRIDGE_HANDLER.wrap_normal::<flutter_rust_bridge::for_generated::SseCodec, _, _>(
         flutter_rust_bridge::for_generated::TaskInfo {
-            debug_name: "WebSocketClient_onClose",
+            debug_name: "WebSocketClient_on_close",
             port: Some(port_),
             mode: flutter_rust_bridge::for_generated::FfiCallMode::Normal,
         },
@@ -286,7 +286,7 @@ fn wire__crate__api__websocket__WebSocketClient_onClose_impl(
                     }
                     let mut api_that_guard = api_that_guard.unwrap();
                     let output_ok = Result::<_, ()>::Ok({
-                        crate::api::websocket::WebSocketClient::onClose(
+                        crate::api::websocket::WebSocketClient::on_close(
                             &mut *api_that_guard,
                             api_func,
                         );
@@ -297,7 +297,7 @@ fn wire__crate__api__websocket__WebSocketClient_onClose_impl(
         },
     )
 }
-fn wire__crate__api__websocket__WebSocketClient_onConnectionFailed_impl(
+fn wire__crate__api__websocket__WebSocketClient_on_connection_failed_impl(
     port_: flutter_rust_bridge::for_generated::MessagePort,
     ptr_: flutter_rust_bridge::for_generated::PlatformGeneralizedUint8ListPtr,
     rust_vec_len_: i32,
@@ -305,7 +305,7 @@ fn wire__crate__api__websocket__WebSocketClient_onConnectionFailed_impl(
 ) {
     FLUTTER_RUST_BRIDGE_HANDLER.wrap_normal::<flutter_rust_bridge::for_generated::SseCodec, _, _>(
         flutter_rust_bridge::for_generated::TaskInfo {
-            debug_name: "WebSocketClient_onConnectionFailed",
+            debug_name: "WebSocketClient_on_connection_failed",
             port: Some(port_),
             mode: flutter_rust_bridge::for_generated::FfiCallMode::Normal,
         },
@@ -343,7 +343,7 @@ fn wire__crate__api__websocket__WebSocketClient_onConnectionFailed_impl(
                     }
                     let mut api_that_guard = api_that_guard.unwrap();
                     let output_ok = Result::<_, ()>::Ok({
-                        crate::api::websocket::WebSocketClient::onConnectionFailed(
+                        crate::api::websocket::WebSocketClient::on_connection_failed(
                             &mut *api_that_guard,
                             api_func,
                         );
@@ -354,7 +354,7 @@ fn wire__crate__api__websocket__WebSocketClient_onConnectionFailed_impl(
         },
     )
 }
-fn wire__crate__api__websocket__WebSocketClient_onDisconnect_impl(
+fn wire__crate__api__websocket__WebSocketClient_on_disconnect_impl(
     port_: flutter_rust_bridge::for_generated::MessagePort,
     ptr_: flutter_rust_bridge::for_generated::PlatformGeneralizedUint8ListPtr,
     rust_vec_len_: i32,
@@ -362,7 +362,7 @@ fn wire__crate__api__websocket__WebSocketClient_onDisconnect_impl(
 ) {
     FLUTTER_RUST_BRIDGE_HANDLER.wrap_normal::<flutter_rust_bridge::for_generated::SseCodec, _, _>(
         flutter_rust_bridge::for_generated::TaskInfo {
-            debug_name: "WebSocketClient_onDisconnect",
+            debug_name: "WebSocketClient_on_disconnect",
             port: Some(port_),
             mode: flutter_rust_bridge::for_generated::FfiCallMode::Normal,
         },
@@ -400,7 +400,7 @@ fn wire__crate__api__websocket__WebSocketClient_onDisconnect_impl(
                     }
                     let mut api_that_guard = api_that_guard.unwrap();
                     let output_ok = Result::<_, ()>::Ok({
-                        crate::api::websocket::WebSocketClient::onDisconnect(
+                        crate::api::websocket::WebSocketClient::on_disconnect(
                             &mut *api_that_guard,
                             api_func,
                         );
@@ -411,7 +411,7 @@ fn wire__crate__api__websocket__WebSocketClient_onDisconnect_impl(
         },
     )
 }
-fn wire__crate__api__websocket__WebSocketClient_onText_impl(
+fn wire__crate__api__websocket__WebSocketClient_on_text_impl(
     port_: flutter_rust_bridge::for_generated::MessagePort,
     ptr_: flutter_rust_bridge::for_generated::PlatformGeneralizedUint8ListPtr,
     rust_vec_len_: i32,
@@ -419,7 +419,7 @@ fn wire__crate__api__websocket__WebSocketClient_onText_impl(
 ) {
     FLUTTER_RUST_BRIDGE_HANDLER.wrap_normal::<flutter_rust_bridge::for_generated::SseCodec, _, _>(
         flutter_rust_bridge::for_generated::TaskInfo {
-            debug_name: "WebSocketClient_onText",
+            debug_name: "WebSocketClient_on_text",
             port: Some(port_),
             mode: flutter_rust_bridge::for_generated::FfiCallMode::Normal,
         },
@@ -457,7 +457,7 @@ fn wire__crate__api__websocket__WebSocketClient_onText_impl(
                     }
                     let mut api_that_guard = api_that_guard.unwrap();
                     let output_ok = Result::<_, ()>::Ok({
-                        crate::api::websocket::WebSocketClient::onText(
+                        crate::api::websocket::WebSocketClient::on_text(
                             &mut *api_that_guard,
                             api_func,
                         );
@@ -974,31 +974,31 @@ fn pde_ffi_dispatcher_primary_impl(
             rust_vec_len,
             data_len,
         ),
-        4 => wire__crate__api__websocket__WebSocketClient_onBinary_impl(
+        4 => wire__crate__api__websocket__WebSocketClient_on_binary_impl(
             port,
             ptr,
             rust_vec_len,
             data_len,
         ),
-        5 => wire__crate__api__websocket__WebSocketClient_onClose_impl(
+        5 => wire__crate__api__websocket__WebSocketClient_on_close_impl(
             port,
             ptr,
             rust_vec_len,
             data_len,
         ),
-        6 => wire__crate__api__websocket__WebSocketClient_onConnectionFailed_impl(
+        6 => wire__crate__api__websocket__WebSocketClient_on_connection_failed_impl(
             port,
             ptr,
             rust_vec_len,
             data_len,
         ),
-        7 => wire__crate__api__websocket__WebSocketClient_onDisconnect_impl(
+        7 => wire__crate__api__websocket__WebSocketClient_on_disconnect_impl(
             port,
             ptr,
             rust_vec_len,
             data_len,
         ),
-        8 => wire__crate__api__websocket__WebSocketClient_onText_impl(
+        8 => wire__crate__api__websocket__WebSocketClient_on_text_impl(
             port,
             ptr,
             rust_vec_len,

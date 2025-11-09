@@ -40,12 +40,12 @@ impl From<ezsockets::WSError> for WSError {
 
 pub struct WebSocketClient {
     pub handle: Arc<Client<WebSocketClient>>,
-    onTextR: Option<Box<dyn Fn(String) -> DartFnFuture<()> + Send + Sync>>,
-    onBinaryR: Option<Box<dyn Fn(Vec<u8>) -> DartFnFuture<()> + Send + Sync>>,
-    onConnectionFailedR: Option<Box<dyn Fn(WSError) -> DartFnFuture<()> + Send + Sync>>,
-    onCloseR: Option<Box<dyn Fn(Option<CloseFrame>) -> DartFnFuture<()> + Send + Sync>>,
-    onDisconnectR: Option<Box<dyn Fn() -> DartFnFuture<()> + Send + Sync>>,
-    hearbeatProcess: Option<flutter_rust_bridge::JoinHandle<()>>,
+    on_text_r: Option<Box<dyn Fn(String) -> DartFnFuture<()> + Send + Sync>>,
+    on_binary_r: Option<Box<dyn Fn(Vec<u8>) -> DartFnFuture<()> + Send + Sync>>,
+    on_connection_failed_r: Option<Box<dyn Fn(WSError) -> DartFnFuture<()> + Send + Sync>>,
+    on_close_r: Option<Box<dyn Fn(Option<CloseFrame>) -> DartFnFuture<()> + Send + Sync>>,
+    on_disconnect_r: Option<Box<dyn Fn() -> DartFnFuture<()> + Send + Sync>>,
+    hearbeat_process: Option<flutter_rust_bridge::JoinHandle<()>>,
 }
 
 impl WebSocketClient {
@@ -55,12 +55,12 @@ impl WebSocketClient {
         let _ = ezsockets::connect(
             |handle| WebSocketClient {
                 handle: Arc::new(handle),
-                onTextR: None,
-                onBinaryR: None,
-                onConnectionFailedR: None,
-                onCloseR: None,
-                onDisconnectR: None,
-                hearbeatProcess: None,
+                on_text_r: None,
+                on_binary_r: None,
+                on_connection_failed_r: None,
+                on_close_r: None,
+                on_disconnect_r: None,
+                hearbeat_process: None,
             },
             config,
         )
@@ -68,39 +68,39 @@ impl WebSocketClient {
     }
 
     #[flutter_rust_bridge::frb(positional)]
-    pub fn onText(&mut self, func: impl Fn(String) -> DartFnFuture<()> + Send + Sync + 'static) {
-        self.onTextR = Some(Box::new(func));
+    pub fn on_text(&mut self, func: impl Fn(String) -> DartFnFuture<()> + Send + Sync + 'static) {
+        self.on_text_r = Some(Box::new(func));
     }
 
     #[flutter_rust_bridge::frb(positional)]
-    pub fn onBinary(&mut self, func: impl Fn(Vec<u8>) -> DartFnFuture<()> + Send + Sync + 'static) {
-        self.onBinaryR = Some(Box::new(func));
+    pub fn on_binary(&mut self, func: impl Fn(Vec<u8>) -> DartFnFuture<()> + Send + Sync + 'static) {
+        self.on_binary_r = Some(Box::new(func));
     }
 
     #[flutter_rust_bridge::frb(positional)]
-    pub fn onConnectionFailed(
+    pub fn on_connection_failed(
         &mut self,
         func: impl Fn(WSError) -> DartFnFuture<()> + Send + Sync + 'static,
     ) {
-        self.onConnectionFailedR = Some(Box::new(func))
+        self.on_connection_failed_r = Some(Box::new(func))
     }
 
     #[flutter_rust_bridge::frb(positional)]
-    pub fn onClose(
+    pub fn on_close(
         &mut self,
         func: impl Fn(Option<CloseFrame>) -> DartFnFuture<()> + Send + Sync + 'static,
     ) {
-        self.onCloseR = Some(Box::new(func))
+        self.on_close_r = Some(Box::new(func))
     }
 
     #[flutter_rust_bridge::frb(positional)]
-    pub fn onDisconnect(&mut self, func: impl Fn() -> DartFnFuture<()> + Send + Sync + 'static) {
-        self.onDisconnectR = Some(Box::new(func))
+    pub fn on_disconnect(&mut self, func: impl Fn() -> DartFnFuture<()> + Send + Sync + 'static) {
+        self.on_disconnect_r = Some(Box::new(func))
     }
 
     #[flutter_rust_bridge::frb(sync)]
     pub fn dispose(mut self) {
-        if let Some(handle) = &mut self.hearbeatProcess {
+        if let Some(handle) = &mut self.hearbeat_process {
             handle.abort();
         }
         self.handle
@@ -117,14 +117,14 @@ impl ClientExt for WebSocketClient {
     type Call = ();
 
     async fn on_text(&mut self, text: Utf8Bytes) -> Result<(), Error> {
-        if let Some(onT) = &self.onTextR {
+        if let Some(onT) = &self.on_text_r {
             (onT)(text.as_str().to_owned()).await;
         }
         Ok(())
     }
 
     async fn on_binary(&mut self, bytes: Bytes) -> Result<(), Error> {
-        if let Some(onB) = &self.onBinaryR {
+        if let Some(onB) = &self.on_binary_r {
             onB(bytes.to_vec()).await;
         }
         Ok(())
@@ -137,7 +137,7 @@ impl ClientExt for WebSocketClient {
 
     async fn on_connect(&mut self) -> Result<(), Error> {
         let handle = self.handle.clone();
-        self.hearbeatProcess = Some(flutter_rust_bridge::spawn(async move {
+        self.hearbeat_process = Some(flutter_rust_bridge::spawn(async move {
             loop {
                 sleep(Duration::from_secs(10)).await;
                 if let Err(e) = handle.text(r#"{"type":"ping"}"#) {
@@ -153,7 +153,7 @@ impl ClientExt for WebSocketClient {
         &mut self,
         error: ezsockets::WSError,
     ) -> Result<ClientCloseMode, Error> {
-        if let Some(onCF) = &self.onConnectionFailedR {
+        if let Some(onCF) = &self.on_connection_failed_r {
             (onCF)(error.into()).await;
         }
         Ok(ClientCloseMode::Close)

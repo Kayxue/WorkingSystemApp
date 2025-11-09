@@ -68,7 +68,7 @@ class RustLib extends BaseEntrypoint<RustLibApi, RustLibApiImpl, RustLibWire> {
   String get codegenVersion => '2.11.1';
 
   @override
-  int get rustContentHash => -1978261336;
+  int get rustContentHash => -616551822;
 
   static const kDefaultExternalLibraryLoaderConfig =
       ExternalLibraryLoaderConfig(
@@ -297,7 +297,7 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
 
   TaskConstMeta get kCrateApiWebsocketWebSocketClientOnBinaryConstMeta =>
       const TaskConstMeta(
-        debugName: "WebSocketClient_onBinary",
+        debugName: "WebSocketClient_on_binary",
         argNames: ["that", "func"],
       );
 
@@ -338,7 +338,7 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
 
   TaskConstMeta get kCrateApiWebsocketWebSocketClientOnCloseConstMeta =>
       const TaskConstMeta(
-        debugName: "WebSocketClient_onClose",
+        debugName: "WebSocketClient_on_close",
         argNames: ["that", "func"],
       );
 
@@ -380,7 +380,7 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
   TaskConstMeta
   get kCrateApiWebsocketWebSocketClientOnConnectionFailedConstMeta =>
       const TaskConstMeta(
-        debugName: "WebSocketClient_onConnectionFailed",
+        debugName: "WebSocketClient_on_connection_failed",
         argNames: ["that", "func"],
       );
 
@@ -421,7 +421,7 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
 
   TaskConstMeta get kCrateApiWebsocketWebSocketClientOnDisconnectConstMeta =>
       const TaskConstMeta(
-        debugName: "WebSocketClient_onDisconnect",
+        debugName: "WebSocketClient_on_disconnect",
         argNames: ["that", "func"],
       );
 
@@ -462,7 +462,7 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
 
   TaskConstMeta get kCrateApiWebsocketWebSocketClientOnTextConstMeta =>
       const TaskConstMeta(
-        debugName: "WebSocketClient_onText",
+        debugName: "WebSocketClient_on_text",
         argNames: ["that", "func"],
       );
 
