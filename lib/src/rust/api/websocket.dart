@@ -4,18 +4,12 @@
 // ignore_for_file: invalid_use_of_internal_member, unused_import, unnecessary_import
 
 import '../frb_generated.dart';
-import '../lib.dart';
 import 'package:flutter_rust_bridge/flutter_rust_bridge_for_generated.dart';
 
-// These function are ignored because they are on traits that is not defined in current crate (put an empty `#[frb]` on it to unignore): `clone`, `clone`, `fmt`, `fmt`, `from`, `from`, `on_binary`, `on_call`, `on_connect_fail`, `on_connect`, `on_text`
-// These functions have error during generation (see debug logs or enable `stop_on_error: true` for more details): `dispose`
+// These function are ignored because they are on traits that is not defined in current crate (put an empty `#[frb]` on it to unignore): `clone`, `clone`, `drop`, `fmt`, `fmt`, `from`, `from`, `on_binary`, `on_call`, `on_connect_fail`, `on_connect`, `on_text`
 
 // Rust type: RustOpaqueMoi<flutter_rust_bridge::for_generated::RustAutoOpaqueInner<WebSocketClient>>
 abstract class WebSocketClient implements RustOpaqueInterface {
-  ArcClientWebSocketClient get handle;
-
-  set handle(ArcClientWebSocketClient handle);
-
   static Future<void> connect(String url) =>
       RustLib.instance.api.crateApiWebsocketWebSocketClientConnect(url: url);
 
@@ -28,6 +22,8 @@ abstract class WebSocketClient implements RustOpaqueInterface {
   Future<void> onDisconnect(FutureOr<void> Function() func);
 
   Future<void> onText(FutureOr<void> Function(String) func);
+
+  Future<void> sendText(String text);
 }
 
 class CloseFrame {

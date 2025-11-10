@@ -1,4 +1,4 @@
-use std::{sync::Arc, time::Duration};
+use std::sync::Arc;
 
 use async_trait::async_trait;
 use ezsockets::client::ClientCloseMode;
@@ -7,7 +7,6 @@ use flutter_rust_bridge::DartFnFuture;
 
 // Re-export Client type as opaque
 pub use ezsockets::Client;
-use tokio::time::sleep;
 
 // Wrapper types for flutter_rust_bridge code generation
 #[derive(Debug, Clone)]
@@ -39,13 +38,12 @@ impl From<ezsockets::WSError> for WSError {
 }
 
 pub struct WebSocketClient {
-    pub handle: Arc<Client<WebSocketClient>>,
+    handle: Arc<Client<WebSocketClient>>,
     on_text_r: Option<Box<dyn Fn(String) -> DartFnFuture<()> + Send + Sync>>,
     on_binary_r: Option<Box<dyn Fn(Vec<u8>) -> DartFnFuture<()> + Send + Sync>>,
     on_connection_failed_r: Option<Box<dyn Fn(WSError) -> DartFnFuture<()> + Send + Sync>>,
     on_close_r: Option<Box<dyn Fn(Option<CloseFrame>) -> DartFnFuture<()> + Send + Sync>>,
     on_disconnect_r: Option<Box<dyn Fn() -> DartFnFuture<()> + Send + Sync>>,
-    hearbeat_process: Option<flutter_rust_bridge::JoinHandle<()>>,
 }
 
 impl WebSocketClient {
@@ -60,7 +58,6 @@ impl WebSocketClient {
                 on_connection_failed_r: None,
                 on_close_r: None,
                 on_disconnect_r: None,
-                hearbeat_process: None,
             },
             config,
         )
@@ -98,11 +95,14 @@ impl WebSocketClient {
         self.on_disconnect_r = Some(Box::new(func))
     }
 
-    #[flutter_rust_bridge::frb(sync)]
-    pub fn dispose(mut self) {
-        if let Some(handle) = &mut self.hearbeat_process {
-            handle.abort();
-        }
+    #[flutter_rust_bridge::frb(positional)]
+    pub async fn send_text(&self, text: String){
+        self.handle.text(text.as_str()).ok();
+    }
+}
+
+impl Drop for WebSocketClient {
+    fn drop(&mut self) {
         self.handle
             .close(Some(ezsockets::CloseFrame {
                 code: CloseCode::Normal,
@@ -137,15 +137,7 @@ impl ClientExt for WebSocketClient {
 
     async fn on_connect(&mut self) -> Result<(), Error> {
         let handle = self.handle.clone();
-        self.hearbeat_process = Some(flutter_rust_bridge::spawn(async move {
-            loop {
-                sleep(Duration::from_secs(10)).await;
-                if let Err(e) = handle.text(r#"{"type":"ping"}"#) {
-                    eprintln!("Failed to send ping: {}", e);
-                    break;
-                }
-            }
-        }));
+        //TODO: Send Authentication content
         Ok(())
     }
 
