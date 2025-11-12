@@ -57,6 +57,7 @@ class RustLib extends BaseEntrypoint<RustLibApi, RustLibApiImpl, RustLibWire> {
   @override
   Future<void> executeRustInitializers() async {
     await api.crateApiCoreInitApp();
+    await api.crateApiWebsocketInitApp();
   }
 
   @override
@@ -67,7 +68,7 @@ class RustLib extends BaseEntrypoint<RustLibApi, RustLibApiImpl, RustLibWire> {
   String get codegenVersion => '2.11.1';
 
   @override
-  int get rustContentHash => 782828487;
+  int get rustContentHash => -2050978727;
 
   static const kDefaultExternalLibraryLoaderConfig =
       ExternalLibraryLoaderConfig(
@@ -78,29 +79,47 @@ class RustLib extends BaseEntrypoint<RustLibApi, RustLibApiImpl, RustLibWire> {
 }
 
 abstract class RustLibApi extends BaseApi {
-  Future<void> crateApiWebsocketWebSocketClientConnect({required String url});
+  Future<WebSocketClient> crateApiWebsocketWebSocketClientConnect({
+    required String url,
+  });
 
-  Future<void> crateApiWebsocketWebSocketClientOnBinary({
+  Future<void> crateApiWebsocketWebSocketClientConnectTo({
+    required WebSocketClient that,
+    required String url,
+  });
+
+  String crateApiWebsocketWebSocketClientGetListenersStatus({
+    required WebSocketClient that,
+  });
+
+  WebSocketClient crateApiWebsocketWebSocketClientNew();
+
+  void crateApiWebsocketWebSocketClientOnBinary({
     required WebSocketClient that,
     required FutureOr<void> Function(Uint8List) func,
   });
 
-  Future<void> crateApiWebsocketWebSocketClientOnClose({
+  void crateApiWebsocketWebSocketClientOnClose({
     required WebSocketClient that,
     required FutureOr<void> Function(CloseFrame?) func,
   });
 
-  Future<void> crateApiWebsocketWebSocketClientOnConnectionFailed({
-    required WebSocketClient that,
-    required FutureOr<void> Function(WSError) func,
-  });
-
-  Future<void> crateApiWebsocketWebSocketClientOnDisconnect({
+  void crateApiWebsocketWebSocketClientOnConnect({
     required WebSocketClient that,
     required FutureOr<void> Function() func,
   });
 
-  Future<void> crateApiWebsocketWebSocketClientOnText({
+  void crateApiWebsocketWebSocketClientOnConnectionFailed({
+    required WebSocketClient that,
+    required FutureOr<void> Function(WSError) func,
+  });
+
+  void crateApiWebsocketWebSocketClientOnDisconnect({
+    required WebSocketClient that,
+    required FutureOr<void> Function() func,
+  });
+
+  void crateApiWebsocketWebSocketClientOnText({
     required WebSocketClient that,
     required FutureOr<void> Function(String) func,
   });
@@ -120,6 +139,8 @@ abstract class RustLibApi extends BaseApi {
   });
 
   Future<void> crateApiCoreInitApp();
+
+  Future<void> crateApiWebsocketInitApp();
 
   Future<Uint8List> crateApiCoreReadImage({required String path});
 
@@ -142,7 +163,9 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
   });
 
   @override
-  Future<void> crateApiWebsocketWebSocketClientConnect({required String url}) {
+  Future<WebSocketClient> crateApiWebsocketWebSocketClientConnect({
+    required String url,
+  }) {
     return handler.executeNormal(
       NormalTask(
         callFfi: (port_) {
@@ -156,7 +179,8 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
           );
         },
         codec: SseCodec(
-          decodeSuccessData: sse_decode_unit,
+          decodeSuccessData:
+              sse_decode_Auto_Owned_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerWebSocketClient,
           decodeErrorData: null,
         ),
         constMeta: kCrateApiWebsocketWebSocketClientConnectConstMeta,
@@ -173,15 +197,108 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
       );
 
   @override
-  Future<void> crateApiWebsocketWebSocketClientOnBinary({
+  Future<void> crateApiWebsocketWebSocketClientConnectTo({
     required WebSocketClient that,
-    required FutureOr<void> Function(Uint8List) func,
+    required String url,
   }) {
     return handler.executeNormal(
       NormalTask(
         callFfi: (port_) {
           final serializer = SseSerializer(generalizedFrbRustBinding);
-          sse_encode_Auto_RefMut_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerWebSocketClient(
+          sse_encode_Auto_Ref_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerWebSocketClient(
+            that,
+            serializer,
+          );
+          sse_encode_String(url, serializer);
+          pdeCallFfi(
+            generalizedFrbRustBinding,
+            serializer,
+            funcId: 2,
+            port: port_,
+          );
+        },
+        codec: SseCodec(
+          decodeSuccessData: sse_decode_unit,
+          decodeErrorData: null,
+        ),
+        constMeta: kCrateApiWebsocketWebSocketClientConnectToConstMeta,
+        argValues: [that, url],
+        apiImpl: this,
+      ),
+    );
+  }
+
+  TaskConstMeta get kCrateApiWebsocketWebSocketClientConnectToConstMeta =>
+      const TaskConstMeta(
+        debugName: "WebSocketClient_connect_to",
+        argNames: ["that", "url"],
+      );
+
+  @override
+  String crateApiWebsocketWebSocketClientGetListenersStatus({
+    required WebSocketClient that,
+  }) {
+    return handler.executeSync(
+      SyncTask(
+        callFfi: () {
+          final serializer = SseSerializer(generalizedFrbRustBinding);
+          sse_encode_Auto_Ref_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerWebSocketClient(
+            that,
+            serializer,
+          );
+          return pdeCallFfi(generalizedFrbRustBinding, serializer, funcId: 3)!;
+        },
+        codec: SseCodec(
+          decodeSuccessData: sse_decode_String,
+          decodeErrorData: null,
+        ),
+        constMeta: kCrateApiWebsocketWebSocketClientGetListenersStatusConstMeta,
+        argValues: [that],
+        apiImpl: this,
+      ),
+    );
+  }
+
+  TaskConstMeta
+  get kCrateApiWebsocketWebSocketClientGetListenersStatusConstMeta =>
+      const TaskConstMeta(
+        debugName: "WebSocketClient_get_listeners_status",
+        argNames: ["that"],
+      );
+
+  @override
+  WebSocketClient crateApiWebsocketWebSocketClientNew() {
+    return handler.executeSync(
+      SyncTask(
+        callFfi: () {
+          final serializer = SseSerializer(generalizedFrbRustBinding);
+          return pdeCallFfi(generalizedFrbRustBinding, serializer, funcId: 4)!;
+        },
+        codec: SseCodec(
+          decodeSuccessData:
+              sse_decode_Auto_Owned_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerWebSocketClient,
+          decodeErrorData: null,
+        ),
+        constMeta: kCrateApiWebsocketWebSocketClientNewConstMeta,
+        argValues: [],
+        apiImpl: this,
+      ),
+    );
+  }
+
+  TaskConstMeta get kCrateApiWebsocketWebSocketClientNewConstMeta =>
+      const TaskConstMeta(debugName: "WebSocketClient_new", argNames: []);
+
+  @override
+  void crateApiWebsocketWebSocketClientOnBinary({
+    required WebSocketClient that,
+    required FutureOr<void> Function(Uint8List) func,
+  }) {
+    return handler.executeSync(
+      SyncTask(
+        callFfi: () {
+          final serializer = SseSerializer(generalizedFrbRustBinding);
+          sse_encode_Auto_Ref_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerWebSocketClient(
             that,
             serializer,
           );
@@ -189,12 +306,7 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
             func,
             serializer,
           );
-          pdeCallFfi(
-            generalizedFrbRustBinding,
-            serializer,
-            funcId: 2,
-            port: port_,
-          );
+          return pdeCallFfi(generalizedFrbRustBinding, serializer, funcId: 5)!;
         },
         codec: SseCodec(
           decodeSuccessData: sse_decode_unit,
@@ -214,15 +326,15 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
       );
 
   @override
-  Future<void> crateApiWebsocketWebSocketClientOnClose({
+  void crateApiWebsocketWebSocketClientOnClose({
     required WebSocketClient that,
     required FutureOr<void> Function(CloseFrame?) func,
   }) {
-    return handler.executeNormal(
-      NormalTask(
-        callFfi: (port_) {
+    return handler.executeSync(
+      SyncTask(
+        callFfi: () {
           final serializer = SseSerializer(generalizedFrbRustBinding);
-          sse_encode_Auto_RefMut_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerWebSocketClient(
+          sse_encode_Auto_Ref_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerWebSocketClient(
             that,
             serializer,
           );
@@ -230,12 +342,7 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
             func,
             serializer,
           );
-          pdeCallFfi(
-            generalizedFrbRustBinding,
-            serializer,
-            funcId: 3,
-            port: port_,
-          );
+          return pdeCallFfi(generalizedFrbRustBinding, serializer, funcId: 6)!;
         },
         codec: SseCodec(
           decodeSuccessData: sse_decode_unit,
@@ -255,15 +362,51 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
       );
 
   @override
-  Future<void> crateApiWebsocketWebSocketClientOnConnectionFailed({
+  void crateApiWebsocketWebSocketClientOnConnect({
+    required WebSocketClient that,
+    required FutureOr<void> Function() func,
+  }) {
+    return handler.executeSync(
+      SyncTask(
+        callFfi: () {
+          final serializer = SseSerializer(generalizedFrbRustBinding);
+          sse_encode_Auto_Ref_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerWebSocketClient(
+            that,
+            serializer,
+          );
+          sse_encode_DartFn_Inputs__Output_unit_AnyhowException(
+            func,
+            serializer,
+          );
+          return pdeCallFfi(generalizedFrbRustBinding, serializer, funcId: 7)!;
+        },
+        codec: SseCodec(
+          decodeSuccessData: sse_decode_unit,
+          decodeErrorData: null,
+        ),
+        constMeta: kCrateApiWebsocketWebSocketClientOnConnectConstMeta,
+        argValues: [that, func],
+        apiImpl: this,
+      ),
+    );
+  }
+
+  TaskConstMeta get kCrateApiWebsocketWebSocketClientOnConnectConstMeta =>
+      const TaskConstMeta(
+        debugName: "WebSocketClient_on_connect",
+        argNames: ["that", "func"],
+      );
+
+  @override
+  void crateApiWebsocketWebSocketClientOnConnectionFailed({
     required WebSocketClient that,
     required FutureOr<void> Function(WSError) func,
   }) {
-    return handler.executeNormal(
-      NormalTask(
-        callFfi: (port_) {
+    return handler.executeSync(
+      SyncTask(
+        callFfi: () {
           final serializer = SseSerializer(generalizedFrbRustBinding);
-          sse_encode_Auto_RefMut_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerWebSocketClient(
+          sse_encode_Auto_Ref_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerWebSocketClient(
             that,
             serializer,
           );
@@ -271,12 +414,7 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
             func,
             serializer,
           );
-          pdeCallFfi(
-            generalizedFrbRustBinding,
-            serializer,
-            funcId: 4,
-            port: port_,
-          );
+          return pdeCallFfi(generalizedFrbRustBinding, serializer, funcId: 8)!;
         },
         codec: SseCodec(
           decodeSuccessData: sse_decode_unit,
@@ -297,15 +435,15 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
       );
 
   @override
-  Future<void> crateApiWebsocketWebSocketClientOnDisconnect({
+  void crateApiWebsocketWebSocketClientOnDisconnect({
     required WebSocketClient that,
     required FutureOr<void> Function() func,
   }) {
-    return handler.executeNormal(
-      NormalTask(
-        callFfi: (port_) {
+    return handler.executeSync(
+      SyncTask(
+        callFfi: () {
           final serializer = SseSerializer(generalizedFrbRustBinding);
-          sse_encode_Auto_RefMut_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerWebSocketClient(
+          sse_encode_Auto_Ref_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerWebSocketClient(
             that,
             serializer,
           );
@@ -313,12 +451,7 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
             func,
             serializer,
           );
-          pdeCallFfi(
-            generalizedFrbRustBinding,
-            serializer,
-            funcId: 5,
-            port: port_,
-          );
+          return pdeCallFfi(generalizedFrbRustBinding, serializer, funcId: 9)!;
         },
         codec: SseCodec(
           decodeSuccessData: sse_decode_unit,
@@ -338,15 +471,15 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
       );
 
   @override
-  Future<void> crateApiWebsocketWebSocketClientOnText({
+  void crateApiWebsocketWebSocketClientOnText({
     required WebSocketClient that,
     required FutureOr<void> Function(String) func,
   }) {
-    return handler.executeNormal(
-      NormalTask(
-        callFfi: (port_) {
+    return handler.executeSync(
+      SyncTask(
+        callFfi: () {
           final serializer = SseSerializer(generalizedFrbRustBinding);
-          sse_encode_Auto_RefMut_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerWebSocketClient(
+          sse_encode_Auto_Ref_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerWebSocketClient(
             that,
             serializer,
           );
@@ -354,12 +487,7 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
             func,
             serializer,
           );
-          pdeCallFfi(
-            generalizedFrbRustBinding,
-            serializer,
-            funcId: 6,
-            port: port_,
-          );
+          return pdeCallFfi(generalizedFrbRustBinding, serializer, funcId: 10)!;
         },
         codec: SseCodec(
           decodeSuccessData: sse_decode_unit,
@@ -395,7 +523,7 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
           pdeCallFfi(
             generalizedFrbRustBinding,
             serializer,
-            funcId: 7,
+            funcId: 11,
             port: port_,
           );
         },
@@ -430,7 +558,7 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
           pdeCallFfi(
             generalizedFrbRustBinding,
             serializer,
-            funcId: 8,
+            funcId: 12,
             port: port_,
           );
         },
@@ -463,7 +591,7 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
           pdeCallFfi(
             generalizedFrbRustBinding,
             serializer,
-            funcId: 9,
+            funcId: 13,
             port: port_,
           );
         },
@@ -493,7 +621,7 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
           pdeCallFfi(
             generalizedFrbRustBinding,
             serializer,
-            funcId: 10,
+            funcId: 14,
             port: port_,
           );
         },
@@ -512,6 +640,33 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
       const TaskConstMeta(debugName: "init_app", argNames: []);
 
   @override
+  Future<void> crateApiWebsocketInitApp() {
+    return handler.executeNormal(
+      NormalTask(
+        callFfi: (port_) {
+          final serializer = SseSerializer(generalizedFrbRustBinding);
+          pdeCallFfi(
+            generalizedFrbRustBinding,
+            serializer,
+            funcId: 15,
+            port: port_,
+          );
+        },
+        codec: SseCodec(
+          decodeSuccessData: sse_decode_unit,
+          decodeErrorData: null,
+        ),
+        constMeta: kCrateApiWebsocketInitAppConstMeta,
+        argValues: [],
+        apiImpl: this,
+      ),
+    );
+  }
+
+  TaskConstMeta get kCrateApiWebsocketInitAppConstMeta =>
+      const TaskConstMeta(debugName: "init_app", argNames: []);
+
+  @override
   Future<Uint8List> crateApiCoreReadImage({required String path}) {
     return handler.executeNormal(
       NormalTask(
@@ -521,7 +676,7 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
           pdeCallFfi(
             generalizedFrbRustBinding,
             serializer,
-            funcId: 11,
+            funcId: 16,
             port: port_,
           );
         },
@@ -736,15 +891,6 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
 
   @protected
   WebSocketClient
-  dco_decode_Auto_RefMut_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerWebSocketClient(
-    dynamic raw,
-  ) {
-    // Codec=Dco (DartCObject based), see doc to use other codecs
-    return WebSocketClientImpl.frbInternalDcoDecode(raw as List<dynamic>);
-  }
-
-  @protected
-  WebSocketClient
   dco_decode_Auto_Ref_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerWebSocketClient(
     dynamic raw,
   ) {
@@ -918,18 +1064,6 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
 
   @protected
   WebSocketClient
-  sse_decode_Auto_RefMut_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerWebSocketClient(
-    SseDeserializer deserializer,
-  ) {
-    // Codec=Sse (Serialization based), see doc to use other codecs
-    return WebSocketClientImpl.frbInternalSseDecode(
-      sse_decode_usize(deserializer),
-      sse_decode_i_32(deserializer),
-    );
-  }
-
-  @protected
-  WebSocketClient
   sse_decode_Auto_Ref_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerWebSocketClient(
     SseDeserializer deserializer,
   ) {
@@ -1080,19 +1214,6 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
     // Codec=Sse (Serialization based), see doc to use other codecs
     sse_encode_usize(
       (self as WebSocketClientImpl).frbInternalSseEncode(move: true),
-      serializer,
-    );
-  }
-
-  @protected
-  void
-  sse_encode_Auto_RefMut_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerWebSocketClient(
-    WebSocketClient self,
-    SseSerializer serializer,
-  ) {
-    // Codec=Sse (Serialization based), see doc to use other codecs
-    sse_encode_usize(
-      (self as WebSocketClientImpl).frbInternalSseEncode(move: false),
       serializer,
     );
   }
@@ -1332,30 +1453,35 @@ class WebSocketClientImpl extends RustOpaque implements WebSocketClient {
         RustLib.instance.api.rust_arc_decrement_strong_count_WebSocketClientPtr,
   );
 
-  Future<void> onBinary(FutureOr<void> Function(Uint8List) func) => RustLib
-      .instance
-      .api
+  /// Connect to the WebSocket server with the pre-configured callbacks
+  Future<void> connectTo(String url) => RustLib.instance.api
+      .crateApiWebsocketWebSocketClientConnectTo(that: this, url: url);
+
+  /// Debug method to check which callbacks are registered
+  String getListenersStatus() => RustLib.instance.api
+      .crateApiWebsocketWebSocketClientGetListenersStatus(that: this);
+
+  void onBinary(FutureOr<void> Function(Uint8List) func) => RustLib.instance.api
       .crateApiWebsocketWebSocketClientOnBinary(that: this, func: func);
 
-  Future<void> onClose(FutureOr<void> Function(CloseFrame?) func) => RustLib
+  void onClose(FutureOr<void> Function(CloseFrame?) func) => RustLib
       .instance
       .api
       .crateApiWebsocketWebSocketClientOnClose(that: this, func: func);
 
-  Future<void> onConnectionFailed(FutureOr<void> Function(WSError) func) =>
+  void onConnect(FutureOr<void> Function() func) => RustLib.instance.api
+      .crateApiWebsocketWebSocketClientOnConnect(that: this, func: func);
+
+  void onConnectionFailed(FutureOr<void> Function(WSError) func) =>
       RustLib.instance.api.crateApiWebsocketWebSocketClientOnConnectionFailed(
         that: this,
         func: func,
       );
 
-  Future<void> onDisconnect(FutureOr<void> Function() func) => RustLib
-      .instance
-      .api
+  void onDisconnect(FutureOr<void> Function() func) => RustLib.instance.api
       .crateApiWebsocketWebSocketClientOnDisconnect(that: this, func: func);
 
-  Future<void> onText(FutureOr<void> Function(String) func) => RustLib
-      .instance
-      .api
+  void onText(FutureOr<void> Function(String) func) => RustLib.instance.api
       .crateApiWebsocketWebSocketClientOnText(that: this, func: func);
 
   Future<void> sendText(String text) => RustLib.instance.api

@@ -3,6 +3,7 @@ import 'dart:typed_data';
 import 'package:apple_like_avatar_generator/apple_like_avatar_generator.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_rating_bar/flutter_rating_bar.dart';
+import 'package:working_system_app/Pages/Chatting/ChattingRoom.dart';
 import 'package:working_system_app/Pages/Personal/EmployerRatings.dart';
 import 'package:working_system_app/Types/JSONObject/WorkerProfile.dart';
 
@@ -26,6 +27,7 @@ class ProfileCard extends StatelessWidget {
           Navigator.of(context).push(
             MaterialPageRoute(
               builder: (context) =>
+                  // ChattingRoom(sessionKey: sessionKey)
                   EmployerRatings(profile: profile, sessionKey: sessionKey),
             ),
           );

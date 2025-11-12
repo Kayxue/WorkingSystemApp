@@ -6,22 +6,37 @@
 import '../frb_generated.dart';
 import 'package:flutter_rust_bridge/flutter_rust_bridge_for_generated.dart';
 
-// These function are ignored because they are on traits that is not defined in current crate (put an empty `#[frb]` on it to unignore): `clone`, `clone`, `drop`, `fmt`, `fmt`, `from`, `from`, `on_binary`, `on_call`, `on_connect_fail`, `on_connect`, `on_text`
+// These types are ignored because they are neither used by any `pub` functions nor (for structs and enums) marked `#[frb(unignore)]`: `Callbacks`, `WebSocketHandler`
+// These function are ignored because they are on traits that is not defined in current crate (put an empty `#[frb]` on it to unignore): `clone`, `clone`, `drop`, `fmt`, `fmt`, `from`, `from`, `on_binary`, `on_call`, `on_close`, `on_connect_fail`, `on_connect`, `on_text`
 
 // Rust type: RustOpaqueMoi<flutter_rust_bridge::for_generated::RustAutoOpaqueInner<WebSocketClient>>
 abstract class WebSocketClient implements RustOpaqueInterface {
-  static Future<void> connect(String url) =>
+  /// Quick connect method - creates and connects in one step
+  static Future<WebSocketClient> connect(String url) =>
       RustLib.instance.api.crateApiWebsocketWebSocketClientConnect(url: url);
 
-  Future<void> onBinary(FutureOr<void> Function(Uint8List) func);
+  /// Connect to the WebSocket server with the pre-configured callbacks
+  Future<void> connectTo(String url);
 
-  Future<void> onClose(FutureOr<void> Function(CloseFrame?) func);
+  /// Debug method to check which callbacks are registered
+  String getListenersStatus();
 
-  Future<void> onConnectionFailed(FutureOr<void> Function(WSError) func);
+  /// Create a new WebSocketClient without connecting yet.
+  /// Set up all event listeners, then call connect_to().
+  factory WebSocketClient() =>
+      RustLib.instance.api.crateApiWebsocketWebSocketClientNew();
 
-  Future<void> onDisconnect(FutureOr<void> Function() func);
+  void onBinary(FutureOr<void> Function(Uint8List) func);
 
-  Future<void> onText(FutureOr<void> Function(String) func);
+  void onClose(FutureOr<void> Function(CloseFrame?) func);
+
+  void onConnect(FutureOr<void> Function() func);
+
+  void onConnectionFailed(FutureOr<void> Function(WSError) func);
+
+  void onDisconnect(FutureOr<void> Function() func);
+
+  void onText(FutureOr<void> Function(String) func);
 
   Future<void> sendText(String text);
 }
