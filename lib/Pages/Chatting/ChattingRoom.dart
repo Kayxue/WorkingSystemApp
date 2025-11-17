@@ -1,10 +1,11 @@
 import 'dart:convert';
+import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:rhttp/rhttp.dart';
 import 'package:working_system_app/Others/Constant.dart';
 import 'package:working_system_app/Others/Utils.dart';
-import 'package:working_system_app/src/rust/api/websocket.dart';
+// import 'package:working_system_app/src/rust/api/websocket.dart';
 
 class ChattingRoom extends StatefulWidget {
   final String sessionKey;
@@ -16,7 +17,8 @@ class ChattingRoom extends StatefulWidget {
 }
 
 class _ChattingRoomState extends State<ChattingRoom> {
-  WebSocketClient? client;
+  // WebSocketClient? client;
+  WebSocket? client;
   String status = 'Disconnected';
 
   @override
@@ -44,57 +46,78 @@ class _ChattingRoomState extends State<ChattingRoom> {
 
   void addEventListeners(String token) {
     print("  📝 Registering onConnect...");
-    client!.onConnect(() async {
-      print("✅✅✅ ON_CONNECT CALLBACK FIRED! ✅✅✅");
-      await client!.sendText("{\"type\":\"auth\", \"token\":\"$token\"}");
-      if (mounted) {
-        setState(() {
-          status = 'Connected';
-        });
-      }
-    });
+    client!.listen(
+      (message) async {
+        print("✅✅✅ ON_TEXT CALLBACK FIRED! Message: $message");
+        final body = jsonDecode(message) as Map<String, dynamic>;
+        if (body['type'] == 'heartbeat_request') {
+          print("Received pong, sending ping...");
+          client!.add("{\"type\":\"heartbeat\"}");
+        }
+        //TODO: Handle other actions
+      },
+      onDone: () async {
+        print("✅✅✅ ON_DISCONNECT CALLBACK FIRED!");
+        if (mounted) {
+          setState(() {
+            status = 'Disconnected';
+            client = null;
+          });
+        }
+      },
+    );
 
-    print("  📝 Registering onText...");
-    client!.onText((message) async {
-      print("✅✅✅ ON_TEXT CALLBACK FIRED! Message: $message");
-      final body = jsonDecode(message) as Map<String, dynamic>;
-      if (body['type'] == 'heartbeat_request') {
-        print("Received pong, sending ping...");
-        await client!.sendText("{\"type\":\"heartbeat\"}");
-      }
-    });
+    // client!.onConnect(() async {
+    //   print("✅✅✅ ON_CONNECT CALLBACK FIRED! ✅✅✅");
+    //   await client!.sendText("{\"type\":\"auth\", \"token\":\"$token\"}");
+    //   if (mounted) {
+    //     setState(() {
+    //       status = 'Connected';
+    //     });
+    //   }
+    // });
 
-    print("  📝 Registering onDisconnect...");
-    client!.onDisconnect(() async {
-      print("✅✅✅ ON_DISCONNECT CALLBACK FIRED!");
-      if (mounted) {
-        setState(() {
-          status = 'Disconnected';
-          client = null;
-        });
-      }
-    });
+    // print("  📝 Registering onText...");
+    // client!.onText((message) async {
+    //   print("✅✅✅ ON_TEXT CALLBACK FIRED! Message: $message");
+    //   final body = jsonDecode(message) as Map<String, dynamic>;
+    //   if (body['type'] == 'heartbeat_request') {
+    //     print("Received pong, sending ping...");
+    //     await client!.sendText("{\"type\":\"heartbeat\"}");
+    //   }
+    // });
 
-    print("  📝 Registering onClose...");
-    client!.onClose((closeFrame) async {
-      print("✅✅✅ ON_CLOSE CALLBACK FIRED! Reason: ${closeFrame?.reason}");
-      if (mounted) {
-        setState(() {
-          status = 'Connection Closed: ${closeFrame?.reason}';
-          client = null;
-        });
-      }
-    });
+    // print("  📝 Registering onDisconnect...");
+    // client!.onDisconnect(() async {
+    //   print("✅✅✅ ON_DISCONNECT CALLBACK FIRED!");
+    //   if (mounted) {
+    //     setState(() {
+    //       status = 'Disconnected';
+    //       client = null;
+    //     });
+    //   }
+    // });
 
-    print("  📝 Registering onConnectionFailed...");
-    client!.onConnectionFailed((error) async {
-      print("✅✅✅ ON_CONNECTION_FAILED CALLBACK FIRED! Error: ${error.message}");
-      if (mounted) {
-        setState(() {
-          status = 'Connection Failed: ${error.message}';
-        });
-      }
-    });
+    // print("  📝 Registering onClose...");
+    // client!.onClose((closeFrame) async {
+    //   print("✅✅✅ ON_CLOSE CALLBACK FIRED! Reason: ${closeFrame?.reason}");
+    //   if (mounted) {
+    //     setState(() {
+    //       status = 'Connection Closed: ${closeFrame?.reason}';
+    //       client = null;
+    //     });
+    //   }
+    // });
+
+    // print("  📝 Registering onConnectionFailed...");
+    // client!.onConnectionFailed((error) async {
+    //   print("✅✅✅ ON_CONNECTION_FAILED CALLBACK FIRED! Error: ${error.message}");
+    //   if (mounted) {
+    //     setState(() {
+    //       status = 'Connection Failed: ${error.message}';
+    //     });
+    //   }
+    // });
   }
 
   @override
@@ -106,9 +129,7 @@ class _ChattingRoomState extends State<ChattingRoom> {
           Text('Status: $status'),
           ElevatedButton(
             onPressed: () async {
-              // TEST: This should print immediately
               print("🔘🔘🔘 BUTTON PRESSED! 🔘🔘🔘");
-              debugPrint("🔘🔘🔘 BUTTON PRESSED! 🔘🔘🔘");
 
               if (client != null) {
                 print("⚠️ Already have a client");
@@ -124,21 +145,31 @@ class _ChattingRoomState extends State<ChattingRoom> {
               if (token.isEmpty) return;
 
               print("📱 Creating WebSocketClient...");
-              client = WebSocketClient();
+              // client = WebSocketClient();
+              client =
+                  await WebSocket.connect(
+                    "wss://${Constant.backendUrl.substring(8)}/chat/ws",
+                  ).then((client) {
+                    print("✅✅✅ ON_CONNECT CALLBACK FIRED! ✅✅✅");
+                    client.add("{\"type\":\"auth\", \"token\":\"$token\"}");
+                    if (mounted) {
+                      setState(() {
+                        status = 'Connected';
+                      });
+                    }
+                    return client;
+                  });
               print("✓ Client created");
 
               print("📱 Adding event listeners...");
               addEventListeners(token);
-              final result = client!.getListenersStatus();
-              print("✓ Listeners status: $result");
               print("✓ Event listeners added");
 
-              print("📱 About to call connectTo()...");
-              // ✅ CRITICAL FIX: Add await!
-              await client!.connectTo(
-                "wss://${Constant.backendUrl.substring(8)}/chat/ws",
-              );
-              print("✅ connectTo() completed!");
+              // print("📱 About to call connectTo()...");
+              // await client!.connectTo(
+              //   "wss://${Constant.backendUrl.substring(8)}/chat/ws",
+              // );
+              // print("✅ connectTo() completed!");
             },
             child: const Text('Connect to Chat Server'),
           ),
