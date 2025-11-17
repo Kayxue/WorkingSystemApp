@@ -23,6 +23,9 @@ jobs:
       - name: Maximize build space
         uses: easimon/maximize-build-space@master
         with:
+          root-reserve-mb: '8192'
+          temp-reserve-mb: '8192'
+          swap-size-mb: '16384'
           remove-dotnet: 'true'
           remove-haskell: 'true'
           remove-codeql: 'true'
@@ -36,6 +39,9 @@ jobs:
         with:
           distribution: 'temurin'
           java-version: '21'
+
+      - name: Setup Android SDK
+        uses: android-actions/setup-android@v3
 
       - name: Setup Rust
         uses: dtolnay/rust-toolchain@stable
