@@ -21,15 +21,21 @@ jobs:
     environment: BuildEnv
     steps:
       - name: Maximize build space
-        uses: easimon/maximize-build-space@master
-        with:
-          root-reserve-mb: '32768'
-          temp-reserve-mb: '32768'
-          swap-size-mb: '16384'
-          remove-dotnet: 'true'
-          remove-haskell: 'true'
-          remove-codeql: 'true'
-          remove-docker-images: 'true'
+        run: |
+          echo "Removing .NET SDKs..."
+          sudo rm -rf /usr/share/dotnet
+          
+          echo "Removing Haskell (GHC/Cabal)..."
+          sudo rm -rf /usr/share/ghc*
+          sudo rm -rf /usr/local/lib/ghc*
+          sudo rm -rf /opt/ghc
+          sudo rm -rf /opt/cabal
+          
+          echo "Removing CodeQL..."
+          sudo rm -rf /opt/hostedtoolcache/CodeQL
+          
+          echo "Removing all cached Docker images..."
+          docker rmi -f $(docker images -q) || true
 
       - name: Checkout repository
         uses: actions/checkout@v3
