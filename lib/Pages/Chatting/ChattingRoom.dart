@@ -9,8 +9,15 @@ import 'package:working_system_app/Others/Utils.dart';
 
 class ChattingRoom extends StatefulWidget {
   final String sessionKey;
+  final String conversationId;
+  final String opponentName;
 
-  const ChattingRoom({super.key, required this.sessionKey});
+  const ChattingRoom({
+    super.key,
+    required this.sessionKey,
+    required this.conversationId,
+    required this.opponentName,
+  });
 
   @override
   State<ChattingRoom> createState() => _ChattingRoomState();

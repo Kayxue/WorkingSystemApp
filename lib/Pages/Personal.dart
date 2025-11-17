@@ -3,6 +3,7 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:rhttp/rhttp.dart';
 import 'package:working_system_app/Others/Utils.dart';
+import 'package:working_system_app/Pages/Chatting/ConversationList.dart';
 import 'package:working_system_app/Types/JSONObject/WorkerProfile.dart';
 import 'package:flutter/services.dart';
 import 'package:working_system_app/Widget/Others/LoadingIndicator.dart';
@@ -95,9 +96,26 @@ class _PersonalState extends State<Personal> {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Text(
-                    "Personal",
-                    style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Text(
+                        "Personal",
+                        style: TextStyle(
+                          fontSize: 24,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                      IconButton(
+                        icon: Icon(Icons.message),
+                        onPressed: () => Navigator.of(context).push(
+                          MaterialPageRoute(
+                            builder: (context) =>
+                                ConversationList(sessionKey: widget.sessionKey),
+                          ),
+                        ),
+                      ),
+                    ],
                   ),
                   SizedBox(height: 8),
                   ProfileCard(profile: profile, sessionKey: widget.sessionKey),

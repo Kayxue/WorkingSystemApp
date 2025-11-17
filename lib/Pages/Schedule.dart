@@ -3,8 +3,9 @@ import 'package:flutter/material.dart';
 import 'package:rhttp/rhttp.dart';
 import 'package:syncfusion_flutter_calendar/calendar.dart';
 import 'package:working_system_app/Others/Utils.dart';
+import 'package:working_system_app/Pages/Chatting/ConversationList.dart';
 import 'package:working_system_app/Types/JSONObject/ApplicationGig.dart';
-import 'package:working_system_app/Types/JSONObject/CustomAppointment.dart';
+import 'package:working_system_app/Types/CustomAppointment.dart';
 import 'package:working_system_app/Pages/AttendanceList.dart';
 import 'package:working_system_app/Widget/Schedule/AgendaItem.dart';
 import 'package:working_system_app/Widget/Others/LoadingIndicator.dart';
@@ -172,19 +173,31 @@ class _ScheduleState extends State<Schedule> {
                           fontWeight: FontWeight.bold,
                         ),
                       ),
-                      TextButton(
-                        child: Text(
-                          "Check In",
-                          style: TextStyle(color: Colors.black),
-                        ),
-                        onPressed: () {
-                          Navigator.of(context).push(
-                            MaterialPageRoute(
-                              builder: (context) =>
-                                  AttendanceList(sessionKey: widget.sessionKey),
+                      Row(
+                        children: [
+                          IconButton(
+                            icon: Icon(Icons.message),
+                            onPressed: () => Navigator.of(context).push(
+                              MaterialPageRoute(
+                                builder: (context) => ConversationList(
+                                  sessionKey: widget.sessionKey,
+                                ),
+                              ),
                             ),
-                          );
-                        },
+                          ),
+                          IconButton(
+                            icon:Icon(Icons.event_available),
+                            onPressed: () {
+                              Navigator.of(context).push(
+                                MaterialPageRoute(
+                                  builder: (context) => AttendanceList(
+                                    sessionKey: widget.sessionKey,
+                                  ),
+                                ),
+                              );
+                            },
+                          ),
+                        ],
                       ),
                     ],
                   ),

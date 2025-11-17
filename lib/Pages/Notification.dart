@@ -2,6 +2,7 @@ import 'dart:convert';
 import 'package:rhttp/rhttp.dart';
 import 'package:flutter/material.dart';
 import 'package:working_system_app/Others/Utils.dart';
+import 'package:working_system_app/Pages/Chatting/ConversationList.dart';
 import 'package:working_system_app/Types/JSONObject/NotificationReturn.dart';
 import 'package:working_system_app/Widget/Others/LoadingIndicator.dart';
 import 'package:working_system_app/Types/JSONObject/Notification.dart'
@@ -170,9 +171,23 @@ class _NotificationPageState extends State<NotificationPage> {
             child: Container(
               padding: const EdgeInsets.fromLTRB(16, 16, 16, 24),
               color: Colors.transparent,
-              child: const Text(
-                'Notifications',
-                style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  const Text(
+                    'Notifications',
+                    style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
+                  ),
+                  IconButton(
+                    icon: Icon(Icons.message),
+                    onPressed: () => Navigator.of(context).push(
+                      MaterialPageRoute(
+                        builder: (context) =>
+                            ConversationList(sessionKey: widget.sessionKey),
+                      ),
+                    ),
+                  ),
+                ],
               ),
             ),
           ),

@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:working_system_app/Pages/ScheduleGigDetails.dart';
-import 'package:working_system_app/Types/JSONObject/CustomAppointment.dart';
+import 'package:working_system_app/Types/CustomAppointment.dart';
 
 class AgendaItem extends StatelessWidget {
   final CustomAppointment appointment;
