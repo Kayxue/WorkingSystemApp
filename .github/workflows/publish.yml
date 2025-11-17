@@ -21,7 +21,7 @@ jobs:
     environment: BuildEnv
     steps:
       - name: Maximize build space
-        uses: easymotion/maximize-build-space@master
+        uses: easimon/maximize-build-space@master
         with:
           remove-dotnet: 'true'
           remove-android: 'true'
