@@ -75,6 +75,7 @@ class _ApplicationListState extends State<ApplicationList> {
                 moveToPage: widget.moveToPage,
                 handleActions: widget.handleActions,
                 handleWithdraw: widget.handleWithdraw,
+                refreshPage: _pagingController.refresh,
               ),
             ),
           ),

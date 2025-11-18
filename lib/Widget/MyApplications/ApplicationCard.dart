@@ -10,6 +10,7 @@ class ApplicationCard extends StatefulWidget {
   final Function(int) moveToPage;
   final Function(String, String) handleActions;
   final Function(String) handleWithdraw;
+  final Function() refreshPage;
 
   const ApplicationCard({
     super.key,
@@ -18,6 +19,7 @@ class ApplicationCard extends StatefulWidget {
     required this.moveToPage,
     required this.handleActions,
     required this.handleWithdraw,
+    required this.refreshPage,
   });
 
   @override
@@ -124,7 +126,7 @@ class _ApplicationCardState extends State<ApplicationCard> {
                     );
 
                     if (result == true) {
-                      //TODO: Refresh Page
+                      widget.refreshPage();
                     }
                   },
                   child: Container(

@@ -97,10 +97,16 @@ class PendingApplicationCard extends StatelessWidget {
                       ),
                     ],
                   ),
-                  if (_buildActionButtons(context).isNotEmpty)
-                    Row(children: _buildActionButtons(context)),
                 ],
               ),
+              if (_buildActionButtons(context).isNotEmpty)
+                Row(
+                  mainAxisAlignment: .spaceBetween,
+                  children: [
+                    SizedBox(),
+                    Row(children: _buildActionButtons(context)),
+                  ],
+                ),
             ],
           ),
         ),
