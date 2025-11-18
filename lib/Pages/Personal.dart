@@ -2,9 +2,10 @@ import 'dart:convert';
 
 import 'package:flutter/material.dart';
 import 'package:working_system_app/Others/Utils.dart';
-import 'package:working_system_app/Pages/Chatting/ConversationList.dart';
+import 'package:working_system_app/Types/JSONObject/PersonalUnread.dart';
 import 'package:working_system_app/Types/JSONObject/WorkerProfile.dart';
 import 'package:flutter/services.dart';
+import 'package:working_system_app/Widget/Base/MessageButton.dart';
 import 'package:working_system_app/Widget/Others/LoadingIndicator.dart';
 import 'package:working_system_app/Widget/Personal/ProfileButtonRow.dart';
 import 'package:working_system_app/Widget/Personal/ProfileCard.dart';
@@ -28,6 +29,7 @@ class Personal extends StatefulWidget {
 
 class _PersonalState extends State<Personal> {
   late WorkerProfile profile;
+  PersonalUnread? unreadStates;
   bool isLoading = true;
 
   Future<WorkerProfile> loadUserProfile() async {
@@ -61,6 +63,11 @@ class _PersonalState extends State<Personal> {
       setState(() {
         this.profile = profile;
         isLoading = false;
+      });
+      Utils.fetchUnread(widget.sessionKey).then((unreadStates) {
+        setState(() {
+          this.unreadStates = unreadStates;
+        });
       });
     });
   }
@@ -99,14 +106,9 @@ class _PersonalState extends State<Personal> {
                         "Personal",
                         style: TextStyle(fontSize: 24, fontWeight: .bold),
                       ),
-                      IconButton(
-                        icon: Icon(Icons.message),
-                        onPressed: () => Navigator.of(context).push(
-                          MaterialPageRoute(
-                            builder: (context) =>
-                                ConversationList(sessionKey: widget.sessionKey),
-                          ),
-                        ),
+                      MessageButton(
+                        sessionKey: widget.sessionKey,
+                        unreadMessages: unreadStates?.unreadMessages,
                       ),
                     ],
                   ),
@@ -121,6 +123,9 @@ class _PersonalState extends State<Personal> {
                             child: Padding(
                               padding: .only(bottom: 8, top: 8),
                               child: ProfileButtonRow(
+                                unratedEmployers:
+                                    unreadStates?.unratedEmployers,
+                                pendingJobs: unreadStates?.pendingJobs,
                                 sessionKey: widget.sessionKey,
                                 clearSessionKey: widget.clearSessionKey,
                                 updateIndex: widget.updateIndex,

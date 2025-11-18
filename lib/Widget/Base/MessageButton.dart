@@ -1,0 +1,35 @@
+import 'package:flutter/material.dart';
+import 'package:badges/badges.dart' as badges;
+import 'package:working_system_app/Pages/Chatting/ConversationList.dart';
+
+class MessageButton extends StatelessWidget {
+  final int? unreadMessages;
+  final String sessionKey;
+
+  const MessageButton({
+    super.key,
+    required this.sessionKey,
+    this.unreadMessages,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return IconButton(
+      icon: unreadMessages != null && unreadMessages! > 0
+          ? badges.Badge(
+              badgeContent: Text(
+                unreadMessages.toString(),
+                style: TextStyle(color: Colors.white, fontSize: 8),
+              ),
+              badgeStyle: badges.BadgeStyle(badgeColor: Colors.blue),
+              child: Icon(Icons.message),
+            )
+          : Icon(Icons.message),
+      onPressed: () => Navigator.of(context).push(
+        MaterialPageRoute(
+          builder: (context) => ConversationList(sessionKey: sessionKey),
+        ),
+      ),
+    );
+  }
+}

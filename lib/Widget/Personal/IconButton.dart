@@ -1,9 +1,12 @@
 import 'package:flutter/material.dart';
+import 'package:badges/badges.dart' as badges;
 
 class ButtonWithIcon extends StatelessWidget {
   final Color iconColor;
   final IconData icon;
   final String text;
+  final bool withBadge;
+  final int badgeNumber;
   final Function() onPressed;
 
   const ButtonWithIcon({
@@ -12,6 +15,8 @@ class ButtonWithIcon extends StatelessWidget {
     required this.icon,
     required this.text,
     required this.onPressed,
+    required this.withBadge,
+    required this.badgeNumber,
   });
 
   @override
@@ -20,7 +25,17 @@ class ButtonWithIcon extends StatelessWidget {
       onTap: onPressed,
       child: Column(
         children: [
-          Icon(icon, color: iconColor, size: 30),
+          withBadge
+              ? badges.Badge(
+                  badgeStyle: badges.BadgeStyle(badgeColor: Colors.blue),
+                  badgeContent: badgeNumber > 99
+                      ? Text('99+',
+                          style: TextStyle(color: Colors.white, fontSize: 8))
+                      : Text(badgeNumber.toString(),
+                          style: TextStyle(color: Colors.white, fontSize: 10)),
+                  child: Icon(icon, color: iconColor, size: 30)
+                )
+              : Icon(icon, color: iconColor, size: 30),
           SizedBox(height: 8),
           SizedBox(
             width: 65,

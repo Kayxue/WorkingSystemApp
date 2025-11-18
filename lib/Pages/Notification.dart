@@ -1,8 +1,9 @@
 import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:working_system_app/Others/Utils.dart';
-import 'package:working_system_app/Pages/Chatting/ConversationList.dart';
 import 'package:working_system_app/Types/JSONObject/NotificationReturn.dart';
+import 'package:working_system_app/Types/JSONObject/PersonalUnread.dart';
+import 'package:working_system_app/Widget/Base/MessageButton.dart';
 import 'package:working_system_app/Widget/Others/LoadingIndicator.dart';
 import 'package:working_system_app/Types/JSONObject/Notification.dart'
     as NotificationType;
@@ -23,6 +24,7 @@ class _NotificationPageState extends State<NotificationPage> {
   int _offset = 0;
   final int _limit = 20;
   List<NotificationType.Notification> _notifications = [];
+  PersonalUnread? unreadStates;
 
   @override
   void initState() {
@@ -33,6 +35,11 @@ class _NotificationPageState extends State<NotificationPage> {
           _scrollController.position.maxScrollExtent) {
         _fetchNotifications();
       }
+    });
+    Utils.fetchUnread(widget.sessionKey).then((value) {
+      setState(() {
+        unreadStates = value;
+      });
     });
   }
 
@@ -177,14 +184,9 @@ class _NotificationPageState extends State<NotificationPage> {
                     'Notifications',
                     style: TextStyle(fontSize: 24, fontWeight: .bold),
                   ),
-                  IconButton(
-                    icon: Icon(Icons.message),
-                    onPressed: () => Navigator.of(context).push(
-                      MaterialPageRoute(
-                        builder: (context) =>
-                            ConversationList(sessionKey: widget.sessionKey),
-                      ),
-                    ),
+                  MessageButton(
+                    sessionKey: widget.sessionKey,
+                    unreadMessages: unreadStates?.unreadMessages,
                   ),
                 ],
               ),

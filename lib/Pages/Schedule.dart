@@ -2,10 +2,11 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:syncfusion_flutter_calendar/calendar.dart';
 import 'package:working_system_app/Others/Utils.dart';
-import 'package:working_system_app/Pages/Chatting/ConversationList.dart';
 import 'package:working_system_app/Types/JSONObject/ApplicationGig.dart';
 import 'package:working_system_app/Types/CustomAppointment.dart';
 import 'package:working_system_app/Pages/AttendanceList.dart';
+import 'package:working_system_app/Types/JSONObject/PersonalUnread.dart';
+import 'package:working_system_app/Widget/Base/MessageButton.dart';
 import 'package:working_system_app/Widget/Schedule/AgendaItem.dart';
 import 'package:working_system_app/Widget/Others/LoadingIndicator.dart';
 import 'package:intl/intl.dart';
@@ -29,6 +30,7 @@ class _ScheduleState extends State<Schedule> {
   ScrollController agendaScrollController = ScrollController();
   DateTime currentSelectedDate = DateTime.now();
   List<CustomAppointment> selectedDayAppointments = [];
+  PersonalUnread? unreadStates;
 
   _ScheduleState() {
     updateRecentThreeMonths(
@@ -104,6 +106,11 @@ class _ScheduleState extends State<Schedule> {
     setState(() {
       calendarController.selectedDate = currentSelectedDate;
     });
+    Utils.fetchUnread(widget.sessionKey).then((unreadStates) {
+      setState(() {
+        this.unreadStates = unreadStates;
+      });
+    });
   }
 
   void _updateSelectedDayAppointments(DateTime selectedDate) {
@@ -169,16 +176,6 @@ class _ScheduleState extends State<Schedule> {
                       Row(
                         children: [
                           IconButton(
-                            icon: Icon(Icons.message),
-                            onPressed: () => Navigator.of(context).push(
-                              MaterialPageRoute(
-                                builder: (context) => ConversationList(
-                                  sessionKey: widget.sessionKey,
-                                ),
-                              ),
-                            ),
-                          ),
-                          IconButton(
                             icon: Icon(Icons.event_available),
                             onPressed: () {
                               Navigator.of(context).push(
@@ -189,6 +186,10 @@ class _ScheduleState extends State<Schedule> {
                                 ),
                               );
                             },
+                          ),
+                          MessageButton(
+                            unreadMessages: unreadStates?.unreadMessages,
+                            sessionKey: widget.sessionKey,
                           ),
                         ],
                       ),
