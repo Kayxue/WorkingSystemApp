@@ -2,7 +2,6 @@ import 'dart:convert';
 
 import 'package:flutter/material.dart';
 import 'package:infinite_scroll_pagination/infinite_scroll_pagination.dart';
-import 'package:rhttp/rhttp.dart';
 import 'package:working_system_app/Others/Constant.dart';
 import 'package:working_system_app/Others/Utils.dart';
 import 'package:working_system_app/Types/JSONObject/Application.dart';
@@ -42,10 +41,7 @@ class _ApplicationListState extends State<ApplicationList> {
   Future<List<Application>> fetchApplications({int page = 1}) async {
     final response = await Utils.client.get(
       "/application/my-applications?page=$page&status=${widget.currentPageStatus.statusStr}",
-      headers: HttpHeaders.rawMap({
-        "platform": "mobile",
-        "cookie": widget.sessionKey,
-      }),
+      headers: .rawMap({"platform": "mobile", "cookie": widget.sessionKey}),
     );
     if (!mounted) return [];
     if (response.statusCode != 200) {
@@ -64,7 +60,7 @@ class _ApplicationListState extends State<ApplicationList> {
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: EdgeInsets.only(top: 16, right: 16, left: 16, bottom: 8),
+      padding: .only(top: 16, right: 16, left: 16, bottom: 8),
       child: PagingListener(
         controller: _pagingController,
         builder: (context, state, fetchNextPage) => RefreshIndicator(

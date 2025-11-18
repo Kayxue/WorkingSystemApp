@@ -8,7 +8,7 @@ class ApplicationCard extends StatefulWidget {
   final String sessionKey;
   final Application application;
   final Function(int) moveToPage;
-    final Function(String,String) handleActions;
+  final Function(String, String) handleActions;
   final Function(String) handleWithdraw;
 
   const ApplicationCard({
@@ -17,7 +17,7 @@ class ApplicationCard extends StatefulWidget {
     required this.application,
     required this.moveToPage,
     required this.handleActions,
-    required this.handleWithdraw
+    required this.handleWithdraw,
   });
 
   @override
@@ -28,9 +28,9 @@ class _ApplicationCardState extends State<ApplicationCard> {
   @override
   Widget build(BuildContext context) {
     return Card(
-      margin: const EdgeInsets.symmetric(vertical: 8.0),
+      margin: const .symmetric(vertical: 8.0),
       elevation: 2.0,
-      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8.0)),
+      shape: RoundedRectangleBorder(borderRadius: .circular(8.0)),
       child: InkWell(
         onTap: () async {
           final result = await Navigator.of(context).push<bool>(
@@ -57,19 +57,16 @@ class _ApplicationCardState extends State<ApplicationCard> {
           }
         },
         child: Padding(
-          padding: const EdgeInsets.all(12.0),
+          padding: const .all(12.0),
           child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
+            crossAxisAlignment: .start,
             children: [
               Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                mainAxisAlignment: .spaceBetween,
                 children: [
                   Text(
                     widget.application.gigTitle,
-                    style: const TextStyle(
-                      fontSize: 18,
-                      fontWeight: FontWeight.bold,
-                    ),
+                    style: const TextStyle(fontSize: 18, fontWeight: .bold),
                   ),
                   const Spacer(),
                   StatusTag.getValue(widget.application.status).widget,
@@ -81,9 +78,9 @@ class _ApplicationCardState extends State<ApplicationCard> {
                 style: const TextStyle(
                   fontSize: 14,
                   color: Colors.grey,
-                  fontWeight: FontWeight.w500,
+                  fontWeight: .w500,
                 ),
-                overflow: TextOverflow.ellipsis,
+                overflow: .ellipsis,
               ),
               const SizedBox(height: 8),
               Text.rich(
@@ -94,7 +91,7 @@ class _ApplicationCardState extends State<ApplicationCard> {
                       style: TextStyle(
                         fontSize: 14,
                         color: Colors.orange[500],
-                        fontWeight: FontWeight.w500,
+                        fontWeight: .w500,
                       ),
                     ),
                     TextSpan(
@@ -103,7 +100,7 @@ class _ApplicationCardState extends State<ApplicationCard> {
                       style: TextStyle(
                         fontSize: 14,
                         color: Colors.black,
-                        fontWeight: FontWeight.w500,
+                        fontWeight: .w500,
                       ),
                     ),
                   ],
@@ -131,12 +128,12 @@ class _ApplicationCardState extends State<ApplicationCard> {
                     }
                   },
                   child: Container(
-                    width: double.infinity,
-                    margin: const EdgeInsets.symmetric(vertical: 8.0),
-                    padding: const EdgeInsets.all(8.0),
+                    width: .infinity,
+                    margin: const .symmetric(vertical: 8.0),
+                    padding: const .all(8.0),
                     decoration: BoxDecoration(
                       color: Colors.red[100],
-                      borderRadius: BorderRadius.circular(8.0),
+                      borderRadius: .circular(8.0),
                     ),
                     child: Row(
                       children: [
@@ -144,7 +141,7 @@ class _ApplicationCardState extends State<ApplicationCard> {
                           '此申請與其他申請的工作時間有衝突。',
                           style: TextStyle(
                             color: Colors.red,
-                            fontWeight: FontWeight.bold,
+                            fontWeight: .bold,
                           ),
                         ),
                         const Spacer(),
@@ -158,7 +155,7 @@ class _ApplicationCardState extends State<ApplicationCard> {
                   ),
                 ),
               Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                mainAxisAlignment: .spaceBetween,
                 children: [
                   Text(
                     '申請於: ${widget.application.appliedAt.split('T')[0]}',
@@ -203,10 +200,7 @@ class _ApplicationCardState extends State<ApplicationCard> {
             ),
             child: const Text(
               '接受',
-              style: TextStyle(
-                color: Colors.green,
-                fontWeight: FontWeight.bold,
-              ),
+              style: TextStyle(color: Colors.green, fontWeight: .bold),
             ),
           ),
         ];

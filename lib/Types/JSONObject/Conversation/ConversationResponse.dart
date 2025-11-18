@@ -9,10 +9,7 @@ class ConversationResponse {
   List<ConversationChat> conversations;
   Pagination pagination;
 
-  ConversationResponse({
-    required this.conversations,
-    required this.pagination,
-  });
+  ConversationResponse({required this.conversations, required this.pagination});
 
   factory ConversationResponse.fromJson(Map<String, dynamic> json) =>
       _$ConversationResponseFromJson(json);

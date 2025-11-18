@@ -27,9 +27,9 @@ class ButtonWithIcon extends StatelessWidget {
             child: Text(
               text,
               style: TextStyle(fontSize: 12),
-              textAlign: TextAlign.center,
+              textAlign: .center,
               softWrap: true,
-              overflow: TextOverflow.visible,
+              overflow: .visible,
               maxLines: 2,
             ),
           ),

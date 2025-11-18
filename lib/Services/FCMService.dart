@@ -112,8 +112,8 @@ class FCMService {
           'default_channel',
           '預設通知',
           channelDescription: '應用程式的預設通知頻道',
-          importance: Importance.max,
-          priority: Priority.high,
+          importance: .max,
+          priority: .high,
           ticker: 'ticker',
         );
 

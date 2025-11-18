@@ -16,7 +16,7 @@ class GigInformation extends StatelessWidget {
   final String applicationId;
 
   const GigInformation({
-    super.key, 
+    super.key,
     required this.gigdetail,
     this.applicationGig = false,
     this.sessionKey = "",
@@ -32,33 +32,36 @@ class GigInformation extends StatelessWidget {
             const Center(
               child: Text(
                 "Details",
-                style: TextStyle(fontSize: 32, fontWeight: FontWeight.bold),
+                style: TextStyle(fontSize: 32, fontWeight: .bold),
               ),
             ),
             const SizedBox(height: 8),
             if (gigdetail.hasPendingConflict == true &&
                 !(gigdetail.hasConflict == true ||
                     gigdetail.applicationStatus == 'pending_employer_review' ||
-                    gigdetail.applicationStatus == 'pending_worker_confirmation' ||
+                    gigdetail.applicationStatus ==
+                        'pending_worker_confirmation' ||
                     gigdetail.applicationStatus == 'worker_confirmed'))
               Container(
-                width: double.infinity,
-                padding: const EdgeInsets.all(8.0),
+                width: .infinity,
+                padding: const .all(8.0),
                 decoration: BoxDecoration(
                   color: Colors.amber,
-                  borderRadius: BorderRadius.circular(8.0),
+                  borderRadius: .circular(8.0),
                 ),
                 child: const Text(
                   'This job has a pending conflict with another application.',
                   style: TextStyle(color: Colors.black),
-                  textAlign: TextAlign.center,
+                  textAlign: .center,
                 ),
               ),
 
-            if (applicationGig == true 
-            && (gigdetail.hasConflict == true || gigdetail.hasPendingConflict == true)
-            && (gigdetail.applicationStatus == 'pending_employer_review' || gigdetail.applicationStatus == 'pending_worker_confirmation')
-            )
+            if (applicationGig == true &&
+                (gigdetail.hasConflict == true ||
+                    gigdetail.hasPendingConflict == true) &&
+                (gigdetail.applicationStatus == 'pending_employer_review' ||
+                    gigdetail.applicationStatus ==
+                        'pending_worker_confirmation'))
               GestureDetector(
                 onTap: () {
                   Navigator.of(context).push(
@@ -67,22 +70,24 @@ class GigInformation extends StatelessWidget {
                         sessionKey: sessionKey,
                         applicationId: applicationId,
                         gigTitle: gigdetail.title,
-                        conflictType: gigdetail.hasConflict == true ? 'confirmed' : 'pending',
+                        conflictType: gigdetail.hasConflict == true
+                            ? 'confirmed'
+                            : 'pending',
                       ),
                     ),
                   );
                 },
                 child: Container(
-                  width: double.infinity,
-                  padding: const EdgeInsets.all(8.0),
+                  width: .infinity,
+                  padding: const .all(8.0),
                   decoration: BoxDecoration(
                     color: Colors.amber,
-                    borderRadius: BorderRadius.circular(8.0),
+                    borderRadius: .circular(8.0),
                   ),
                   child: const Text(
                     '此申請與其他申請有衝突，點擊查看。',
                     style: TextStyle(color: Colors.black),
-                    textAlign: TextAlign.center,
+                    textAlign: .center,
                   ),
                 ),
               ),
@@ -91,7 +96,7 @@ class GigInformation extends StatelessWidget {
               child: ListTile(
                 title: const Text(
                   "Description",
-                  style: TextStyle(fontWeight: FontWeight.w500),
+                  style: TextStyle(fontWeight: .w500),
                 ),
                 subtitle: AnimatedReadMoreText(
                   gigdetail.description,
@@ -102,10 +107,7 @@ class GigInformation extends StatelessWidget {
             const SizedBox(height: 4),
             Card(
               child: ListTile(
-                title: const Text(
-                  "Date",
-                  style: TextStyle(fontWeight: FontWeight.w500),
-                ),
+                title: const Text("Date", style: TextStyle(fontWeight: .w500)),
                 subtitle: Text(
                   "${DateFormat.yMd().format(gigdetail.dateStart)} ～ ${DateFormat.yMd().format(gigdetail.dateEnd)}",
                 ),
@@ -116,12 +118,12 @@ class GigInformation extends StatelessWidget {
               children: [
                 Expanded(
                   child: SizedBox(
-                    width: double.infinity,
+                    width: .infinity,
                     child: Card(
                       child: ListTile(
                         title: const Text(
                           "Time",
-                          style: TextStyle(fontWeight: FontWeight.w500),
+                          style: TextStyle(fontWeight: .w500),
                         ),
                         subtitle: Text(
                           "${gigdetail.timeStart} ～ ${gigdetail.timeEnd}",
@@ -133,12 +135,12 @@ class GigInformation extends StatelessWidget {
                 const SizedBox(width: 4),
                 Expanded(
                   child: SizedBox(
-                    width: double.infinity,
+                    width: .infinity,
                     child: Card(
                       child: ListTile(
                         title: const Text(
                           "Hourly Rate",
-                          style: TextStyle(fontWeight: FontWeight.w500),
+                          style: TextStyle(fontWeight: .w500),
                         ),
                         subtitle: Text("${gigdetail.hourlyRate} NTD/hr"),
                       ),
@@ -149,7 +151,7 @@ class GigInformation extends StatelessWidget {
             ),
             const SizedBox(height: 4),
             Card(
-              clipBehavior: Clip.hardEdge,
+              clipBehavior: .hardEdge,
               child: InkWell(
                 splashColor: Colors.grey.withAlpha(70),
                 onTap: () => MapsLauncher.launchQuery(
@@ -158,7 +160,7 @@ class GigInformation extends StatelessWidget {
                 child: ListTile(
                   title: const Text(
                     "Address",
-                    style: TextStyle(fontWeight: FontWeight.w500),
+                    style: TextStyle(fontWeight: .w500),
                   ),
                   subtitle: Text(
                     "${gigdetail.city}${gigdetail.district}${gigdetail.address}",
@@ -171,11 +173,11 @@ class GigInformation extends StatelessWidget {
               child: ListTile(
                 title: const Text(
                   "Requirements",
-                  style: TextStyle(fontWeight: FontWeight.w500),
+                  style: TextStyle(fontWeight: .w500),
                 ),
                 subtitle: Table(
-                  border: TableBorder.all(style: BorderStyle.none),
-                  defaultVerticalAlignment: TableCellVerticalAlignment.top,
+                  border: .all(style: .none),
+                  defaultVerticalAlignment: .top,
                   columnWidths: const <int, TableColumnWidth>{
                     0: IntrinsicColumnWidth(),
                     1: FixedColumnWidth(15),
@@ -188,10 +190,10 @@ class GigInformation extends StatelessWidget {
                     TableRow(
                       children: [
                         const Align(
-                          alignment: AlignmentGeometry.centerRight,
+                          alignment: .centerRight,
                           child: Text(
                             "Skills",
-                            style: TextStyle(fontWeight: FontWeight.w500),
+                            style: TextStyle(fontWeight: .w500),
                           ),
                         ),
                         const SizedBox(),
@@ -204,10 +206,10 @@ class GigInformation extends StatelessWidget {
                     TableRow(
                       children: [
                         const Align(
-                          alignment: AlignmentGeometry.centerRight,
+                          alignment: .centerRight,
                           child: Text(
                             "Experience",
-                            style: TextStyle(fontWeight: FontWeight.w500),
+                            style: TextStyle(fontWeight: .w500),
                           ),
                         ),
                         const SizedBox(),
@@ -228,7 +230,7 @@ class GigInformation extends StatelessWidget {
               child: ListTile(
                 title: const Text(
                   "Contact",
-                  style: TextStyle(fontWeight: FontWeight.w500),
+                  style: TextStyle(fontWeight: .w500),
                 ),
                 subtitle: Column(
                   children: [
@@ -304,7 +306,7 @@ class GigInformation extends StatelessWidget {
             ),
             const SizedBox(height: 16),
             Column(
-              mainAxisAlignment: MainAxisAlignment.center,
+              mainAxisAlignment: .center,
               children: [
                 Text(
                   "Updated: ${DateFormat.yMd().format(gigdetail.updatedAt)} ${DateFormat.Hms().format(gigdetail.updatedAt)}",

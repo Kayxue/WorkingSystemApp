@@ -83,11 +83,8 @@ class _UpdateUserInfoState extends State<UpdateUserInfo>
   Future<bool> updateProfile() async {
     final response = await Utils.client.put(
       "/user/update/profile",
-      headers: HttpHeaders.rawMap({
-        "platform": "mobile",
-        "cookie": widget.sessionKey,
-      }),
-      body: HttpBody.json(widget.workerProfile.toJson()),
+      headers: .rawMap({"platform": "mobile", "cookie": widget.sessionKey}),
+      body: .json(widget.workerProfile.toJson()),
     );
     if (response.statusCode != 200) {
       return false;
@@ -95,12 +92,10 @@ class _UpdateUserInfoState extends State<UpdateUserInfo>
     if (updateAvatar) {
       late final HttpBody body;
       if (avatarBytes == null) {
-        body = HttpBody.multipart({
-          "deleteProfilePhoto": MultipartItem.text(text: "true"),
-        });
+        body = .multipart({"deleteProfilePhoto": .text(text: "true")});
       } else {
-        body = HttpBody.multipart({
-          "profilePhoto": MultipartItem.bytes(
+        body = .multipart({
+          "profilePhoto": .bytes(
             bytes: avatarBytes!,
             fileName: nameAvatarToChange!,
           ),
@@ -108,10 +103,7 @@ class _UpdateUserInfoState extends State<UpdateUserInfo>
       }
       final responseAvatar = await Utils.client.put(
         "/user/update/profilePhoto",
-        headers: HttpHeaders.rawMap({
-          "platform": "mobile",
-          "cookie": widget.sessionKey,
-        }),
+        headers: .rawMap({"platform": "mobile", "cookie": widget.sessionKey}),
         body: body,
       );
       if (responseAvatar.statusCode != 200) {
@@ -154,15 +146,15 @@ class _UpdateUserInfoState extends State<UpdateUserInfo>
     return Scaffold(
       appBar: AppBar(title: const Text('Update Information')),
       body: Padding(
-        padding: const EdgeInsets.only(left: 16, right: 16),
+        padding: const .only(left: 16, right: 16),
         child: Column(
           children: [
             Expanded(
               child: SingleChildScrollView(
                 child: Padding(
-                  padding: const EdgeInsets.only(top: 16),
+                  padding: const .only(top: 16),
                   child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
+                    crossAxisAlignment: .start,
                     children: [
                       AvatarEditor(
                         profile: widget.workerProfile,
@@ -212,7 +204,7 @@ class _UpdateUserInfoState extends State<UpdateUserInfo>
                         children: [
                           Expanded(
                             child: DropdownMenu(
-                              expandedInsets: EdgeInsets.zero,
+                              expandedInsets: .zero,
                               requestFocusOnTap: false,
                               initialSelection:
                                   widget.workerProfile.highestEducation,
@@ -233,7 +225,7 @@ class _UpdateUserInfoState extends State<UpdateUserInfo>
                               },
                               inputDecorationTheme: InputDecorationTheme(
                                 border: OutlineInputBorder(
-                                  borderRadius: BorderRadius.circular(12),
+                                  borderRadius: .circular(12),
                                   borderSide: BorderSide(color: Colors.black),
                                 ),
                               ),
@@ -274,7 +266,7 @@ class _UpdateUserInfoState extends State<UpdateUserInfo>
                         children: [
                           Expanded(
                             child: DropdownMenu(
-                              expandedInsets: EdgeInsets.zero,
+                              expandedInsets: .zero,
                               requestFocusOnTap: false,
                               initialSelection:
                                   widget.workerProfile.studyStatus,
@@ -292,7 +284,7 @@ class _UpdateUserInfoState extends State<UpdateUserInfo>
                               },
                               inputDecorationTheme: InputDecorationTheme(
                                 border: OutlineInputBorder(
-                                  borderRadius: BorderRadius.circular(12),
+                                  borderRadius: .circular(12),
                                   borderSide: BorderSide(color: Colors.black),
                                 ),
                               ),

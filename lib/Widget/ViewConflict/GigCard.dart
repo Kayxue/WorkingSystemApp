@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:working_system_app/Others/Constant.dart';
-import 'package:working_system_app/Pages/ScheduleGigDetails.dart';
+import 'package:working_system_app/Pages/GigDetailsNoButton.dart';
 import 'package:working_system_app/Types/JSONObject/Conflict/ConfirmedGig.dart';
 
 class GigCard extends StatelessWidget {
@@ -16,7 +16,7 @@ class GigCard extends StatelessWidget {
         // Navigate to Gig Detail Page
         Navigator.of(context).push(
           MaterialPageRoute(
-            builder: (context) => ScheduleGigDetails(
+            builder: (context) => GigDetailsNoButton(
               gigId: gig.gigId,
               title: gig.title,
               sessionKey: sessionKey,
@@ -25,26 +25,23 @@ class GigCard extends StatelessWidget {
         );
       },
       child: Card(
-        margin: const EdgeInsets.symmetric(vertical: 8.0),
+        margin: const .symmetric(vertical: 8.0),
         elevation: 2.0,
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8.0)),
+        shape: RoundedRectangleBorder(borderRadius: .circular(8.0)),
         child: Padding(
-          padding: const EdgeInsets.all(12.0),
+          padding: const .all(12.0),
           child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
+            crossAxisAlignment: .start,
             children: [
               Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                mainAxisAlignment: .spaceBetween,
                 children: [
                   Text(
                     gig.title,
-                    style: const TextStyle(
-                      fontSize: 18,
-                      fontWeight: FontWeight.bold,
-                    ),
+                    style: const TextStyle(fontSize: 18, fontWeight: .bold),
                   ),
                   const Spacer(),
-                  StatusTag.getValue('worker_confirmed').widget
+                  StatusTag.getValue('worker_confirmed').widget,
                 ],
               ),
               const SizedBox(height: 2),
@@ -53,7 +50,7 @@ class GigCard extends StatelessWidget {
                 style: const TextStyle(
                   fontSize: 14,
                   color: Colors.grey,
-                  fontWeight: FontWeight.w500,
+                  fontWeight: .w500,
                 ),
               ),
               const SizedBox(height: 8),
@@ -65,7 +62,7 @@ class GigCard extends StatelessWidget {
                       style: TextStyle(
                         fontSize: 14,
                         color: Colors.orange[500],
-                        fontWeight: FontWeight.w500,
+                        fontWeight: .w500,
                       ),
                     ),
                     TextSpan(
@@ -74,7 +71,7 @@ class GigCard extends StatelessWidget {
                       style: TextStyle(
                         fontSize: 14,
                         color: Colors.black,
-                        fontWeight: FontWeight.w500,
+                        fontWeight: .w500,
                       ),
                     ),
                   ],
@@ -83,10 +80,7 @@ class GigCard extends StatelessWidget {
               const SizedBox(height: 8),
               Text(
                 '${gig.city} ${gig.district} ${gig.address}',
-                style: const TextStyle(
-                  fontSize: 14,
-                  fontWeight: FontWeight.w500,
-                ),
+                style: const TextStyle(fontSize: 14, fontWeight: .w500),
               ),
             ],
           ),

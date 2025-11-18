@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
-import 'package:working_system_app/Pages/ScheduleGigDetails.dart';
+import 'package:working_system_app/Pages/GigDetailsNoButton.dart';
 import 'package:working_system_app/Types/CustomAppointment.dart';
 
 class AgendaItem extends StatelessWidget {
@@ -8,7 +8,12 @@ class AgendaItem extends StatelessWidget {
   final DateTime selectedDate;
   final String sessionKey;
 
-  const AgendaItem({super.key, required this.appointment, required this.selectedDate, required this.sessionKey});
+  const AgendaItem({
+    super.key,
+    required this.appointment,
+    required this.selectedDate,
+    required this.sessionKey,
+  });
 
   String _calculateDayOffset() {
     final startDay = DateTime(
@@ -34,7 +39,7 @@ class AgendaItem extends StatelessWidget {
         //navigate to schedule gig detail page
         Navigator.of(context).push(
           MaterialPageRoute(
-            builder: (context) => ScheduleGigDetails(
+            builder: (context) => GigDetailsNoButton(
               gigId: appointment.gigId,
               title: appointment.subject,
               sessionKey: sessionKey,
@@ -43,16 +48,16 @@ class AgendaItem extends StatelessWidget {
         );
       },
       child: Padding(
-        padding: const EdgeInsets.symmetric(vertical: 8.0),
+        padding: const .symmetric(vertical: 8.0),
         child: Row(
-          crossAxisAlignment: CrossAxisAlignment.start,
+          crossAxisAlignment: .start,
           children: [
             Container(
               width: 80,
-              alignment: Alignment.topRight,
-              padding: const EdgeInsets.only(right: 12.0, top: 4.0),
+              alignment: .topRight,
+              padding: const .only(right: 12.0, top: 4.0),
               child: Column(
-                crossAxisAlignment: CrossAxisAlignment.end,
+                crossAxisAlignment: .end,
                 children: [
                   Text(
                     DateFormat('j').format(appointment.startTime),
@@ -72,20 +77,20 @@ class AgendaItem extends StatelessWidget {
             SizedBox(width: 8),
             Expanded(
               child: Container(
-                padding: const EdgeInsets.symmetric(horizontal: 2.0),
+                padding: const .symmetric(horizontal: 2.0),
                 decoration: BoxDecoration(
                   border: Border.all(color: appointment.color, width: 4),
                   color: appointment.color,
-                  borderRadius: BorderRadius.circular(8),
+                  borderRadius: .circular(8),
                 ),
                 child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
+                  crossAxisAlignment: .start,
                   children: [
                     Text(
                       appointment.subject,
                       style: TextStyle(
                         fontSize: 18,
-                        fontWeight: FontWeight.bold,
+                        fontWeight: .bold,
                         color: Colors.black,
                       ),
                     ),

@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:rhttp/rhttp.dart';
 import 'package:working_system_app/Others/Utils.dart';
 import 'package:working_system_app/Pages/Register.dart';
 
@@ -33,8 +32,8 @@ class _LoginState extends State<Login> {
       Map<String, String> body = {"email": email, "password": password};
       final response = await Utils.client.post(
         "/user/login",
-        headers: const HttpHeaders.rawMap({"platform": "mobile"}),
-        body: HttpBody.json(body),
+        headers: const .rawMap({"platform": "mobile"}),
+        body: .json(body),
       );
       if (!mounted) return;
       if (response.statusCode != 200) {
@@ -62,16 +61,13 @@ class _LoginState extends State<Login> {
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: EdgeInsets.only(left: 24, right: 24, top: 16),
+      padding: .only(left: 24, right: 24, top: 16),
       child: Column(
         children: [
           Row(
-            mainAxisAlignment: MainAxisAlignment.center,
+            mainAxisAlignment: .center,
             children: [
-              Text(
-                "Login",
-                style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
-              ),
+              Text("Login", style: TextStyle(fontSize: 24, fontWeight: .bold)),
             ],
           ),
           SizedBox(height: 16),
@@ -83,7 +79,7 @@ class _LoginState extends State<Login> {
             onChanged: (value) => setState(() {
               email = value;
             }),
-            keyboardType: TextInputType.emailAddress,
+            keyboardType: .emailAddress,
           ),
           SizedBox(height: 16),
           TextField(

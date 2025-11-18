@@ -30,9 +30,9 @@ class _ViewConflictState extends State<ViewConflict> {
         scrolledUnderElevation: 0.0,
       ),
       body: Padding(
-        padding: const EdgeInsets.all(16.0),
+        padding: const .all(16.0),
         child: Column(
-          crossAxisAlignment: CrossAxisAlignment.center,
+          crossAxisAlignment: .center,
           children: [
             Text(
               (widget.conflictType == 'confirmed'
@@ -40,7 +40,7 @@ class _ViewConflictState extends State<ViewConflict> {
                   : '以下的工作申請和您目前的申請有衝突'),
               style: TextStyle(
                 fontSize: 20,
-                fontWeight: FontWeight.bold,
+                fontWeight: .bold,
                 color: Colors.red,
               ),
             ),

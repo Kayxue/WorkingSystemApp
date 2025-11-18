@@ -9,10 +9,7 @@ class UserApplication {
   List<Application> applications;
   Pagination pagination;
 
-  UserApplication({
-    required this.applications,
-    required this.pagination,
-  });
+  UserApplication({required this.applications, required this.pagination});
 
   factory UserApplication.fromJson(Map<String, dynamic> json) =>
       _$UserApplicationFromJson(json);

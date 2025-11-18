@@ -2,7 +2,6 @@ import 'dart:convert';
 
 import 'package:flutter/material.dart';
 import 'package:infinite_scroll_pagination/infinite_scroll_pagination.dart';
-import 'package:rhttp/rhttp.dart';
 import 'package:working_system_app/Others/Utils.dart';
 import 'package:working_system_app/Types/JSONObject/Conflict/ConflictReturn.dart';
 import 'package:working_system_app/Types/JSONObject/Conflict/PendingApplication.dart';
@@ -37,10 +36,7 @@ class _PendingListState extends State<PendingList> {
   Future<List<PendingApplication>> fetchPendingConflicts({int page = 1}) async {
     final response = await Utils.client.get(
       "/application/${widget.applicationId}/conflicts?type=${widget.conflictType}&page=$page",
-      headers: HttpHeaders.rawMap({
-        "platform": "mobile",
-        "cookie": widget.sessionKey,
-      }),
+      headers: .rawMap({"platform": "mobile", "cookie": widget.sessionKey}),
     );
     if (!mounted) return [];
     if (response.statusCode != 200) {
@@ -61,8 +57,8 @@ class _PendingListState extends State<PendingList> {
     try {
       final response = await Utils.client.put(
         '/application/$applicationId/confirm',
-        headers: HttpHeaders.rawMap({'cookie': widget.sessionKey}),
-        body: HttpBody.json({'action': 'reject'}),
+        headers: .rawMap({'cookie': widget.sessionKey}),
+        body: .json({'action': 'reject'}),
       );
 
       if (response.statusCode == 200) {
@@ -82,7 +78,7 @@ class _PendingListState extends State<PendingList> {
     try {
       final response = await Utils.client.post(
         '/application/cancel/$applicationId',
-        headers: HttpHeaders.rawMap({'cookie': widget.sessionKey}),
+        headers: .rawMap({'cookie': widget.sessionKey}),
       );
 
       if (response.statusCode == 200) {

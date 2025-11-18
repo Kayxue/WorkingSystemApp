@@ -1,6 +1,5 @@
 import 'dart:convert';
 import 'package:flutter/material.dart';
-import 'package:rhttp/rhttp.dart';
 import 'package:syncfusion_flutter_calendar/calendar.dart';
 import 'package:working_system_app/Others/Utils.dart';
 import 'package:working_system_app/Pages/Chatting/ConversationList.dart';
@@ -84,10 +83,7 @@ class _ScheduleState extends State<Schedule> {
   ) async {
     final response = await Utils.client.get(
       "/application/worker/calendar?year=$year&month=$month",
-      headers: HttpHeaders.rawMap({
-        "platform": "mobile",
-        "cookie": widget.sessionKey,
-      }),
+      headers: .rawMap({"platform": "mobile", "cookie": widget.sessionKey}),
     );
     if (response.statusCode != 200) {
       //TODO: Handle when error
@@ -158,20 +154,17 @@ class _ScheduleState extends State<Schedule> {
       child: isLoading
           ? LoadingIndicator()
           : Padding(
-              padding: EdgeInsets.only(top: 16, left: 16, right: 16),
+              padding: .only(top: 16, left: 16, right: 16),
               child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
+                crossAxisAlignment: .start,
                 children: [
                   // --- Header ---
                   Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    mainAxisAlignment: .spaceBetween,
                     children: [
                       Text(
                         "Schedule",
-                        style: TextStyle(
-                          fontSize: 24,
-                          fontWeight: FontWeight.bold,
-                        ),
+                        style: TextStyle(fontSize: 24, fontWeight: .bold),
                       ),
                       Row(
                         children: [
@@ -186,7 +179,7 @@ class _ScheduleState extends State<Schedule> {
                             ),
                           ),
                           IconButton(
-                            icon:Icon(Icons.event_available),
+                            icon: Icon(Icons.event_available),
                             onPressed: () {
                               Navigator.of(context).push(
                                 MaterialPageRoute(
@@ -253,13 +246,10 @@ class _ScheduleState extends State<Schedule> {
                     ),
                   ),
                   Padding(
-                    padding: const EdgeInsets.symmetric(vertical: 8.0),
+                    padding: const .symmetric(vertical: 8.0),
                     child: Text(
                       DateFormat('MMMM d, yyyy').format(currentSelectedDate),
-                      style: TextStyle(
-                        fontSize: 18,
-                        fontWeight: FontWeight.bold,
-                      ),
+                      style: TextStyle(fontSize: 18, fontWeight: .bold),
                     ),
                   ),
                   Expanded(

@@ -25,7 +25,7 @@ class AvatarEditor extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Column(
-      crossAxisAlignment: CrossAxisAlignment.center,
+      crossAxisAlignment: .center,
       children: [
         ClipOval(
           child: !updateAvatar
@@ -35,8 +35,7 @@ class AvatarEditor extends StatelessWidget {
                           "${profile.firstName}${profile.lastName}",
                         ),
                         builder: (context, snapshot) {
-                          if (snapshot.connectionState ==
-                              ConnectionState.waiting) {
+                          if (snapshot.connectionState == .waiting) {
                             return Container(
                               width: 70,
                               height: 70,
@@ -67,8 +66,7 @@ class AvatarEditor extends StatelessWidget {
                           "${profile.firstName}${profile.lastName}",
                         ),
                         builder: (context, snapshot) {
-                          if (snapshot.connectionState ==
-                              ConnectionState.waiting) {
+                          if (snapshot.connectionState == .waiting) {
                             return Container(
                               width: 70,
                               height: 70,
@@ -92,7 +90,7 @@ class AvatarEditor extends StatelessWidget {
         ),
         SizedBox(height: 8),
         Row(
-          mainAxisAlignment: MainAxisAlignment.center,
+          mainAxisAlignment: .center,
           children: [
             FilledButton(
               onPressed: () async {
@@ -106,7 +104,7 @@ class AvatarEditor extends StatelessWidget {
                 CroppedFile? croppedFile = await ImageCropper().cropImage(
                   sourcePath: image.path,
                   aspectRatio: CropAspectRatio(ratioX: 1, ratioY: 1),
-                  compressFormat: ImageCompressFormat.png,
+                  compressFormat: .png,
                   uiSettings: [
                     AndroidUiSettings(
                       toolbarTitle: 'Crop Image',
@@ -149,7 +147,7 @@ class AvatarEditor extends StatelessWidget {
               },
               style: FilledButton.styleFrom(
                 backgroundColor: Colors.green,
-                fixedSize: Size.fromWidth(105),
+                fixedSize: .fromWidth(105),
               ),
               child: const Text("Choose"),
             ),
@@ -167,7 +165,7 @@ class AvatarEditor extends StatelessWidget {
               },
               style: FilledButton.styleFrom(
                 backgroundColor: Colors.red,
-                fixedSize: Size.fromWidth(105),
+                fixedSize: .fromWidth(105),
               ),
               child: const Text("Remove"),
             ),

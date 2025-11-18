@@ -2,7 +2,6 @@ import 'dart:convert';
 import 'dart:developer';
 
 import 'package:flutter/material.dart';
-import 'package:rhttp/rhttp.dart';
 import 'package:working_system_app/Others/Utils.dart';
 import 'package:working_system_app/Types/JSONObject/GigDetails.dart';
 import 'package:working_system_app/Widget/GigDetail/GigInformation.dart';
@@ -33,10 +32,7 @@ class _GigDetailState extends State<GigDetail> {
   Future<GigDetails?> fetchGigDetail(String gigId) async {
     final response = await Utils.client.get(
       "/gig/public/$gigId",
-      headers: HttpHeaders.rawMap({
-        "platform": "mobile",
-        "cookie": widget.sessionKey,
-      }),
+      headers: .rawMap({"platform": "mobile", "cookie": widget.sessionKey}),
     );
     if (!mounted) return null;
     if (response.statusCode != 200) {
@@ -54,10 +50,7 @@ class _GigDetailState extends State<GigDetail> {
   Future<void> sendApplication() async {
     final response = await Utils.client.post(
       "/application/apply/${widget.gigId}",
-      headers: HttpHeaders.rawMap({
-        "platform": "mobile",
-        "cookie": widget.sessionKey,
-      }),
+      headers: .rawMap({"platform": "mobile", "cookie": widget.sessionKey}),
     );
     if (!mounted) return;
     bool succeed = true;
@@ -140,13 +133,13 @@ class _GigDetailState extends State<GigDetail> {
       body: isLoading
           ? LoadingIndicator()
           : Padding(
-              padding: const EdgeInsets.only(left: 16, right: 16),
+              padding: const .only(left: 16, right: 16),
               child: Column(
                 children: [
                   GigInformation(gigdetail: gigdetail!),
                   const SizedBox(height: 16),
                   SizedBox(
-                    width: double.infinity,
+                    width: .infinity,
                     child: FilledButton(
                       onPressed:
                           widget.sessionKey.isEmpty ||

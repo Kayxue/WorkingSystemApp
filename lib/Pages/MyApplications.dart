@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:rhttp/rhttp.dart';
 import 'package:working_system_app/Others/Constant.dart';
 import 'package:working_system_app/Others/Utils.dart';
 import 'package:working_system_app/Pages/MyApplication/ApplicationList.dart';
@@ -69,8 +68,8 @@ class _MyApplicationStates extends State<MyApplications>
     try {
       final response = await Utils.client.put(
         '/application/$applicationId/confirm',
-        headers: HttpHeaders.rawMap({'cookie': widget.sessionKey}),
-        body: HttpBody.json({'action': action}),
+        headers: .rawMap({'cookie': widget.sessionKey}),
+        body: .json({'action': action}),
       );
 
       if (response.statusCode == 200) {
@@ -94,7 +93,7 @@ class _MyApplicationStates extends State<MyApplications>
     try {
       final response = await Utils.client.post(
         '/application/cancel/$applicationId',
-        headers: HttpHeaders.rawMap({'cookie': widget.sessionKey}),
+        headers: .rawMap({'cookie': widget.sessionKey}),
       );
 
       if (response.statusCode == 200) {

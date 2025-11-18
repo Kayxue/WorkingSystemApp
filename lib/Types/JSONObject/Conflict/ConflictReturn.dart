@@ -22,6 +22,6 @@ class ConflictReturn {
 
   factory ConflictReturn.fromJson(Map<String, dynamic> json) =>
       _$ConflictReturnFromJson(json);
-  
+
   Map<String, dynamic> toJson() => _$ConflictReturnToJson(this);
 }

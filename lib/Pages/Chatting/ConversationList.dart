@@ -2,7 +2,6 @@ import 'dart:convert';
 
 import 'package:flutter/material.dart';
 import 'package:infinite_scroll_pagination/infinite_scroll_pagination.dart';
-import 'package:rhttp/rhttp.dart';
 import 'package:working_system_app/Others/Utils.dart';
 import 'package:working_system_app/Pages/Chatting/ChattingRoom.dart';
 import 'package:working_system_app/Types/JSONObject/Conversation/ConversationChat.dart';
@@ -30,10 +29,7 @@ class _ConversationListState extends State<ConversationList> {
   Future<List<ConversationChat>> fetchConversations({int page = 1}) async {
     final response = await Utils.client.get(
       "/chat/conversations?page=$page",
-      headers: HttpHeaders.rawMap({
-        "platform": "mobile",
-        "cookie": widget.sessionKey,
-      }),
+      headers: .rawMap({"platform": "mobile", "cookie": widget.sessionKey}),
     );
     if (!mounted) return [];
     if (response.statusCode != 200) {
@@ -55,7 +51,7 @@ class _ConversationListState extends State<ConversationList> {
     return Scaffold(
       appBar: AppBar(title: const Text('Conversations')),
       body: Padding(
-        padding: EdgeInsets.only(top: 16, right: 16, left: 16, bottom: 8),
+        padding: .only(top: 16, right: 16, left: 16, bottom: 8),
         child: PagingListener(
           controller: _pagingController,
           builder: (context, state, fetchNextPage) => RefreshIndicator(
@@ -65,28 +61,28 @@ class _ConversationListState extends State<ConversationList> {
               fetchNextPage: fetchNextPage,
               builderDelegate: PagedChildBuilderDelegate(
                 itemBuilder: (context, item, index) => InkWell(
-                    splashColor: Colors.grey.withAlpha(30),
-                    child: ListTile(
-                      title: Text(item.opponent.name),
-                      subtitle: Text(
-                        item.lastMessage ?? 'No messages yet',
-                        style: TextStyle(
-                          color: item.lastMessage != null
-                              ? Colors.black
-                              : Colors.grey,
-                        ),
-                      ),
-                    ),
-                    onTap: () => Navigator.of(context).push(
-                      MaterialPageRoute(
-                        builder: (context) => ChattingRoom(
-                          sessionKey: widget.sessionKey,
-                          conversationId: item.conversationId,
-                          opponentName: item.opponent.name,
-                        ),
+                  splashColor: Colors.grey.withAlpha(30),
+                  child: ListTile(
+                    title: Text(item.opponent.name),
+                    subtitle: Text(
+                      item.lastMessage ?? 'No messages yet',
+                      style: TextStyle(
+                        color: item.lastMessage != null
+                            ? Colors.black
+                            : Colors.grey,
                       ),
                     ),
                   ),
+                  onTap: () => Navigator.of(context).push(
+                    MaterialPageRoute(
+                      builder: (context) => ChattingRoom(
+                        sessionKey: widget.sessionKey,
+                        conversationId: item.conversationId,
+                        opponentName: item.opponent.name,
+                      ),
+                    ),
+                  ),
+                ),
               ),
             ),
           ),

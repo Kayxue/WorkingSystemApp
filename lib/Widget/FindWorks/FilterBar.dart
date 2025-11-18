@@ -43,7 +43,7 @@ class _FilterBarState extends State<FilterBar> {
   @override
   Widget build(BuildContext context) {
     return Column(
-      mainAxisAlignment: MainAxisAlignment.center,
+      mainAxisAlignment: .center,
       children: [
         TextField(
           decoration: const InputDecoration(
@@ -56,12 +56,12 @@ class _FilterBarState extends State<FilterBar> {
         ),
         const SizedBox(height: 10),
         Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          mainAxisAlignment: .spaceBetween,
           children: [
             Expanded(
               child: SizedBox(
                 child: DropdownMenu(
-                  expandedInsets: EdgeInsets.zero,
+                  expandedInsets: .zero,
                   requestFocusOnTap: false,
                   initialSelection: "",
                   dropdownMenuEntries: [
@@ -84,7 +84,7 @@ class _FilterBarState extends State<FilterBar> {
             Expanded(
               child: SizedBox(
                 child: DropdownMenu(
-                  expandedInsets: EdgeInsets.zero,
+                  expandedInsets: .zero,
                   initialSelection: "",
                   enabled: widget.selectedCity.isNotEmpty,
                   requestFocusOnTap: false,

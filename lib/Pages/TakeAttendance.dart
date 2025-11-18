@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:rhttp/rhttp.dart';
 import 'dart:convert';
 
 import 'package:working_system_app/Others/Utils.dart';
@@ -64,11 +63,8 @@ class _TakeAttendanceState extends State<TakeAttendance> {
     });
     final response = await Utils.client.post(
       "/attendance/check",
-      headers: HttpHeaders.rawMap({
-        "platform": "mobile",
-        "cookie": widget.sessionKey,
-      }),
-      body: HttpBody.json({
+      headers: .rawMap({"platform": "mobile", "cookie": widget.sessionKey}),
+      body: .json({
         "gigId": widget.gigId,
         "attendanceCode": code,
         "checkType": widget.attendanceType,
@@ -139,20 +135,20 @@ class _TakeAttendanceState extends State<TakeAttendance> {
         Container(
           width: 50,
           height: 50,
-          margin: const EdgeInsets.symmetric(horizontal: 5),
+          margin: const .symmetric(horizontal: 5),
           decoration: BoxDecoration(
-            border: Border.all(
+            border: .all(
               color: hasInput ? Colors.blueAccent : Colors.grey.shade400,
               width: 2,
             ),
-            borderRadius: BorderRadius.circular(8),
+            borderRadius: .circular(8),
           ),
-          alignment: Alignment.center,
+          alignment: .center,
           child: Text(
             hasInput ? text[i] : '',
             style: const TextStyle(
               fontSize: 24,
-              fontWeight: FontWeight.bold,
+              fontWeight: .bold,
               color: Colors.black87,
             ),
           ),
@@ -174,14 +170,14 @@ class _TakeAttendanceState extends State<TakeAttendance> {
       ),
       body: Center(
         child: Padding(
-          padding: const EdgeInsets.all(32.0),
+          padding: const .all(32.0),
           child: Column(
-            mainAxisAlignment: MainAxisAlignment.start,
-            crossAxisAlignment: CrossAxisAlignment.center,
+            mainAxisAlignment: .start,
+            crossAxisAlignment: .center,
             children: <Widget>[
               const Text(
                 '請輸入四位數字代碼',
-                style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+                style: TextStyle(fontSize: 18, fontWeight: .bold),
               ),
               const SizedBox(height: 20),
               Text(
@@ -196,7 +192,7 @@ class _TakeAttendanceState extends State<TakeAttendance> {
                   controller: _controller,
                   focusNode: _focusNode,
                   maxLength: 4,
-                  keyboardType: TextInputType.number,
+                  keyboardType: .number,
                   inputFormatters: [FilteringTextInputFormatter.digitsOnly],
                   onChanged: _handleInputChange,
                   decoration: const InputDecoration(counterText: ""),
@@ -226,7 +222,7 @@ class _TakeAttendanceState extends State<TakeAttendance> {
                             : '打卡失敗，請再試一次。'),
                   style: TextStyle(
                     color: takeAttendanceSucceed ? Colors.green : Colors.red,
-                    fontWeight: FontWeight.bold,
+                    fontWeight: .bold,
                   ),
                 ),
             ],

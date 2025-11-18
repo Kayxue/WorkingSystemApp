@@ -5,13 +5,13 @@ class Constant {
 }
 
 Map<String, StatusTag> stringStatusMap = {
-  'pending_worker_confirmation': StatusTag.pendingWorkerConfirmation,
-  'pending_employer_review': StatusTag.pendingEmployerReview,
-  'worker_confirmed': StatusTag.workerConfirmed,
-  'employer_rejected': StatusTag.employerRejected,
-  'worker_declined': StatusTag.workerDeclined,
-  'worker_cancelled': StatusTag.workerCanceled,
-  'system_cancelled': StatusTag.systemCanceled,
+  'pending_worker_confirmation': .pendingWorkerConfirmation,
+  'pending_employer_review': .pendingEmployerReview,
+  'worker_confirmed': .workerConfirmed,
+  'employer_rejected': .employerRejected,
+  'worker_declined': .workerDeclined,
+  'worker_cancelled': .workerCanceled,
+  'system_cancelled': .systemCanceled,
 };
 
 enum StatusTag {

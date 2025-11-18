@@ -1,7 +1,6 @@
 import 'dart:convert';
 
 import 'package:flutter/material.dart';
-import 'package:rhttp/rhttp.dart';
 import 'package:working_system_app/Others/Utils.dart';
 import 'package:working_system_app/Pages/Chatting/ConversationList.dart';
 import 'package:working_system_app/Types/JSONObject/WorkerProfile.dart';
@@ -34,10 +33,7 @@ class _PersonalState extends State<Personal> {
   Future<WorkerProfile> loadUserProfile() async {
     final response = await Utils.client.get(
       "/user/profile",
-      headers: HttpHeaders.rawMap({
-        "platform": "mobile",
-        "cookie": widget.sessionKey,
-      }),
+      headers: .rawMap({"platform": "mobile", "cookie": widget.sessionKey}),
     );
     if (response.statusCode != 200) {
       widget.updateIndex(1);
@@ -72,7 +68,7 @@ class _PersonalState extends State<Personal> {
   Future<void> logout() async {
     final _ = await Utils.client.get(
       "/user/logout",
-      headers: const HttpHeaders.rawMap({"platform": "mobile"}),
+      headers: const .rawMap({"platform": "mobile"}),
     );
     widget.clearSessionKey();
     widget.updateIndex(1);
@@ -92,19 +88,16 @@ class _PersonalState extends State<Personal> {
       child: isLoading
           ? LoadingIndicator()
           : Padding(
-              padding: EdgeInsets.only(top: 16, left: 16, right: 16),
+              padding: .only(top: 16, left: 16, right: 16),
               child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
+                crossAxisAlignment: .start,
                 children: [
                   Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    mainAxisAlignment: .spaceBetween,
                     children: [
                       Text(
                         "Personal",
-                        style: TextStyle(
-                          fontSize: 24,
-                          fontWeight: FontWeight.bold,
-                        ),
+                        style: TextStyle(fontSize: 24, fontWeight: .bold),
                       ),
                       IconButton(
                         icon: Icon(Icons.message),
@@ -126,7 +119,7 @@ class _PersonalState extends State<Personal> {
                         children: [
                           Card(
                             child: Padding(
-                              padding: EdgeInsets.only(bottom: 8, top: 8),
+                              padding: .only(bottom: 8, top: 8),
                               child: ProfileButtonRow(
                                 sessionKey: widget.sessionKey,
                                 clearSessionKey: widget.clearSessionKey,
@@ -209,7 +202,7 @@ class _PersonalState extends State<Personal> {
                             },
                             style: ElevatedButton.styleFrom(
                               backgroundColor: Colors.red,
-                              minimumSize: Size(double.infinity, 48),
+                              minimumSize: Size(.infinity, 48),
                             ),
                             child: const Text(
                               "Logout",

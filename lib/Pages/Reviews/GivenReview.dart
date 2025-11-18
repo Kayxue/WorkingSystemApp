@@ -3,8 +3,8 @@ import 'dart:convert' show jsonDecode;
 import 'package:animated_read_more_text/animated_read_more_text.dart';
 import 'package:flutter/material.dart';
 import 'package:infinite_scroll_pagination/infinite_scroll_pagination.dart';
-import 'package:rhttp/rhttp.dart';
 import 'package:working_system_app/Others/Utils.dart';
+import 'package:working_system_app/Pages/GigDetailsNoButton.dart';
 import 'package:working_system_app/Types/JSONObject/GivenReviewReturn.dart';
 import 'package:working_system_app/Types/JSONObject/Ratings.dart';
 
@@ -30,10 +30,7 @@ class _GivenReviewState extends State<GivenReview> {
   Future<List<Ratings>> fetchGivenReviews({int page = 1}) async {
     final response = await Utils.client.get(
       "/rating/my-ratings/worker?page=$page",
-      headers: HttpHeaders.rawMap({
-        "platform": "mobile",
-        "cookie": widget.sessionKey,
-      }),
+      headers: .rawMap({"platform": "mobile", "cookie": widget.sessionKey}),
     );
     if (!mounted) return [];
     if (response.statusCode != 200) {
@@ -50,7 +47,7 @@ class _GivenReviewState extends State<GivenReview> {
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: EdgeInsets.only(top: 16, right: 16, left: 16, bottom: 8),
+      padding: .only(top: 16, right: 16, left: 16, bottom: 8),
       child: PagingListener(
         controller: _pagingController,
         builder: (context, state, fetchNextPage) => RefreshIndicator(
@@ -60,18 +57,32 @@ class _GivenReviewState extends State<GivenReview> {
             fetchNextPage: fetchNextPage,
             builderDelegate: PagedChildBuilderDelegate(
               itemBuilder: (context, item, index) => Card(
-                clipBehavior: Clip.hardEdge,
+                clipBehavior: .hardEdge,
                 child: InkWell(
                   splashColor: Colors.grey.withAlpha(30),
-                  onTap: () {},
+                  onTap: () => Navigator.of(context).push(
+                    MaterialPageRoute(
+                      builder: (context) => GigDetailsNoButton(
+                        gigId: item.gig.gigId,
+                        title: item.gig.title,
+                        sessionKey: widget.sessionKey,
+                      ),
+                    ),
+                  ),
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       ListTile(
                         title: Text(item.gig.title),
-                        subtitle: Text("Employer: ${item.employer.name}", style: TextStyle(fontSize: 12,color: Colors.grey.shade700)),
+                        subtitle: Text(
+                          "Employer: ${item.employer.name}",
+                          style: TextStyle(
+                            fontSize: 12,
+                            color: Colors.grey.shade700,
+                          ),
+                        ),
                         trailing: Row(
-                          mainAxisSize: MainAxisSize.min,
+                          mainAxisSize: .min,
                           children: [
                             Text(
                               item.ratingValue.toStringAsFixed(1),
@@ -86,15 +97,16 @@ class _GivenReviewState extends State<GivenReview> {
                         ),
                       ),
                       Padding(
-                        padding: const EdgeInsets.only(
-                          left: 16,
-                          right: 16,
-                          bottom: 16,
-                        ),
+                        padding: const .only(left: 16, right: 16, bottom: 16),
                         child: AnimatedReadMoreText(
                           item.comment ?? "No comments provided.",
                           maxLines: 2,
-                          textStyle: TextStyle(fontSize: 16, color: item.comment != null ? Colors.black : Colors.grey),
+                          textStyle: TextStyle(
+                            fontSize: 16,
+                            color: item.comment != null
+                                ? Colors.black
+                                : Colors.grey,
+                          ),
                         ),
                       ),
                     ],

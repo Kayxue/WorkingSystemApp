@@ -1,7 +1,6 @@
 import 'dart:convert';
 
 import 'package:flutter/material.dart';
-import 'package:rhttp/rhttp.dart';
 import 'package:working_system_app/Others/Utils.dart';
 
 class UpdateUserPassword extends StatefulWidget {
@@ -39,11 +38,8 @@ class _UpdateUserPasswordState extends State<UpdateUserPassword> {
   Future<(bool, String?)> updatePassword() async {
     final response = await Utils.client.put(
       "/user/update/password",
-      headers: HttpHeaders.rawMap({
-        "platform": "mobile",
-        "cookie": widget.sessionKey,
-      }),
-      body: HttpBody.json({
+      headers: .rawMap({"platform": "mobile", "cookie": widget.sessionKey}),
+      body: .json({
         "currentPassword": currentPassword,
         "newPassword": newPassword,
       }),
@@ -73,17 +69,17 @@ class _UpdateUserPasswordState extends State<UpdateUserPassword> {
     return Scaffold(
       appBar: AppBar(title: const Text('Update Password')),
       body: Padding(
-        padding: const EdgeInsets.only(left: 16, right: 16),
+        padding: const .only(left: 16, right: 16),
         child: Column(
           children: [
             Expanded(
               child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
+                crossAxisAlignment: .start,
                 children: [
                   Padding(
-                    padding: const EdgeInsets.only(top: 16),
+                    padding: const .only(top: 16),
                     child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
+                      crossAxisAlignment: .start,
                       children: [
                         TextField(
                           decoration: const InputDecoration(

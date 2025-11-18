@@ -7,8 +7,8 @@ class LoadingIndicator extends StatelessWidget {
   Widget build(Object context) {
     return const Center(
       child: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        crossAxisAlignment: CrossAxisAlignment.center,
+        mainAxisAlignment: .center,
+        crossAxisAlignment: .center,
         children: [
           CircularProgressIndicator(),
           SizedBox(height: 8),

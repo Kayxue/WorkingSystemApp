@@ -6,12 +6,12 @@ import 'package:working_system_app/Others/Utils.dart';
 import 'package:working_system_app/Types/JSONObject/GigDetails.dart';
 import 'package:working_system_app/Widget/GigDetail/GigInformation.dart';
 
-class ScheduleGigDetails extends StatefulWidget {
+class GigDetailsNoButton extends StatefulWidget {
   final String gigId;
   final String title;
   final String sessionKey;
 
-  const ScheduleGigDetails({
+  const GigDetailsNoButton({
     super.key,
     required this.gigId,
     required this.title,
@@ -19,10 +19,10 @@ class ScheduleGigDetails extends StatefulWidget {
   });
 
   @override
-  State<ScheduleGigDetails> createState() => _ScheduleGigDetailsState();
+  State<GigDetailsNoButton> createState() => _GigDetailsNoButtonState();
 }
 
-class _ScheduleGigDetailsState extends State<ScheduleGigDetails> {
+class _GigDetailsNoButtonState extends State<GigDetailsNoButton> {
   GigDetails? gigdetail;
   bool isLoading = true;
 

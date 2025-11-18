@@ -6,13 +6,9 @@ part 'ConversationOpponent.g.dart';
 class ConversationOpponent {
   String? id;
   String name;
-  Map<String,dynamic>? profile;
+  Map<String, dynamic>? profile;
 
-  ConversationOpponent({
-    this.id,
-    required this.name,
-    this.profile,
-  });
+  ConversationOpponent({this.id, required this.name, this.profile});
 
   factory ConversationOpponent.fromJson(Map<String, dynamic> json) =>
       _$ConversationOpponentFromJson(json);

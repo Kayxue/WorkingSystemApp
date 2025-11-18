@@ -2,7 +2,6 @@ import 'dart:convert';
 
 import 'package:flutter/material.dart';
 import 'package:multi_dropdown/multi_dropdown.dart';
-import 'package:rhttp/rhttp.dart';
 import 'package:working_system_app/Others/Utils.dart';
 import 'package:working_system_app/Types/JSONObject/WorkerRegisterForm.dart';
 import 'package:working_system_app/Widget/UpdateUserInfo/JobExperienceEditor.dart';
@@ -70,8 +69,8 @@ class _RegisterState extends State<Register> with TickerProviderStateMixin {
   Future<(bool, String?)> register() async {
     final response = await Utils.client.post(
       "/user/register/worker",
-      headers: HttpHeaders.rawMap({"platform": "mobile"}),
-      body: HttpBody.json(registerForm.toJson()),
+      headers: .rawMap({"platform": "mobile"}),
+      body: .json(registerForm.toJson()),
     );
     if (response.statusCode == 201) {
       return (true, null);
@@ -100,15 +99,15 @@ class _RegisterState extends State<Register> with TickerProviderStateMixin {
     return Scaffold(
       appBar: AppBar(title: const Text('Register')),
       body: Padding(
-        padding: const EdgeInsets.only(left: 16, right: 16),
+        padding: const .only(left: 16, right: 16),
         child: Column(
           children: [
             Expanded(
               child: SingleChildScrollView(
                 child: Padding(
-                  padding: const EdgeInsets.only(top: 16),
+                  padding: const .only(top: 16),
                   child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
+                    crossAxisAlignment: .start,
                     children: [
                       TextField(
                         decoration: const InputDecoration(
@@ -170,7 +169,7 @@ class _RegisterState extends State<Register> with TickerProviderStateMixin {
                         children: [
                           Expanded(
                             child: DropdownMenu(
-                              expandedInsets: EdgeInsets.zero,
+                              expandedInsets: .zero,
                               requestFocusOnTap: false,
                               initialSelection: "其他",
                               dropdownMenuEntries: const [
@@ -189,7 +188,7 @@ class _RegisterState extends State<Register> with TickerProviderStateMixin {
                               },
                               inputDecorationTheme: InputDecorationTheme(
                                 border: OutlineInputBorder(
-                                  borderRadius: BorderRadius.circular(12),
+                                  borderRadius: .circular(12),
                                   borderSide: BorderSide(color: Colors.black),
                                 ),
                               ),
@@ -222,7 +221,7 @@ class _RegisterState extends State<Register> with TickerProviderStateMixin {
                         children: [
                           Expanded(
                             child: DropdownMenu(
-                              expandedInsets: EdgeInsets.zero,
+                              expandedInsets: .zero,
                               requestFocusOnTap: false,
                               initialSelection: "就讀中",
                               dropdownMenuEntries: const [
@@ -239,7 +238,7 @@ class _RegisterState extends State<Register> with TickerProviderStateMixin {
                               },
                               inputDecorationTheme: InputDecorationTheme(
                                 border: OutlineInputBorder(
-                                  borderRadius: BorderRadius.circular(12),
+                                  borderRadius: .circular(12),
                                   borderSide: BorderSide(color: Colors.black),
                                 ),
                               ),

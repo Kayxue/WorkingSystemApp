@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:infinite_scroll_pagination/infinite_scroll_pagination.dart';
-import 'package:rhttp/rhttp.dart';
 import 'package:rxdart/rxdart.dart';
 import 'dart:convert';
 
@@ -45,7 +44,7 @@ class _FindWorksState extends State<FindWorks> {
   Future<List<Gigs>> fetchWorks({int page = 1}) async {
     final response = await Utils.client.get(
       "/gig/public?page=$page${searchQuery.isNotEmpty ? "&searchQuery=$searchQuery" : ""}${selectedCity.isNotEmpty ? "&city=$selectedCity" : ""}${selectedDistrict.isNotEmpty ? "&district=$selectedDistrict" : ""}",
-      headers: HttpHeaders.rawMap({"platform": "mobile"}),
+      headers: .rawMap({"platform": "mobile"}),
     );
     if (!mounted) return [];
     if (response.statusCode != 200) {
@@ -100,7 +99,7 @@ class _FindWorksState extends State<FindWorks> {
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: EdgeInsets.only(top: 16, right: 16, left: 16),
+      padding: .only(top: 16, right: 16, left: 16),
       child: Column(
         children: [
           FilterBar(
@@ -123,7 +122,7 @@ class _FindWorksState extends State<FindWorks> {
                   fetchNextPage: fetchNextPage,
                   builderDelegate: PagedChildBuilderDelegate(
                     itemBuilder: (context, item, index) => Card(
-                      clipBehavior: Clip.hardEdge,
+                      clipBehavior: .hardEdge,
                       child: InkWell(
                         splashColor: Colors.grey.withAlpha(30),
                         onTap: () {

@@ -5,7 +5,6 @@ import 'package:animated_read_more_text/animated_read_more_text.dart';
 import 'package:apple_like_avatar_generator/apple_like_avatar_generator.dart';
 import 'package:flutter/material.dart';
 import 'package:infinite_scroll_pagination/infinite_scroll_pagination.dart';
-import 'package:rhttp/rhttp.dart';
 import 'package:working_system_app/Others/Utils.dart';
 import 'package:working_system_app/Types/JSONObject/GivenReviewReturn.dart';
 import 'package:working_system_app/Types/JSONObject/Ratings.dart';
@@ -38,10 +37,7 @@ class _EmployerRatingsState extends State<EmployerRatings> {
   Future<List<Ratings>> fetchWorks({int page = 1}) async {
     final response = await Utils.client.get(
       "/rating/received-ratings/worker?page=$page",
-      headers: HttpHeaders.rawMap({
-        "platform": "mobile",
-        "cookie": widget.sessionKey,
-      }),
+      headers: .rawMap({"platform": "mobile", "cookie": widget.sessionKey}),
     );
     if (!mounted) return [];
     if (response.statusCode != 200) {
@@ -60,14 +56,14 @@ class _EmployerRatingsState extends State<EmployerRatings> {
     return Scaffold(
       appBar: AppBar(forceMaterialTransparency: true),
       body: Padding(
-        padding: EdgeInsets.only(left: 16, right: 16),
+        padding: .only(left: 16, right: 16),
         child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
+          crossAxisAlignment: .start,
           children: [
             SizedBox(
-              width: double.infinity,
+              width: .infinity,
               child: Column(
-                crossAxisAlignment: CrossAxisAlignment.center,
+                crossAxisAlignment: .center,
                 children: [
                   ClipOval(
                     child: widget.profile.profilePhoto != null
@@ -81,8 +77,7 @@ class _EmployerRatingsState extends State<EmployerRatings> {
                               "${widget.profile.firstName}${widget.profile.lastName}",
                             ),
                             builder: (context, snapshot) {
-                              if (snapshot.connectionState ==
-                                  ConnectionState.waiting) {
+                              if (snapshot.connectionState == .waiting) {
                                 return Container(
                                   width: 70,
                                   height: 70,
@@ -106,19 +101,19 @@ class _EmployerRatingsState extends State<EmployerRatings> {
                   SizedBox(height: 8),
                   Text(
                     "${widget.profile.firstName} ${widget.profile.lastName}",
-                    style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+                    style: TextStyle(fontSize: 16, fontWeight: .bold),
                   ),
                 ],
               ),
             ),
             SizedBox(height: 16),
             Row(
-              mainAxisAlignment: MainAxisAlignment.spaceAround,
+              mainAxisAlignment: .spaceAround,
               children: [
                 Column(
                   children: [
                     Row(
-                      mainAxisSize: MainAxisSize.min,
+                      mainAxisSize: .min,
                       children: [
                         Text(
                           widget.profile.ratingStats.averageRating
@@ -126,7 +121,7 @@ class _EmployerRatingsState extends State<EmployerRatings> {
                           style: TextStyle(
                             fontSize: 12,
                             color: Colors.amber,
-                            fontWeight: FontWeight.bold,
+                            fontWeight: .bold,
                           ),
                         ),
                         SizedBox(width: 1),
@@ -157,10 +152,7 @@ class _EmployerRatingsState extends State<EmployerRatings> {
                                 30
                           ? "${(DateTime.now().difference(widget.profile.createdAt).inDays / 30).floor()} months"
                           : "${DateTime.now().difference(widget.profile.createdAt).inDays} days",
-                      style: TextStyle(
-                        fontSize: 12,
-                        fontWeight: FontWeight.bold,
-                      ),
+                      style: TextStyle(fontSize: 12, fontWeight: .bold),
                     ),
                     SizedBox(height: 4),
                     Text(
@@ -177,7 +169,7 @@ class _EmployerRatingsState extends State<EmployerRatings> {
             SizedBox(height: 16),
             Text(
               "Reviews from Employers",
-              style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+              style: TextStyle(fontSize: 16, fontWeight: .bold),
             ),
             SizedBox(height: 8),
             PagingListener(
@@ -191,12 +183,12 @@ class _EmployerRatingsState extends State<EmployerRatings> {
                     fetchNextPage: fetchNextPage,
                     builderDelegate: PagedChildBuilderDelegate(
                       itemBuilder: (context, item, index) => Card(
-                        clipBehavior: Clip.hardEdge,
+                        clipBehavior: .hardEdge,
                         child: InkWell(
                           splashColor: Colors.grey.withAlpha(30),
                           onTap: () {},
                           child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
+                            crossAxisAlignment: .start,
                             children: [
                               ListTile(
                                 title: Text(item.employer.name),
@@ -208,7 +200,7 @@ class _EmployerRatingsState extends State<EmployerRatings> {
                                   ),
                                 ),
                                 trailing: Row(
-                                  mainAxisSize: MainAxisSize.min,
+                                  mainAxisSize: .min,
                                   children: [
                                     Text(
                                       item.ratingValue.toStringAsFixed(1),
@@ -227,7 +219,7 @@ class _EmployerRatingsState extends State<EmployerRatings> {
                                 ),
                               ),
                               Padding(
-                                padding: const EdgeInsets.only(
+                                padding: const .only(
                                   left: 16,
                                   right: 16,
                                   bottom: 16,

@@ -10,16 +10,16 @@ class EnvironmentPhotoGallery extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: EdgeInsets.only(left: 4, right: 4),
+      padding: .only(left: 4, right: 4),
       child: Column(
         children: [
           const Padding(
-            padding: EdgeInsets.only(left: 4, right: 4),
+            padding: .only(left: 4, right: 4),
             child: Align(
-              alignment: Alignment.topLeft,
+              alignment: .topLeft,
               child: Text(
                 "Environment Photo",
-                style: TextStyle(fontWeight: FontWeight.w500, fontSize: 20),
+                style: TextStyle(fontWeight: .w500, fontSize: 20),
               ),
             ),
           ),
@@ -27,12 +27,12 @@ class EnvironmentPhotoGallery extends StatelessWidget {
           SizedBox(
             height: 256,
             child: SingleChildScrollView(
-              scrollDirection: Axis.horizontal,
+              scrollDirection: .horizontal,
               child: Row(
                 children: gigDetail.environmentPhotos!
                     .map(
                       (e) => Padding(
-                        padding: EdgeInsets.only(right: 8),
+                        padding: .only(right: 8),
                         child: GestureDetector(
                           onTap: () {
                             Navigator.push(
@@ -57,7 +57,7 @@ class EnvironmentPhotoGallery extends StatelessWidget {
                             );
                           },
                           child: ClipRRect(
-                            borderRadius: BorderRadiusGeometry.circular(16),
+                            borderRadius: .circular(16),
                             child: Image.network(e.url, height: 256),
                           ),
                         ),

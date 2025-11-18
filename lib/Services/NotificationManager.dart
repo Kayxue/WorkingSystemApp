@@ -1,5 +1,4 @@
 import 'package:flutter/foundation.dart';
-import 'package:rhttp/rhttp.dart';
 import 'dart:io';
 import 'package:working_system_app/Services/FCMService.dart';
 import 'package:working_system_app/Others/Utils.dart';
@@ -79,8 +78,8 @@ class NotificationManager {
 
       final response = await Utils.client.post(
         "/fcm/register",
-        headers: HttpHeaders.rawMap(headers),
-        body: HttpBody.json(requestBody),
+        headers: .rawMap(headers),
+        body: .json(requestBody),
       );
 
       if (response.statusCode == 200) {

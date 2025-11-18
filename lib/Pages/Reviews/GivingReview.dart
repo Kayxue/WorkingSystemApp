@@ -2,9 +2,8 @@ import 'dart:convert';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_rating_bar/flutter_rating_bar.dart';
-import 'package:intl/intl.dart';
-import 'package:rhttp/rhttp.dart';
 import 'package:working_system_app/Others/Utils.dart';
+import 'package:working_system_app/Pages/GigDetailsNoButton.dart';
 import 'package:working_system_app/Types/JSONObject/GivingReviewBody.dart';
 import 'package:working_system_app/Types/JSONObject/WorkerReview.dart';
 
@@ -28,11 +27,8 @@ class _GivingReviewState extends State<GivingReview> {
   Future<(bool, String?)> submitReview() async {
     final response = await Utils.client.post(
       "/rating/employer/${widget.unreviewedGig.employer.employerId}/gig/${widget.unreviewedGig.gigId}",
-      headers: HttpHeaders.rawMap({
-        "platform": "mobile",
-        "cookie": widget.sessionKey,
-      }),
-      body: HttpBody.json(reviewBody.toJson()),
+      headers: .rawMap({"platform": "mobile", "cookie": widget.sessionKey}),
+      body: .json(reviewBody.toJson()),
     );
     if (response.statusCode == 201) {
       return (true, null);
@@ -91,20 +87,28 @@ class _GivingReviewState extends State<GivingReview> {
                     crossAxisAlignment: CrossAxisAlignment.center,
                     children: [
                       Card(
-                        child: ListTile(
-                          title: Text(widget.unreviewedGig.title),
-                          subtitle: Text(
-                            "Duration: ${DateFormat('MMMM d, yyyy').format(widget.unreviewedGig.startDate)} - ${DateFormat('MMMM d, yyyy').format(widget.unreviewedGig.endDate)}",
+                        clipBehavior: .hardEdge,
+                        child: InkWell(
+                          splashColor: Colors.grey.withAlpha(30),
+                          onTap: () => Navigator.of(context).push(
+                            MaterialPageRoute(
+                              builder: (context) => GigDetailsNoButton(
+                                gigId: widget.unreviewedGig.gigId,
+                                title: widget.unreviewedGig.title,
+                                sessionKey: widget.sessionKey,
+                              ),
+                            ),
+                          ),
+                          child: ListTile(
+                            title: Text(widget.unreviewedGig.title),
+                            subtitle: Text(widget.unreviewedGig.employer.name),
                           ),
                         ),
                       ),
                       SizedBox(height: 16),
                       Text(
                         "Your rating:",
-                        style: TextStyle(
-                          fontWeight: FontWeight.bold,
-                          fontSize: 16,
-                        ),
+                        style: TextStyle(fontWeight: .bold, fontSize: 16),
                       ),
                       SizedBox(height: 8),
                       RatingBar.builder(

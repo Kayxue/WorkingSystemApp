@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:working_system_app/Others/Constant.dart';
-import 'package:working_system_app/Pages/ScheduleGigDetails.dart';
+import 'package:working_system_app/Pages/GigDetailsNoButton.dart';
 import 'package:working_system_app/Types/JSONObject/Conflict/PendingApplication.dart';
 
 class PendingApplicationCard extends StatelessWidget {
@@ -24,7 +24,7 @@ class PendingApplicationCard extends StatelessWidget {
         // Navigate to Gig Detail Page
         Navigator.of(context).push(
           MaterialPageRoute(
-            builder: (context) => ScheduleGigDetails(
+            builder: (context) => GigDetailsNoButton(
               gigId: app.gigId,
               title: app.title,
               sessionKey: sessionKey,
@@ -33,26 +33,23 @@ class PendingApplicationCard extends StatelessWidget {
         );
       },
       child: Card(
-        margin: const EdgeInsets.symmetric(vertical: 8.0),
+        margin: const .symmetric(vertical: 8.0),
         elevation: 2.0,
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8.0)),
+        shape: RoundedRectangleBorder(borderRadius: .circular(8.0)),
         child: Padding(
-          padding: const EdgeInsets.all(12.0),
+          padding: const .all(12.0),
           child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
+            crossAxisAlignment: .start,
             children: [
               Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                mainAxisAlignment: .spaceBetween,
                 children: [
                   Text(
                     app.title,
-                    style: const TextStyle(
-                      fontSize: 18,
-                      fontWeight: FontWeight.bold,
-                    ),
+                    style: const TextStyle(fontSize: 18, fontWeight: .bold),
                   ),
                   const Spacer(),
-                  StatusTag.getValue(app.status).widget
+                  StatusTag.getValue(app.status).widget,
                 ],
               ),
               const SizedBox(height: 2),
@@ -61,15 +58,15 @@ class PendingApplicationCard extends StatelessWidget {
                 style: const TextStyle(
                   fontSize: 14,
                   color: Colors.grey,
-                  fontWeight: FontWeight.w500,
+                  fontWeight: .w500,
                 ),
               ),
               const SizedBox(height: 4),
               Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                mainAxisAlignment: .spaceBetween,
                 children: [
                   Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
+                    crossAxisAlignment: .start,
                     children: [
                       Text.rich(
                         TextSpan(
@@ -79,7 +76,7 @@ class PendingApplicationCard extends StatelessWidget {
                               style: TextStyle(
                                 fontSize: 14,
                                 color: Colors.orange[500],
-                                fontWeight: FontWeight.w500,
+                                fontWeight: .w500,
                               ),
                             ),
                             TextSpan(
@@ -88,7 +85,7 @@ class PendingApplicationCard extends StatelessWidget {
                               style: TextStyle(
                                 fontSize: 14,
                                 color: Colors.black,
-                                fontWeight: FontWeight.w500,
+                                fontWeight: .w500,
                               ),
                             ),
                           ],
@@ -96,10 +93,7 @@ class PendingApplicationCard extends StatelessWidget {
                       ),
                       Text(
                         '${app.city} ${app.district} ${app.address}',
-                        style: const TextStyle(
-                          fontSize: 14,
-                          fontWeight: FontWeight.w500,
-                        ),
+                        style: const TextStyle(fontSize: 14, fontWeight: .w500),
                       ),
                     ],
                   ),
@@ -125,7 +119,7 @@ class PendingApplicationCard extends StatelessWidget {
             ),
             child: const Text(
               '拒絕',
-              style: TextStyle(color: Colors.red, fontWeight: FontWeight.bold),
+              style: TextStyle(color: Colors.red, fontWeight: .bold),
             ),
           ),
         ];

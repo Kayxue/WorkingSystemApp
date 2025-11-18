@@ -64,26 +64,18 @@ class JobExperienceEditor extends StatelessWidget {
       children: [
         Expanded(
           child: Card(
-            clipBehavior: Clip.antiAlias,
+            clipBehavior: .antiAlias,
             child: Padding(
-              padding: const EdgeInsets.only(
-                right: 16.0,
-                left: 20,
-                top: 8,
-                bottom: 16,
-              ),
+              padding: const .only(right: 16.0, left: 20, top: 8, bottom: 16),
               child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
+                crossAxisAlignment: .start,
                 children: [
                   Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    mainAxisAlignment: .spaceBetween,
                     children: [
                       const Text(
                         "Job Experience",
-                        style: TextStyle(
-                          fontSize: 16,
-                          fontWeight: FontWeight.bold,
-                        ),
+                        style: TextStyle(fontSize: 16, fontWeight: .bold),
                       ),
                       TextButton(
                         onPressed: () async {

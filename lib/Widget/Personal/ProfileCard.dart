@@ -20,7 +20,7 @@ class ProfileCard extends StatelessWidget {
   Widget build(BuildContext context) {
     return Card(
       color: Colors.blue,
-      clipBehavior: Clip.hardEdge,
+      clipBehavior: .hardEdge,
       child: InkWell(
         onTap: () {
           Navigator.of(context).push(
@@ -32,36 +32,36 @@ class ProfileCard extends StatelessWidget {
           );
         },
         child: Container(
-          width: double.infinity,
+          width: .infinity,
           height: 100,
-          padding: EdgeInsets.symmetric(vertical: 4.0),
+          padding: .symmetric(vertical: 4.0),
           child: Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            mainAxisAlignment: .spaceBetween,
             children: [
               Padding(
-                padding: EdgeInsets.only(left: 16),
+                padding: .only(left: 16),
                 child: Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  crossAxisAlignment: CrossAxisAlignment.start,
+                  mainAxisAlignment: .center,
+                  crossAxisAlignment: .start,
                   children: [
                     Text(
                       "${profile.firstName} ${profile.lastName}",
                       style: const TextStyle(
                         color: Colors.white,
                         fontSize: 24,
-                        fontWeight: FontWeight.bold,
+                        fontWeight: .bold,
                       ),
                     ),
                     const SizedBox(height: 4),
                     Row(
-                      crossAxisAlignment: CrossAxisAlignment.center,
+                      crossAxisAlignment: .center,
                       children: [
                         const Text(
                           "Your rating:",
                           style: TextStyle(
                             color: Colors.white,
                             fontSize: 16,
-                            fontWeight: FontWeight.w500,
+                            fontWeight: .w500,
                           ),
                         ),
                         const SizedBox(width: 4),
@@ -71,7 +71,7 @@ class ProfileCard extends StatelessWidget {
                               Icon(Icons.star, color: Colors.amber),
                           itemCount: 5,
                           itemSize: 16.0,
-                          direction: Axis.horizontal,
+                          direction: .horizontal,
                         ),
                         const SizedBox(width: 4),
                         Text(
@@ -79,9 +79,9 @@ class ProfileCard extends StatelessWidget {
                           style: TextStyle(
                             color: Colors.white,
                             fontSize: 16,
-                            decoration: TextDecoration.underline,
+                            decoration: .underline,
                             decorationColor: Colors.white,
-                            decorationStyle: TextDecorationStyle.solid,
+                            decorationStyle: .solid,
                             decorationThickness: 2.0,
                           ),
                         ),
@@ -91,7 +91,7 @@ class ProfileCard extends StatelessWidget {
                 ),
               ),
               Padding(
-                padding: const EdgeInsets.only(right: 16.0),
+                padding: const .only(right: 16.0),
                 child: ClipOval(
                   child: profile.profilePhoto != null
                       ? Image.network(
@@ -104,13 +104,11 @@ class ProfileCard extends StatelessWidget {
                             "${profile.firstName}${profile.lastName}",
                           ),
                           builder: (context, snapshot) {
-                            if (snapshot.connectionState ==
-                                ConnectionState.waiting) {
+                            if (snapshot.connectionState == .waiting) {
                               return Container(
                                 width: 70,
                                 height: 70,
-                                color: Colors
-                                    .transparent, // Transparent background
+                                color: Colors.transparent,
                               );
                             } else if (snapshot.hasError) {
                               return Text('Error: ${snapshot.error}');

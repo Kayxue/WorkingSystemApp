@@ -9,7 +9,7 @@ class ProfileInfoList extends StatelessWidget {
   Widget build(Object context) {
     return Card(
       child: Padding(
-        padding: EdgeInsets.all(8),
+        padding: .all(8),
         child: Column(children: children),
       ),
     );

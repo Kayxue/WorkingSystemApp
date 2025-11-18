@@ -23,7 +23,7 @@ class CurrentApplication {
     required this.timeEnd,
     required this.status,
   });
-  
+
   factory CurrentApplication.fromJson(Map<String, dynamic> json) =>
       _$CurrentApplicationFromJson(json);
 

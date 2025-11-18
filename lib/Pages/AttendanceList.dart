@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:rhttp/rhttp.dart';
 import 'dart:convert';
 
 import 'package:working_system_app/Others/Utils.dart';
@@ -25,10 +24,7 @@ class _AttendanceListState extends State<AttendanceList> {
   Future<(int, List<AttendanceGigInfo>)?> fetchAttendanceWorks() async {
     final response = await Utils.client.get(
       "/attendance/today-jobs",
-      headers: HttpHeaders.rawMap({
-        "platform": "mobile",
-        "cookie": widget.sessionKey,
-      }),
+      headers: .rawMap({"platform": "mobile", "cookie": widget.sessionKey}),
     );
     if (!mounted) return null;
     if (response.statusCode != 200) {
@@ -105,17 +101,14 @@ class _AttendanceListState extends State<AttendanceList> {
                 itemCount: attendanceList.length,
                 itemBuilder: (context, index) {
                   return Card(
-                    margin: const EdgeInsets.symmetric(
-                      horizontal: 16.0,
-                      vertical: 4.0,
-                    ),
-                    clipBehavior: Clip.hardEdge,
+                    margin: const .symmetric(horizontal: 16.0, vertical: 4.0),
+                    clipBehavior: .hardEdge,
                     child: InkWell(
                       splashColor: Colors.grey.withAlpha(30),
                       child: ListTile(
                         title: Text(attendanceList[index].title),
                         subtitle: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
+                          crossAxisAlignment: .start,
                           children: [
                             Text(
                               "${attendanceList[index].city} ${attendanceList[index].district}",

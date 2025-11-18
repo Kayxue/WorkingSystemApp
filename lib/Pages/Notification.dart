@@ -1,5 +1,4 @@
 import 'dart:convert';
-import 'package:rhttp/rhttp.dart';
 import 'package:flutter/material.dart';
 import 'package:working_system_app/Others/Utils.dart';
 import 'package:working_system_app/Pages/Chatting/ConversationList.dart';
@@ -54,7 +53,7 @@ class _NotificationPageState extends State<NotificationPage> {
     try {
       final response = await Utils.client.get(
         '/notifications/list?limit=$_limit&offset=$_offset',
-        headers: HttpHeaders.rawMap({'cookie': widget.sessionKey}),
+        headers: .rawMap({'cookie': widget.sessionKey}),
       );
 
       if (response.statusCode == 200) {
@@ -85,8 +84,8 @@ class _NotificationPageState extends State<NotificationPage> {
     try {
       final response = await Utils.client.put(
         '/notifications/mark-as-read?isRead=${action == "markRead" ? "true" : "false"}',
-        headers: HttpHeaders.rawMap({'cookie': widget.sessionKey}),
-        body: HttpBody.json({"notificationIds": notificationId}),
+        headers: .rawMap({'cookie': widget.sessionKey}),
+        body: .json({"notificationIds": notificationId}),
       );
 
       if (response.statusCode == 200) {
@@ -103,17 +102,17 @@ class _NotificationPageState extends State<NotificationPage> {
     }
   }
 
-  Future<void> deleteNotifications(String NotificationId) async {
+  Future<void> deleteNotifications(String notificationId) async {
     try {
       final response = await Utils.client.delete(
-        '/notifications/${NotificationId}',
-        headers: HttpHeaders.rawMap({'cookie': widget.sessionKey}),
+        '/notifications/$notificationId',
+        headers: .rawMap({'cookie': widget.sessionKey}),
       );
 
       if (response.statusCode == 200) {
         setState(() {
           _notifications.removeWhere(
-            (notification) => notification.notificationId == NotificationId,
+            (notification) => notification.notificationId == notificationId,
           );
         });
       }
@@ -169,14 +168,14 @@ class _NotificationPageState extends State<NotificationPage> {
         slivers: [
           SliverToBoxAdapter(
             child: Container(
-              padding: const EdgeInsets.fromLTRB(16, 16, 16, 24),
+              padding: const .fromLTRB(16, 16, 16, 24),
               color: Colors.transparent,
               child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                mainAxisAlignment: .spaceBetween,
                 children: [
                   const Text(
                     'Notifications',
-                    style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
+                    style: TextStyle(fontSize: 24, fontWeight: .bold),
                   ),
                   IconButton(
                     icon: Icon(Icons.message),
@@ -206,10 +205,10 @@ class _NotificationPageState extends State<NotificationPage> {
                     leading: Icon(_getIconForType(notification.type)),
                     title: Text(
                       notification.title,
-                      style: TextStyle(fontWeight: FontWeight.bold),
+                      style: TextStyle(fontWeight: .bold),
                     ),
                     subtitle: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
+                      crossAxisAlignment: .start,
                       children: [
                         Text(notification.message),
                         const SizedBox(height: 4),
@@ -244,10 +243,10 @@ class _NotificationPageState extends State<NotificationPage> {
                           context: context,
                           builder: (BuildContext context) {
                             return Column(
-                              mainAxisSize: MainAxisSize.min,
+                              mainAxisSize: .min,
                               children: <Widget>[
                                 Padding(
-                                  padding: const EdgeInsets.all(16.0),
+                                  padding: const .all(16.0),
                                   child: Column(
                                     children: [
                                       Icon(
@@ -257,16 +256,16 @@ class _NotificationPageState extends State<NotificationPage> {
                                       const SizedBox(height: 12.0),
                                       Text(
                                         notification.title,
-                                        textAlign: TextAlign.center,
+                                        textAlign: .center,
                                         style: const TextStyle(
                                           fontSize: 20,
-                                          fontWeight: FontWeight.bold,
+                                          fontWeight: .bold,
                                         ),
                                       ),
                                       const SizedBox(height: 8.0),
                                       Text(
                                         notification.message,
-                                        textAlign: TextAlign.center,
+                                        textAlign: .center,
                                         style: TextStyle(
                                           fontSize: 16,
                                           color: Colors.grey[600],

@@ -9,10 +9,7 @@ class GivenReviewReturn {
   List<Ratings> ratings;
   Pagination pagination;
 
-  GivenReviewReturn({
-    required this.ratings,
-    required this.pagination,
-  });
+  GivenReviewReturn({required this.ratings, required this.pagination});
 
   factory GivenReviewReturn.fromJson(Map<String, dynamic> json) =>
       _$GivenReviewReturnFromJson(json);

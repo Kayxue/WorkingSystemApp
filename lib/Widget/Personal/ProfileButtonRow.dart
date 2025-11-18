@@ -25,7 +25,7 @@ class ProfileButtonRow extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Row(
-      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+      mainAxisAlignment: .spaceEvenly,
       children: [
         ButtonWithIcon(
           iconColor: Colors.black,
@@ -34,9 +34,7 @@ class ProfileButtonRow extends StatelessWidget {
           onPressed: () {
             Navigator.of(context).push(
               MaterialPageRoute(
-                builder: (context) => MyApplications(
-                  sessionKey: sessionKey,
-                ),
+                builder: (context) => MyApplications(sessionKey: sessionKey),
               ),
             );
           },

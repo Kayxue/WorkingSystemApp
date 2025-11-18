@@ -1,7 +1,6 @@
 import 'dart:convert';
 
 import 'package:flutter/material.dart';
-import 'package:rhttp/rhttp.dart';
 import 'package:working_system_app/Others/Utils.dart';
 import 'package:working_system_app/Types/JSONObject/GigDetails.dart';
 import 'package:working_system_app/Widget/GigDetail/GigInformation.dart';
@@ -36,7 +35,7 @@ class _ApplicationGigDetailsState extends State<ApplicationGigDetails> {
   Future<GigDetails?> fetchGigDetail(String gigId) async {
     final response = await Utils.client.get(
       "/gig/worker/$gigId",
-      headers: HttpHeaders.rawMap({"cookie": widget.sessionKey}),
+      headers: .rawMap({"cookie": widget.sessionKey}),
     );
     if (!mounted) return null;
     if (response.statusCode != 200) {
@@ -83,8 +82,8 @@ class _ApplicationGigDetailsState extends State<ApplicationGigDetails> {
     try {
       final response = await Utils.client.put(
         '/application/$applicationId/confirm',
-        headers: HttpHeaders.rawMap({'cookie': widget.sessionKey}),
-        body: HttpBody.json({'action': action}),
+        headers: .rawMap({'cookie': widget.sessionKey}),
+        body: .json({'action': action}),
       );
 
       if (!mounted) return;
@@ -113,7 +112,7 @@ class _ApplicationGigDetailsState extends State<ApplicationGigDetails> {
     try {
       final response = await Utils.client.post(
         '/application/cancel/$applicationId',
-        headers: HttpHeaders.rawMap({'cookie': widget.sessionKey}),
+        headers: .rawMap({'cookie': widget.sessionKey}),
       );
 
       if (!mounted) return;
@@ -156,12 +155,12 @@ class _ApplicationGigDetailsState extends State<ApplicationGigDetails> {
         ),
         child: const Text(
           '取消申請',
-          style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
+          style: TextStyle(fontWeight: .bold, fontSize: 16),
         ),
       );
     } else if (widget.status == 'pending_worker_confirmation') {
       return Row(
-        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+        mainAxisAlignment: .spaceEvenly,
         children: [
           ElevatedButton(
             onPressed: () =>
@@ -174,7 +173,7 @@ class _ApplicationGigDetailsState extends State<ApplicationGigDetails> {
               '拒絕',
               style: TextStyle(
                 color: Colors.red,
-                fontWeight: FontWeight.bold,
+                fontWeight: .bold,
                 fontSize: 16,
               ),
             ),
@@ -194,7 +193,7 @@ class _ApplicationGigDetailsState extends State<ApplicationGigDetails> {
               '接受',
               style: TextStyle(
                 color: widget.acceptEnabled ? Colors.green : Colors.grey,
-                fontWeight: FontWeight.bold,
+                fontWeight: .bold,
                 fontSize: 16,
               ),
             ),
@@ -226,7 +225,7 @@ class _ApplicationGigDetailsState extends State<ApplicationGigDetails> {
       body: isLoading
           ? LoadingIndicator()
           : Padding(
-              padding: const EdgeInsets.only(left: 16, right: 16, bottom: 16),
+              padding: const .only(left: 16, right: 16, bottom: 16),
               child: Column(
                 children: [
                   GigInformation(

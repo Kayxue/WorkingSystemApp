@@ -2,7 +2,6 @@ import 'dart:convert' show jsonDecode;
 
 import 'package:flutter/material.dart';
 import 'package:infinite_scroll_pagination/infinite_scroll_pagination.dart';
-import 'package:rhttp/rhttp.dart';
 import 'package:working_system_app/Others/Utils.dart';
 import 'package:working_system_app/Pages/Reviews/GivingReview.dart';
 import 'package:working_system_app/Types/JSONObject/WorkerReview.dart';
@@ -35,10 +34,7 @@ class _PendingReviewState extends State<PendingReview> {
   Future<List<WorkerReview>> fetchPendingReview({int page = 1}) async {
     final response = await Utils.client.get(
       "/rating/list/worker?page=$page",
-      headers: HttpHeaders.rawMap({
-        "platform": "mobile",
-        "cookie": widget.sessionKey,
-      }),
+      headers: .rawMap({"platform": "mobile", "cookie": widget.sessionKey}),
     );
     if (!mounted) return [];
     if (response.statusCode != 200) {
@@ -55,7 +51,7 @@ class _PendingReviewState extends State<PendingReview> {
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: EdgeInsets.only(top: 16, right: 16, left: 16, bottom: 8),
+      padding: .only(top: 16, right: 16, left: 16, bottom: 8),
       child: PagingListener(
         controller: _pagingController,
         builder: (context, state, fetchNextPage) => RefreshIndicator(
@@ -65,7 +61,7 @@ class _PendingReviewState extends State<PendingReview> {
             fetchNextPage: fetchNextPage,
             builderDelegate: PagedChildBuilderDelegate(
               itemBuilder: (context, item, index) => Card(
-                clipBehavior: Clip.hardEdge,
+                clipBehavior: .hardEdge,
                 child: InkWell(
                   splashColor: Colors.grey.withAlpha(30),
                   onTap: () async {
