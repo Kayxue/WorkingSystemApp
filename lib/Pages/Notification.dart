@@ -8,6 +8,7 @@ import 'package:working_system_app/Widget/Others/LoadingIndicator.dart';
 import 'package:working_system_app/Types/JSONObject/Notification.dart'
     as NotificationType;
 import 'package:working_system_app/Pages/MyApplications.dart';
+import 'package:working_system_app/mixins/PeriodicMixin.dart';
 
 class NotificationPage extends StatefulWidget {
   final String sessionKey;
@@ -17,7 +18,7 @@ class NotificationPage extends StatefulWidget {
   State<NotificationPage> createState() => _NotificationPageState();
 }
 
-class _NotificationPageState extends State<NotificationPage> {
+class _NotificationPageState extends State<NotificationPage> with PeriodicTaskMixin{
   final ScrollController _scrollController = ScrollController();
   bool _isLoading = false;
   bool _hasMore = true;
@@ -36,10 +37,19 @@ class _NotificationPageState extends State<NotificationPage> {
         _fetchNotifications();
       }
     });
-    Utils.fetchUnread(widget.sessionKey).then((value) {
-      setState(() {
-        unreadStates = value;
-      });
+  }
+
+  @override
+  Duration get interval => const Duration(seconds: 5);
+  
+  @override
+  void onTick() {
+    Utils.fetchUnread(widget.sessionKey).then((unreadStates) {
+      if (mounted) {
+        setState(() {
+          this.unreadStates = unreadStates;
+        });
+      }
     });
   }
 

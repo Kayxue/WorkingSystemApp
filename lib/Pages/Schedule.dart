@@ -10,6 +10,7 @@ import 'package:working_system_app/Widget/Base/MessageButton.dart';
 import 'package:working_system_app/Widget/Schedule/AgendaItem.dart';
 import 'package:working_system_app/Widget/Others/LoadingIndicator.dart';
 import 'package:intl/intl.dart';
+import 'package:working_system_app/mixins/PeriodicMixin.dart';
 
 class Schedule extends StatefulWidget {
   final String sessionKey;
@@ -20,7 +21,7 @@ class Schedule extends StatefulWidget {
   State<Schedule> createState() => _ScheduleState();
 }
 
-class _ScheduleState extends State<Schedule> {
+class _ScheduleState extends State<Schedule> with PeriodicTaskMixin{
   List<ApplicationGig>? previousMonth;
   List<ApplicationGig>? thisMonth;
   List<ApplicationGig>? nextMonth;
@@ -37,6 +38,20 @@ class _ScheduleState extends State<Schedule> {
       currentSelectedDate.year,
       currentSelectedDate.month,
     );
+  }
+
+  @override
+  Duration get interval => const Duration(seconds: 5);
+  
+  @override
+  void onTick() {
+    Utils.fetchUnread(widget.sessionKey).then((unreadStates) {
+      if (mounted) {
+        setState(() {
+          this.unreadStates = unreadStates;
+        });
+      }
+    });
   }
 
   void updateRecentThreeMonths(int year, int month) {
@@ -105,11 +120,6 @@ class _ScheduleState extends State<Schedule> {
     });
     setState(() {
       calendarController.selectedDate = currentSelectedDate;
-    });
-    Utils.fetchUnread(widget.sessionKey).then((unreadStates) {
-      setState(() {
-        this.unreadStates = unreadStates;
-      });
     });
   }
 
