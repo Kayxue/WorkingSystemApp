@@ -10,7 +10,6 @@ import 'package:working_system_app/Widget/Others/LoadingIndicator.dart';
 import 'package:working_system_app/Widget/Personal/ProfileButtonRow.dart';
 import 'package:working_system_app/Widget/Personal/ProfileCard.dart';
 import 'package:working_system_app/Widget/Personal/ProfileInfoList.dart';
-import 'package:working_system_app/mixins/PeriodicMixin.dart';
 
 class Personal extends StatefulWidget {
   final String sessionKey;
@@ -28,25 +27,10 @@ class Personal extends StatefulWidget {
   State<Personal> createState() => _PersonalState();
 }
 
-class _PersonalState extends State<Personal> with PeriodicTaskMixin {
+class _PersonalState extends State<Personal> {
   late WorkerProfile profile;
   PersonalUnread? unreadStates;
   bool isLoading = true;
-
-  @override
-  Duration get interval => const Duration(seconds: 5);
-
-  @override
-  void onTick() {
-    debugPrint("Fetching unread states...");
-    Utils.fetchUnread(widget.sessionKey).then((unreadStates) {
-      if (mounted) {
-        setState(() {
-          this.unreadStates = unreadStates;
-        });
-      }
-    });
-  }
 
   Future<WorkerProfile> loadUserProfile() async {
     final response = await Utils.client.get(
@@ -69,6 +53,13 @@ class _PersonalState extends State<Personal> with PeriodicTaskMixin {
     setState(() {
       this.profile = profile;
       isLoading = false;
+    });
+    Utils.fetchUnread(widget.sessionKey).then((unreadStates) {
+      if (mounted) {
+        setState(() {
+          this.unreadStates = unreadStates;
+        });
+      }
     });
   }
 
