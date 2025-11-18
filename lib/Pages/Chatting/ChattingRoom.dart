@@ -1,22 +1,28 @@
+import 'dart:async';
 import 'dart:convert';
 import 'dart:io';
-
-import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 import 'package:rhttp/rhttp.dart';
-import 'package:working_system_app/Others/Constant.dart';
+import 'package:flutter/material.dart';
 import 'package:working_system_app/Others/Utils.dart';
-// import 'package:working_system_app/src/rust/api/websocket.dart';
+import 'package:working_system_app/Types/JSONObject/Message/Message.dart';
 
 class ChattingRoom extends StatefulWidget {
   final String sessionKey;
   final String conversationId;
   final String opponentName;
+  final String opponentId;
+  final WebSocket? client;
+  final Stream<dynamic> stream;
 
   const ChattingRoom({
     super.key,
     required this.sessionKey,
     required this.conversationId,
     required this.opponentName,
+    required this.opponentId,
+    required this.client,
+    required this.stream,
   });
 
   @override
@@ -24,161 +30,256 @@ class ChattingRoom extends StatefulWidget {
 }
 
 class _ChattingRoomState extends State<ChattingRoom> {
-  // WebSocketClient? client;
-  WebSocket? client;
-  String status = 'Disconnected';
+  final TextEditingController _textController = TextEditingController();
+  final ScrollController _scrollController = ScrollController();
+
+  List<Message> messages = [];
+  String? olderCursor; // ISO timestamp
+  bool isLoadingOlder = false;
+  bool hasMore = true;
+
+  StreamSubscription? _streamSubscription;
 
   @override
   void initState() {
     super.initState();
+
+    _loadInitial();
+
+    // detect reach top -> load older messages
+    _scrollController.addListener(() {
+      if (_scrollController.position.pixels <=
+          _scrollController.position.minScrollExtent + 20) {
+        _loadOlderMessages();
+      }
+    });
+
+    // websocket new messages
+    _streamSubscription = widget.stream.listen(_handleIncomingMessage);
   }
 
-  Future<String> getToken() async {
-    var response = await Utils.client.get(
-      "/chat/ws-token",
+  /// ----------------------------------------
+  /// Load initial newest messages
+  /// ----------------------------------------
+  Future<void> _loadInitial() async {
+    final url =
+        "/chat/conversations/${widget.conversationId}/messages";
+
+    final response = await Utils.client.get(
+      url,
       headers: HttpHeaders.rawMap({
         "platform": "mobile",
         "cookie": widget.sessionKey,
       }),
     );
-    if (!mounted) return '';
-    if (response.statusCode != 200) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Failed to get WebSocket token')),
-      );
-    }
-    final body = jsonDecode(response.body) as Map<String, dynamic>;
-    return body['token'] as String;
+
+    if (response.statusCode != 200) return;
+
+    final list = jsonDecode(response.body) as List;
+    final msgs = list.map((e) => Message.fromJson(e)).toList();
+    setState(() {
+      messages = msgs.reversed.toList();
+      if (msgs.length == 20) {
+        olderCursor = msgs.first.createdAt.toString();
+      }else {
+        hasMore = false;
+      }
+    });
+
+    await Future.delayed(Duration(milliseconds: 50));
   }
 
-  void addEventListeners(String token) {
-    print("  📝 Registering onConnect...");
-    client!.listen(
-      (message) async {
-        print("✅✅✅ ON_TEXT CALLBACK FIRED! Message: $message");
-        final body = jsonDecode(message) as Map<String, dynamic>;
-        if (body['type'] == 'heartbeat_request') {
-          print("Received pong, sending ping...");
-          client!.add("{\"type\":\"heartbeat\"}");
-        }
-        //TODO: Handle other actions
-      },
-      onDone: () async {
-        print("✅✅✅ ON_DISCONNECT CALLBACK FIRED!");
-        if (mounted) {
-          setState(() {
-            status = 'Disconnected';
-            client = null;
-          });
-        }
-      },
+  /// ----------------------------------------
+  /// Load older messages using ?before=timestamp
+  /// ----------------------------------------
+  Future<void> _loadOlderMessages() async {
+    if (isLoadingOlder || !hasMore || olderCursor == null) return;
+
+    setState(() => isLoadingOlder = true);
+
+    final url =
+        "/chat/conversations/${widget.conversationId}/messages?before=$olderCursor";
+
+    final response = await Utils.client.get(
+      url,
+      headers: HttpHeaders.rawMap({
+        "platform": "mobile",
+        "cookie": widget.sessionKey,
+      }),
     );
 
-    // client!.onConnect(() async {
-    //   print("✅✅✅ ON_CONNECT CALLBACK FIRED! ✅✅✅");
-    //   await client!.sendText("{\"type\":\"auth\", \"token\":\"$token\"}");
-    //   if (mounted) {
-    //     setState(() {
-    //       status = 'Connected';
-    //     });
-    //   }
-    // });
+    if (response.statusCode != 200) {
+      print("Failed to load older messages");
+      setState(() => isLoadingOlder = false);
+      return;
+    }
 
-    // print("  📝 Registering onText...");
-    // client!.onText((message) async {
-    //   print("✅✅✅ ON_TEXT CALLBACK FIRED! Message: $message");
-    //   final body = jsonDecode(message) as Map<String, dynamic>;
-    //   if (body['type'] == 'heartbeat_request') {
-    //     print("Received pong, sending ping...");
-    //     await client!.sendText("{\"type\":\"heartbeat\"}");
-    //   }
-    // });
+    final list = jsonDecode(response.body) as List;
+    final older = list.map((e) => Message.fromJson(e)).toList().reversed.toList();
+    if (older.length < 20) {
+      setState(() {
+        messages.insertAll(messages.length, older);
+        hasMore = false;
+        isLoadingOlder = false;
+      });
+      return;
+    }
 
-    // print("  📝 Registering onDisconnect...");
-    // client!.onDisconnect(() async {
-    //   print("✅✅✅ ON_DISCONNECT CALLBACK FIRED!");
-    //   if (mounted) {
-    //     setState(() {
-    //       status = 'Disconnected';
-    //       client = null;
-    //     });
-    //   }
-    // });
+    setState(() {
+      messages.insertAll(0, older);
+      olderCursor = older.last.createdAt.toIso8601String();
+      isLoadingOlder = false;
+    });
+  }
 
-    // print("  📝 Registering onClose...");
-    // client!.onClose((closeFrame) async {
-    //   print("✅✅✅ ON_CLOSE CALLBACK FIRED! Reason: ${closeFrame?.reason}");
-    //   if (mounted) {
-    //     setState(() {
-    //       status = 'Connection Closed: ${closeFrame?.reason}';
-    //       client = null;
-    //     });
-    //   }
-    // });
+  /// ----------------------------------------
+  /// Handle websocket incoming message
+  /// ----------------------------------------
+  void _handleIncomingMessage(dynamic data) {
+    final body = jsonDecode(data);
 
-    // print("  📝 Registering onConnectionFailed...");
-    // client!.onConnectionFailed((error) async {
-    //   print("✅✅✅ ON_CONNECTION_FAILED CALLBACK FIRED! Error: ${error.message}");
-    //   if (mounted) {
-    //     setState(() {
-    //       status = 'Connection Failed: ${error.message}';
-    //     });
-    //   }
-    // });
+    if (body["type"] == "private_message" &&
+        body["conversationId"] == widget.conversationId) {
+      final msg = Message.fromJson(body);
+
+      setState(() {
+        // insert at last
+        messages.insert(0, msg);
+      });
+
+    }
+  }
+
+  /// ----------------------------------------
+  /// Send message
+  /// ----------------------------------------
+  void _sendMessage() {
+    if (_textController.text.trim().isEmpty || widget.client == null) return;
+
+    final text = _textController.text.trim();
+
+    widget.client!.add(jsonEncode({
+      "type": "private_message",
+      "recipientId": widget.opponentId,
+      "text": text,
+    }));
+
+    // optimistic insert
+    final optimistic = Message(
+      messagesId: DateTime.now().millisecondsSinceEpoch.toString(),
+      conversationId: widget.conversationId,
+      content: text,
+      createdAt: DateTime.now(),
+      senderWorkerId: null,
+      senderEmployerId: null,
+    );
+
+    setState(() {
+      messages.insert(0, optimistic);
+    });
+
+    _textController.clear();
+  }
+
+  /// ----------------------------------------
+  /// Scroll helper
+  /// ----------------------------------------
+  void _scrollToBottom() {
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (!_scrollController.hasClients) return;
+
+      _scrollController.animateTo(
+        _scrollController.position.maxScrollExtent,
+        duration: Duration(milliseconds: 200),
+        curve: Curves.easeOut,
+      );
+    });
   }
 
   @override
+  void dispose() {
+    _textController.dispose();
+    _scrollController.dispose();
+    _streamSubscription?.cancel();
+    super.dispose();
+  }
+
+  /// ----------------------------------------
+  /// UI
+  /// ----------------------------------------
+  @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: const Text('Chatting Room')),
+      appBar: AppBar(title: Text(widget.opponentName)),
       body: Column(
         children: [
-          Text('Status: $status'),
-          ElevatedButton(
-            onPressed: () async {
-              print("🔘🔘🔘 BUTTON PRESSED! 🔘🔘🔘");
+          Expanded(
+            child: ListView.builder(
+              reverse: true,
+              controller: _scrollController,
+              itemCount: messages.length + (isLoadingOlder ? 1 : 0),
+              itemBuilder: (context, i) {
+                if (i == messages.length) {
+                  return Padding(
+                    padding: const EdgeInsets.all(16),
+                    child: Center(child: CircularProgressIndicator()),
+                  );
+                }
 
-              if (client != null) {
-                print("⚠️ Already have a client");
-                ScaffoldMessenger.of(context).showSnackBar(
-                  const SnackBar(content: Text('Already connected')),
+                final msg = messages[i];
+                final isMe = msg.senderWorkerId != null;
+
+                return Container(
+                  padding: const EdgeInsets.symmetric(
+                      horizontal: 8, vertical: 4),
+                  alignment: isMe ? Alignment.centerRight : Alignment.centerLeft,
+                  child: Container(
+                    padding: const EdgeInsets.all(12),
+                    decoration: BoxDecoration(
+                      color: isMe ? Colors.blue[100] : Colors.grey[300],
+                      borderRadius: BorderRadius.circular(16),
+                    ),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(msg.content),
+                        const SizedBox(height: 4),
+                        Text(
+                          DateFormat("yyyy-MM-dd HH:mm").format(msg.createdAt.toLocal()),
+                          style: const TextStyle(
+                            fontSize: 10,
+                            color: Colors.grey,
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
                 );
-                return;
-              }
+              },
+            ),
+          ),
+          _buildTextComposer(),
+        ],
+      ),
+    );
+  }
 
-              print("📱 Getting token...");
-              final token = await getToken();
-              print("📱 Token received: ${token.isEmpty ? 'EMPTY' : 'Got it'}");
-              if (token.isEmpty) return;
-
-              print("📱 Creating WebSocketClient...");
-              // client = WebSocketClient();
-              client =
-                  await WebSocket.connect(
-                    "wss://${Constant.backendUrl.substring(8)}/chat/ws",
-                  ).then((client) {
-                    print("✅✅✅ ON_CONNECT CALLBACK FIRED! ✅✅✅");
-                    client.add("{\"type\":\"auth\", \"token\":\"$token\"}");
-                    if (mounted) {
-                      setState(() {
-                        status = 'Connected';
-                      });
-                    }
-                    return client;
-                  });
-              print("✓ Client created");
-
-              print("📱 Adding event listeners...");
-              addEventListeners(token);
-              print("✓ Event listeners added");
-
-              // print("📱 About to call connectTo()...");
-              // await client!.connectTo(
-              //   "wss://${Constant.backendUrl.substring(8)}/chat/ws",
-              // );
-              // print("✅ connectTo() completed!");
-            },
-            child: const Text('Connect to Chat Server'),
+  Widget _buildTextComposer() {
+    return Container(
+      padding: const EdgeInsets.symmetric(horizontal: 8),
+      child: Row(
+        children: [
+          Expanded(
+            child: TextField(
+              controller: _textController,
+              decoration: const InputDecoration.collapsed(
+                hintText: 'Send a message...',
+              ),
+            ),
+          ),
+          IconButton(
+            icon: const Icon(Icons.send),
+            onPressed: _sendMessage,
           ),
         ],
       ),

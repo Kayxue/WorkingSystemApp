@@ -9,9 +9,11 @@ part of 'ConversationOpponent.dart';
 ConversationOpponent _$ConversationOpponentFromJson(
   Map<String, dynamic> json,
 ) => ConversationOpponent(
-  id: json['id'] as String?,
+  id: json['id'] as String,
   name: json['name'] as String,
-  profile: json['profile'] as Map<String, dynamic>?,
+  profilePhoto: json['profilePhoto'] == null
+      ? null
+      : ProfilePhoto.fromJson(json['profilePhoto'] as Map<String, dynamic>),
 );
 
 Map<String, dynamic> _$ConversationOpponentToJson(
@@ -19,5 +21,5 @@ Map<String, dynamic> _$ConversationOpponentToJson(
 ) => <String, dynamic>{
   'id': instance.id,
   'name': instance.name,
-  'profile': instance.profile,
+  'profilePhoto': instance.profilePhoto?.toJson(),
 };
