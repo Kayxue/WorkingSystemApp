@@ -1,5 +1,6 @@
 import 'dart:convert';
 
+import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
 import 'package:multi_dropdown/multi_dropdown.dart';
 import 'package:working_system_app/Others/Utils.dart';
@@ -77,11 +78,11 @@ class _RegisterState extends State<Register> with TickerProviderStateMixin {
     }
     try {
       final bodyJson = jsonDecode(response.body) as Map<String, dynamic>;
-      final errors = (bodyJson["errors"] as List<dynamic>)
-          .map((e) => e as Map<String, dynamic>)
-          .toList();
-      final errorMessages = errors
-          .map((e) => e["message"] as String)
+      final errors = (bodyJson["error"] as Map<String, dynamic>);
+      final errorMessages = (jsonDecode(errors["message"]) as List<dynamic>)
+          .groupListsBy((e) => e["path"][0] as String)
+          .entries
+          .map((e) => "${e.key} field:\n${e.value.map((v) => " -${v["message"]}").join("\n")}")
           .join("\n");
       return (false, errorMessages);
     } on FormatException {
