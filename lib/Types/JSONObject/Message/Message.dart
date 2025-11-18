@@ -1,4 +1,5 @@
 import 'package:json_annotation/json_annotation.dart';
+import 'package:working_system_app/Types/JSONObject/Message/ReplySnippet.dart';
 
 part 'Message.g.dart';
 
@@ -10,6 +11,8 @@ class Message {
   final String? senderEmployerId;
   final String content;
   final DateTime createdAt;
+  final String? replyToId;
+  final ReplySnippet? replySnippet;
 
   Message({
     required this.messagesId,
@@ -18,6 +21,8 @@ class Message {
     this.senderEmployerId,
     required this.content,
     required this.createdAt,
+    this.replyToId,
+    this.replySnippet,
   });
 
   factory Message.fromJson(Map<String, dynamic> json) => _$MessageFromJson(json);

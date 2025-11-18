@@ -13,6 +13,10 @@ Message _$MessageFromJson(Map<String, dynamic> json) => Message(
   senderEmployerId: json['senderEmployerId'] as String?,
   content: json['content'] as String,
   createdAt: DateTime.parse(json['createdAt'] as String),
+  replyToId: json['replyToId'] as String?,
+  replySnippet: json['replySnippet'] == null
+      ? null
+      : ReplySnippet.fromJson(json['replySnippet'] as Map<String, dynamic>),
 );
 
 Map<String, dynamic> _$MessageToJson(Message instance) => <String, dynamic>{
@@ -22,4 +26,6 @@ Map<String, dynamic> _$MessageToJson(Message instance) => <String, dynamic>{
   'senderEmployerId': instance.senderEmployerId,
   'content': instance.content,
   'createdAt': instance.createdAt.toIso8601String(),
+  'replyToId': instance.replyToId,
+  'replySnippet': instance.replySnippet,
 };
