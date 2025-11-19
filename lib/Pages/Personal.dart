@@ -72,6 +72,13 @@ class _PersonalState extends State<Personal> {
         isLoading = false;
       });
     });
+    Utils.fetchUnread(widget.sessionKey).then((unreadStates) {
+      if (mounted) {
+        setState(() {
+          this.unreadStates = unreadStates;
+        });
+      }
+    });
   }
 
   Future<void> logout() async {
