@@ -1,6 +1,5 @@
 import 'dart:async';
 import 'dart:convert';
-import 'dart:io';
 import 'package:intl/intl.dart';
 import 'package:rhttp/rhttp.dart';
 import 'package:flutter/material.dart';
@@ -10,13 +9,14 @@ import 'package:working_system_app/mixins/ChatWebSocketMixin.dart';
 import 'package:working_system_app/Pages/GigDetail.dart';
 import 'package:working_system_app/Others/Utils.dart';
 import 'package:working_system_app/Types/JSONObject/Message/Message.dart';
+import 'package:working_system_app/src/rust/api/websocket.dart';
 
 class ChattingRoom extends StatefulWidget {
   final String sessionKey;
   final String conversationId;
   final String opponentName;
   final String opponentId;
-  final WebSocket? client;
+  final WebSocketClient? client;
   final Stream<dynamic>? stream;
 
   const ChattingRoom({
@@ -48,7 +48,7 @@ class _ChattingRoomState extends State<ChattingRoom> with ChatWebSocketMixin {
   StreamSubscription? _streamSubscription;
 
   // Getter for the active WebSocket client (prefer widget's client over mixin's)
-  WebSocket? get _activeClient => widget.client ?? chatWebSocket;
+  WebSocketClient? get _activeClient => widget.client ?? chatWebSocket;
   // Getter for the active Stream (prefer widget's stream over mixin's)
   Stream<dynamic>? get _activeStream => widget.stream ?? chatStream;
 
@@ -236,7 +236,7 @@ class _ChattingRoomState extends State<ChattingRoom> with ChatWebSocketMixin {
         "replyToId": _replyingToMessage!.messagesId,
     };
 
-    _activeClient!.add(jsonEncode(message)); // Use _activeClient
+    _activeClient!.sendText(jsonEncode(message)); // Use _activeClient
 
     _textController.clear();
 
@@ -620,7 +620,7 @@ class _ChattingRoomState extends State<ChattingRoom> with ChatWebSocketMixin {
       "recipientId": widget.opponentId,
     };
 
-    widget.client!.add(jsonEncode(message));
+    widget.client!.sendText(jsonEncode(message));
   }
 
   Future<void> _deleteMessage(String messageId) async {

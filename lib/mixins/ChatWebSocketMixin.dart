@@ -1,16 +1,17 @@
 import 'dart:async';
 import 'dart:convert';
-import 'dart:io';
 
-import 'package:rhttp/rhttp.dart';
 import 'package:flutter/material.dart';
+import 'package:rhttp/rhttp.dart';
 import 'package:working_system_app/Others/Constant.dart';
 import 'package:working_system_app/Others/Utils.dart';
+import 'package:working_system_app/src/rust/api/websocket.dart';
 
 /// Mixin to handle common WebSocket logic for chat functionality
 /// Used by both ConversationList and ChattingRoom
 mixin ChatWebSocketMixin<T extends StatefulWidget> on State<T> {
-  WebSocket? chatWebSocket;
+  WebSocketClient? chatWebSocket;
+  String chatStatus = 'Disconnected';
   StreamController<dynamic>? _chatStreamController;
   StreamSubscription? _chatStreamSubscription;
 
@@ -60,21 +61,75 @@ mixin ChatWebSocketMixin<T extends StatefulWidget> on State<T> {
     try {
       _chatStreamController = StreamController<dynamic>.broadcast();
 
-      chatWebSocket = await WebSocket.connect(
+      // Create the Rust WebSocket client
+      chatWebSocket = WebSocketClient();
+
+      // Set up message handler before connecting
+      chatWebSocket!.onText((text) async {
+        debugPrint('📨 Received message: $text');
+        _chatStreamController?.add(text);
+      });
+
+      // Set up connection handler
+      chatWebSocket!.onConnect(() async {
+        debugPrint('✅ WebSocket connected');
+        // Send authentication message after connection
+        chatWebSocket!.sendText(jsonEncode({"type": "auth", "token": token}));
+
+        if (mounted) {
+          setState(() {
+            chatStatus = 'Connected';
+          });
+        }
+
+        // Set up listeners after connection is established
+        _setupChatWebSocketListeners();
+      });
+
+      // Set up close handler
+      chatWebSocket!.onClose((frame) async {
+        debugPrint('❌ WebSocket closed: ${frame?.reason ?? "Unknown reason"}');
+        if (mounted) {
+          setState(() {
+            chatStatus = 'Disconnected';
+            chatWebSocket = null;
+          });
+        }
+      });
+
+      // Set up disconnect handler
+      chatWebSocket!.onDisconnect(() async {
+        debugPrint('🔌 WebSocket disconnected');
+        if (mounted) {
+          setState(() {
+            chatStatus = 'Disconnected';
+            chatWebSocket = null;
+          });
+        }
+      });
+
+      // Set up error handler
+      chatWebSocket!.onConnectionFailed((error) async {
+        debugPrint('⚠️ WebSocket connection failed: ${error.message}');
+        if (mounted) {
+          setState(() {
+            chatStatus = 'Error';
+            chatWebSocket = null;
+          });
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(
+              content: Text('Failed to connect to chat: ${error.message}'),
+            ),
+          );
+        }
+      });
+
+      // Connect to the WebSocket server
+      await chatWebSocket!.connectTo(
         "wss://${Constant.backendUrl.substring(8)}/chat/ws",
       );
 
-      // Send authentication message
-      chatWebSocket!.add(jsonEncode({"type": "auth", "token": token}));
-
-      if (mounted) {
-        setState(() {
-          // WebSocket connected
-        });
-      }
-
-      // Set up listeners
-      _setupChatWebSocketListeners();
+      debugPrint('🔄 Connecting to chat WebSocket...');
     } catch (e) {
       debugPrint('Error connecting to chat WebSocket: $e');
       if (mounted) {
@@ -89,33 +144,14 @@ mixin ChatWebSocketMixin<T extends StatefulWidget> on State<T> {
   void _setupChatWebSocketListeners() {
     if (chatWebSocket == null || _chatStreamController == null) return;
 
-    chatWebSocket!.listen(
-      (message) {
-        _chatStreamController?.add(message);
-      },
-      onDone: () {
-        if (mounted) {
-          setState(() {
-            chatWebSocket = null;
-          });
-        }
-        _chatStreamController?.close();
-        _chatStreamController = null;
-      },
-      onError: (error) {
-        debugPrint("WebSocket error: $error");
-        _chatStreamController?.addError(error);
-      },
-    );
-
-    // Listen to the stream for heartbeat handling
+    // Listen to the stream for heartbeat handling and message processing
     _chatStreamSubscription = _chatStreamController?.stream.listen((message) {
       try {
         final body = jsonDecode(message) as Map<String, dynamic>;
 
         // Handle heartbeat
         if (body['type'] == 'heartbeat_request') {
-          chatWebSocket?.add(jsonEncode({"type": "heartbeat"}));
+          chatWebSocket?.sendText(jsonEncode({"type": "heartbeat"}));
         }
 
         // Call the custom message handler
@@ -146,7 +182,7 @@ mixin ChatWebSocketMixin<T extends StatefulWidget> on State<T> {
     _chatStreamSubscription?.cancel();
     _chatStreamSubscription = null;
 
-    chatWebSocket?.close();
+    // The Rust WebSocket will automatically close via Drop trait
     chatWebSocket = null;
 
     _chatStreamController?.close();

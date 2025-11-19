@@ -107,14 +107,6 @@ impl WebSocketClient {
             future.await.ok();
         });
     }
-    
-    /// Quick connect method - creates and connects in one step
-    #[flutter_rust_bridge::frb(positional)]
-    pub async fn connect(url: String) -> WebSocketClient {
-        let client = Self::new();
-        client.connect_to(url).await;
-        client
-    }
 
     #[flutter_rust_bridge::frb(positional,sync)]
     pub fn on_text(&self, func: impl Fn(String) -> DartFnFuture<()> + Send + Sync + 'static) {
@@ -160,26 +152,11 @@ impl WebSocketClient {
         info!("🦀 [Rust] on_connect callback registered successfully");
     }
 
-    #[flutter_rust_bridge::frb(positional)]
-    pub async fn send_text(&self, text: String) {
+    #[flutter_rust_bridge::frb(positional,sync)]
+    pub fn send_text(&self, text: String) {
         if let Some(handle) = self.handle.read().as_ref() {
             handle.text(text.as_str()).ok();
         }
-    }
-    
-    /// Debug method to check which callbacks are registered
-    #[flutter_rust_bridge::frb(sync)]
-    pub fn get_listeners_status(&self) -> String {
-        let callbacks = self.callbacks.read();
-        format!(
-            "onConnect: {}, onText: {}, onBinary: {}, onClose: {}, onDisconnect: {}, onConnectionFailed: {}",
-            if callbacks.on_connect.is_some() { "✓" } else { "✗" },
-            if callbacks.on_text.is_some() { "✓" } else { "✗" },
-            if callbacks.on_binary.is_some() { "✓" } else { "✗" },
-            if callbacks.on_close.is_some() { "✓" } else { "✗" },
-            if callbacks.on_disconnect.is_some() { "✓" } else { "✗" },
-            if callbacks.on_connection_failed.is_some() { "✓" } else { "✗" },
-        )
     }
 }
 
