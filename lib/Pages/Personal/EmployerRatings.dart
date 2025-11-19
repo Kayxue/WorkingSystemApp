@@ -5,9 +5,10 @@ import 'package:animated_read_more_text/animated_read_more_text.dart';
 import 'package:apple_like_avatar_generator/apple_like_avatar_generator.dart';
 import 'package:flutter/material.dart';
 import 'package:infinite_scroll_pagination/infinite_scroll_pagination.dart';
+import 'package:intl/intl.dart';
 import 'package:working_system_app/Others/Utils.dart';
-import 'package:working_system_app/Types/JSONObject/GivenReviewReturn.dart';
-import 'package:working_system_app/Types/JSONObject/Ratings.dart';
+import 'package:working_system_app/Types/JSONObject/EmployerRating.dart';
+import 'package:working_system_app/Types/JSONObject/EmployerReviewReturn.dart';
 import 'package:working_system_app/Types/JSONObject/WorkerProfile.dart';
 
 class EmployerRatings extends StatefulWidget {
@@ -25,7 +26,7 @@ class EmployerRatings extends StatefulWidget {
 }
 
 class _EmployerRatingsState extends State<EmployerRatings> {
-  late final _pagingController = PagingController<int, Ratings>(
+  late final _pagingController = PagingController<int, EmployerRating>(
     getNextPageKey: (state) =>
         state.lastPageIsEmpty ? null : state.nextIntPageKey,
     fetchPage: (pageKey) async {
@@ -34,7 +35,7 @@ class _EmployerRatingsState extends State<EmployerRatings> {
     },
   );
 
-  Future<List<Ratings>> fetchWorks({int page = 1}) async {
+  Future<List<EmployerRating>> fetchWorks({int page = 1}) async {
     final response = await Utils.client.get(
       "/rating/received-ratings/worker?page=$page",
       headers: .rawMap({"platform": "mobile", "cookie": widget.sessionKey}),
@@ -47,7 +48,7 @@ class _EmployerRatingsState extends State<EmployerRatings> {
       return [];
     }
     final respond = jsonDecode(response.body) as Map<String, dynamic>;
-    final parsed = GivenReviewReturn.fromJson(respond);
+    final parsed = EmployerReviewReturn.fromJson(respond);
     return parsed.ratings;
   }
 
@@ -178,65 +179,60 @@ class _EmployerRatingsState extends State<EmployerRatings> {
                 child: RefreshIndicator(
                   onRefresh: () =>
                       Future.sync(() => _pagingController.refresh()),
-                  child: PagedListView<int, Ratings>(
+                  child: PagedListView<int, EmployerRating>(
                     state: state,
                     fetchNextPage: fetchNextPage,
                     builderDelegate: PagedChildBuilderDelegate(
                       itemBuilder: (context, item, index) => Card(
-                        clipBehavior: .hardEdge,
-                        child: InkWell(
-                          splashColor: Colors.grey.withAlpha(30),
-                          onTap: () {},
-                          child: Column(
-                            crossAxisAlignment: .start,
-                            children: [
-                              ListTile(
-                                title: Text(item.employer.name),
-                                subtitle: Text(
-                                  "For gig: ${item.gig.title}",
-                                  style: TextStyle(
-                                    fontSize: 12,
-                                    color: Colors.grey.shade700,
-                                  ),
+                        child: Column(
+                          crossAxisAlignment: .start,
+                          children: [
+                            ListTile(
+                              title: Text(item.name),
+                              subtitle: Text(
+                                "Created at: ${DateFormat.yMd().format(item.createdAt)} ${DateFormat.Hms().format(item.createdAt)}",
+                                style: TextStyle(
+                                  fontSize: 12,
+                                  color: Colors.grey.shade700,
                                 ),
-                                trailing: Row(
-                                  mainAxisSize: .min,
-                                  children: [
-                                    Text(
-                                      item.ratingValue.toStringAsFixed(1),
-                                      style: TextStyle(
-                                        fontSize: 20,
-                                        color: Colors.amber,
-                                      ),
-                                    ),
-                                    SizedBox(width: 4),
-                                    Icon(
-                                      Icons.star,
+                              ),
+                              trailing: Row(
+                                mainAxisSize: .min,
+                                children: [
+                                  Text(
+                                    item.ratingValue.toStringAsFixed(1),
+                                    style: TextStyle(
+                                      fontSize: 20,
                                       color: Colors.amber,
-                                      size: 20,
                                     ),
-                                  ],
-                                ),
-                              ),
-                              Padding(
-                                padding: const .only(
-                                  left: 16,
-                                  right: 16,
-                                  bottom: 16,
-                                ),
-                                child: AnimatedReadMoreText(
-                                  item.comment ?? "No comments provided.",
-                                  maxLines: 2,
-                                  textStyle: TextStyle(
-                                    fontSize: 16,
-                                    color: item.comment != null
-                                        ? Colors.black
-                                        : Colors.grey,
                                   ),
+                                  SizedBox(width: 4),
+                                  Icon(
+                                    Icons.star,
+                                    color: Colors.amber,
+                                    size: 20,
+                                  ),
+                                ],
+                              ),
+                            ),
+                            Padding(
+                              padding: const .only(
+                                left: 16,
+                                right: 16,
+                                bottom: 16,
+                              ),
+                              child: AnimatedReadMoreText(
+                                item.comment ?? "No comments provided.",
+                                maxLines: 2,
+                                textStyle: TextStyle(
+                                  fontSize: 16,
+                                  color: item.comment != null
+                                      ? Colors.black
+                                      : Colors.grey,
                                 ),
                               ),
-                            ],
-                          ),
+                            ),
+                          ],
                         ),
                       ),
                     ),

@@ -141,54 +141,53 @@ class _GigDetailState extends State<GigDetail> {
                 children: [
                   GigInformation(gigdetail: gigdetail!),
                   const SizedBox(height: 16),
-
                   Row(
                     children: [
                       Expanded(
-                        flex:1,
-                        child:Container(
-                          padding: const.only(right: 4),
-                          height:40,
+                        flex: 1,
+                        child: Container(
+                          padding: const .only(right: 4),
+                          height: 40,
                           child: FilledButton(
-                          onPressed: widget.sessionKey.isEmpty
-                              ? null
-                              : () => _startPrivateChat(),
-                          child: const Text("Chat"),
+                            onPressed: widget.sessionKey.isEmpty
+                                ? null
+                                : () => _startPrivateChat(),
+                            child: const Text("Chat"),
                           ),
                         ),
                       ),
                       Expanded(
-                        flex:3,
-                        child:Container(
-                          padding: const.only(left: 4),
-                          height:40,
+                        flex: 3,
+                        child: Container(
+                          padding: const .only(left: 4),
+                          height: 40,
                           child: FilledButton(
                             onPressed:
                                 widget.sessionKey.isEmpty ||
-                                        gigdetail!.hasConflict == true ||
-                                        gigdetail!.applicationStatus ==
-                                            'pending_employer_review' ||
-                                        gigdetail!.applicationStatus ==
-                                            'pending_worker_confirmation'
-                                    ? null
-                                    : () async {
-                                        await sendApplication();
-                                        if (!context.mounted) return;
-                                        Navigator.of(context).pop();
-                                      },
+                                    gigdetail!.hasConflict == true ||
+                                    gigdetail!.applicationStatus ==
+                                        'pending_employer_review' ||
+                                    gigdetail!.applicationStatus ==
+                                        'pending_worker_confirmation'
+                                ? null
+                                : () async {
+                                    await sendApplication();
+                                    if (!context.mounted) return;
+                                    Navigator.of(context).pop();
+                                  },
                             child: Text(
                               widget.sessionKey.isEmpty
                                   ? "Please login to apply to this gig"
                                   : gigdetail!.applicationStatus ==
-                                              'pending_employer_review' ||
-                                          gigdetail!.applicationStatus ==
-                                              'pending_worker_confirmation' ||
-                                          gigdetail!.applicationStatus ==
-                                              'worker_confirmed'
-                                      ? "You have already applied to this job"
-                                      : gigdetail!.hasConflict == true
-                                          ? "There is a confirm job conflict with this job"
-                                          : "Apply",
+                                            'pending_employer_review' ||
+                                        gigdetail!.applicationStatus ==
+                                            'pending_worker_confirmation' ||
+                                        gigdetail!.applicationStatus ==
+                                            'worker_confirmed'
+                                  ? "You have already applied to this job"
+                                  : gigdetail!.hasConflict == true
+                                  ? "There is a confirm job conflict with this job"
+                                  : "Apply",
                             ),
                           ),
                         ),
@@ -205,7 +204,10 @@ class _GigDetailState extends State<GigDetail> {
   Future<void> _startPrivateChat() async {
     final response = await Utils.client.post(
       "/gig/${widget.gigId}",
-      headers: HttpHeaders.rawMap({"platform": "mobile", "cookie": widget.sessionKey}),
+      headers: HttpHeaders.rawMap({
+        "platform": "mobile",
+        "cookie": widget.sessionKey,
+      }),
     );
 
     if (!mounted) return;
@@ -227,7 +229,9 @@ class _GigDetailState extends State<GigDetail> {
       );
     } else {
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('Failed to start private chat: ${response.body}')),
+        SnackBar(
+          content: Text('Failed to start private chat: ${response.body}'),
+        ),
       );
     }
   }

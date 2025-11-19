@@ -128,27 +128,27 @@ class _GigDetailsNoButtonState extends State<GigDetailsNoButton> {
               ),
             )
           : Padding(
-              padding: const EdgeInsets.only(left: 16, right: 16),
+              padding: const .only(left: 16, right: 16),
               child: Column(
                 children: [
                   GigInformation(gigdetail: gigdetail!),
-                  SizedBox(height: 32),
+                  SizedBox(height: 16),
                   Row(
                     children:[
                       Expanded(
-                        child: FilledButton(
-                          style: FilledButton.styleFrom(
-                            minimumSize: Size(double.infinity, 50),
+                        child: SizedBox(
+                          height: 40,
+                          child: FilledButton(
+                            onPressed: widget.sessionKey.isEmpty
+                                ? null
+                                : () => _startPrivateChat(),
+                            child: const Text("Chat"),
                           ),
-                          onPressed: widget.sessionKey.isEmpty
-                              ? null
-                              : () => _startPrivateChat(),
-                          child: const Text("Chat"),
                         ),
                       )
                     ],
                   ),
-                  SizedBox(height: 16),
+                  SizedBox(height: 32),
                 ],
               ),
             ),
