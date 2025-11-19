@@ -139,8 +139,11 @@ class _ApplicationGigDetailsState extends State<ApplicationGigDetails> {
 
   Future<void> _startPrivateChat() async {
     final response = await Utils.client.post(
-      "/gig/${widget.gigId}",
-      headers: HttpHeaders.rawMap({"platform": "mobile", "cookie": widget.sessionKey}),
+      "/chat/gig/${widget.gigId}",
+      headers: HttpHeaders.rawMap({
+        "platform": "mobile",
+        "cookie": widget.sessionKey,
+      }),
     );
 
     if (!mounted) return;
@@ -162,11 +165,13 @@ class _ApplicationGigDetailsState extends State<ApplicationGigDetails> {
       );
     } else {
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('Failed to start private chat: ${response.body}')),
+        SnackBar(
+          content: Text('Failed to start private chat: ${response.body}'),
+        ),
       );
     }
   }
-  
+
   @override
   void initState() {
     super.initState();
@@ -181,48 +186,45 @@ class _ApplicationGigDetailsState extends State<ApplicationGigDetails> {
 
   Widget _buildActionButtons() {
     if (widget.status == 'pending_employer_review') {
-      return Row (
-        children:[
+      return Row(
+        children: [
           Expanded(
-            flex:1,
-            child: Padding (
-              padding: const.only(right: 8),
-              child:ElevatedButton(
+            flex: 1,
+            child: Padding(
+              padding: const .only(right: 8),
+              child: ElevatedButton(
                 onPressed: () => _startPrivateChat(),
                 style: ElevatedButton.styleFrom(
                   minimumSize: Size.fromHeight(50),
                 ),
                 child: const Text('聊天', style: TextStyle(fontSize: 16)),
-              )
-            )
-          ),
-          Expanded (
-            flex:3,
-            child:ElevatedButton(
-              onPressed: () => _withdrawApplication(widget.applicationId),
-              style: ElevatedButton.styleFrom(
-                minimumSize: Size.fromHeight(50),
               ),
+            ),
+          ),
+          Expanded(
+            flex: 3,
+            child: ElevatedButton(
+              onPressed: () => _withdrawApplication(widget.applicationId),
+              style: ElevatedButton.styleFrom(minimumSize: Size.fromHeight(50)),
               child: const Text(
                 '取消申請',
                 style: TextStyle(fontWeight: .bold, fontSize: 16),
               ),
-            )
+            ),
           ),
-        ]
+        ],
       );
     } else if (widget.status == 'pending_worker_confirmation') {
       return Row(
         mainAxisAlignment: .spaceEvenly,
         children: [
           ElevatedButton(
-            onPressed: () =>
-                _startPrivateChat(),
+            onPressed: () => _startPrivateChat(),
             style: ElevatedButton.styleFrom(
               fixedSize: Size(MediaQuery.of(context).size.width * 0.9, 50),
             ),
             child: const Text('聊天', style: TextStyle(fontSize: 16)),
-          ),  
+          ),
           ElevatedButton(
             onPressed: () =>
                 _handleApplicationAction(widget.applicationId, 'reject'),
@@ -265,22 +267,22 @@ class _ApplicationGigDetailsState extends State<ApplicationGigDetails> {
       return Row(
         children: [
           Expanded(
-            flex:1,
+            flex: 1,
             child: Padding(
-              padding: const.only(right: 8),
-              child:ElevatedButton(
+              padding: const .only(right: 8),
+              child: ElevatedButton(
                 onPressed: () => _startPrivateChat(),
                 style: ElevatedButton.styleFrom(
                   minimumSize: Size.fromHeight(50),
                   // fixedSize: Size(MediaQuery.of(context).size.width * 0.4, 50),
                 ),
                 child: const Text('聊天', style: TextStyle(fontSize: 16)),
-              )
-            )
+              ),
+            ),
           ),
           Expanded(
-            flex:3,
-            child:ElevatedButton(
+            flex: 3,
+            child: ElevatedButton(
               onPressed: () => _withdrawApplication(widget.applicationId),
               style: ElevatedButton.styleFrom(
                 minimumSize: Size.fromHeight(50),
@@ -296,7 +298,7 @@ class _ApplicationGigDetailsState extends State<ApplicationGigDetails> {
               }, style: TextStyle(color: Colors.grey, fontSize: 16)),
             ),
           ),
-        ]
+        ],
       );
     }
   }

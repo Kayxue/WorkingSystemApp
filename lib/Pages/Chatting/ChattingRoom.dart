@@ -6,7 +6,7 @@ import 'package:rhttp/rhttp.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
-import 'package:working_system_app/Others/Constant.dart';
+import 'package:working_system_app/mixins/ChatWebSocketMixin.dart';
 import 'package:working_system_app/Pages/GigDetail.dart';
 import 'package:working_system_app/Others/Utils.dart';
 import 'package:working_system_app/Types/JSONObject/Message/Message.dart';
@@ -33,7 +33,7 @@ class ChattingRoom extends StatefulWidget {
   State<ChattingRoom> createState() => _ChattingRoomState();
 }
 
-class _ChattingRoomState extends State<ChattingRoom> {
+class _ChattingRoomState extends State<ChattingRoom> with ChatWebSocketMixin {
   final TextEditingController _textController = TextEditingController();
   final ScrollController _scrollController = ScrollController();
 
@@ -45,16 +45,15 @@ class _ChattingRoomState extends State<ChattingRoom> {
   String? _activeMessageId;
   String resetKey = "";
 
-  // Local WebSocket and StreamController if we are not getting them from ConversationList
-  WebSocket? _localClient;
-  StreamController<dynamic>? _localStreamController;
   StreamSubscription? _streamSubscription;
 
-  // Getter for the active WebSocket client
-  WebSocket? get _activeClient => widget.client ?? _localClient;
-  // Getter for the active Stream
-  Stream<dynamic>? get _activeStream =>
-      widget.stream ?? _localStreamController?.stream;
+  // Getter for the active WebSocket client (prefer widget's client over mixin's)
+  WebSocket? get _activeClient => widget.client ?? chatWebSocket;
+  // Getter for the active Stream (prefer widget's stream over mixin's)
+  Stream<dynamic>? get _activeStream => widget.stream ?? chatStream;
+
+  @override
+  String get sessionKey => widget.sessionKey;
 
   @override
   void initState() {
@@ -62,7 +61,10 @@ class _ChattingRoomState extends State<ChattingRoom> {
 
     // Initialize local WebSocket if not provided by widget
     if (widget.client == null) {
-      _initializeLocalWebSocket();
+      connectChatWebSocket();
+    } else {
+      // If using parent's WebSocket, set up listener immediately
+      _streamSubscription = _activeStream?.listen(_handleIncomingMessage);
     }
 
     _loadInitial();
@@ -74,9 +76,6 @@ class _ChattingRoomState extends State<ChattingRoom> {
         _loadOlderMessages();
       }
     });
-
-    // websocket new messages
-    _streamSubscription = _activeStream?.listen(_handleIncomingMessage);
 
     markConversationAsRead();
   }
@@ -91,77 +90,20 @@ class _ChattingRoomState extends State<ChattingRoom> {
     );
   }
 
-  // --- WebSocket Logic ---
-  Future<String> _getToken() async {
-    var response = await Utils.client.get(
-      "/chat/ws-token",
-      headers: HttpHeaders.rawMap({
-        "platform": "mobile",
-        "cookie": widget.sessionKey,
-      }),
-    );
-    if (!mounted) return '';
-    if (response.statusCode != 200) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Failed to get WebSocket token')),
-      );
+  @override
+  void onWebSocketConnected() {
+    // When local WebSocket is connected, set up stream listener
+    if (widget.client == null) {
+      _streamSubscription?.cancel();
+      _streamSubscription = chatStream?.listen(_handleIncomingMessage);
     }
-    final body = jsonDecode(response.body) as Map<String, dynamic>;
-    return body['token'] as String;
   }
 
-  void _addEventListeners(String token) {
-    _localClient!.listen(
-      (message) {
-        _localStreamController?.add(message);
-      },
-      onDone: () {
-        if (mounted) {
-          setState(() {
-            _localClient = null; // Clear local client on disconnect
-          });
-        }
-        _localStreamController?.close();
-      },
-      onError: (error) {
-        _localStreamController?.addError(error);
-      },
-    );
-
-    // Listen to the local broadcast stream for internal logic (heartbeat and list updates)
-    _localStreamController?.stream.listen((message) {
-      final body = jsonDecode(message) as Map<String, dynamic>;
-      if (body['type'] == 'heartbeat_request') {
-        _localClient!.add("{\"type\":\"heartbeat\"}");
-      }
-      // Other global events could be handled here if needed
-    });
-  }
-
-  void _initializeLocalWebSocket() async {
-    if (_localClient != null) {
-      return;
-    }
-
-    final token = await _getToken();
-    if (token.isEmpty) return;
-
-    _localStreamController = StreamController<dynamic>.broadcast();
-
-    _localClient =
-        await WebSocket.connect(
-          "wss://${Constant.backendUrl.substring(8)}/chat/ws",
-        ).then((client) {
-          client.add("{\"type\":\"auth\", \"token\":\"$token\"}");
-          if (mounted) {
-            setState(() {
-              // Update status if needed, but this room is isolated
-            });
-          }
-          return client;
-        });
-
-    _addEventListeners(token);
+  // Override to handle specific message types for this widget
+  @override
+  void onChatMessage(Map<String, dynamic> message) {
+    // Additional message handling specific to ChattingRoom can go here
+    // The mixin already handles heartbeat
   }
 
   /// ----------------------------------------
@@ -299,6 +241,9 @@ class _ChattingRoomState extends State<ChattingRoom> {
     _textController.clear();
 
     _scrollToBottom();
+
+    // Mark conversation as read after sending
+    markConversationAsRead();
   }
 
   /// ----------------------------------------
@@ -331,8 +276,10 @@ class _ChattingRoomState extends State<ChattingRoom> {
     _textController.dispose();
     _scrollController.dispose();
     _streamSubscription?.cancel();
-    _localClient?.close(); // Close local client if it was created
-    _localStreamController?.close(); // Close local stream controller
+    // Close local WebSocket if it was created by this widget
+    if (widget.client == null) {
+      closeChatWebSocket();
+    }
     super.dispose();
   }
 

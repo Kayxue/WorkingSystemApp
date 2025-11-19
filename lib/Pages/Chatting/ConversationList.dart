@@ -1,11 +1,10 @@
 import 'dart:async';
 import 'dart:convert';
-import 'dart:io';
 
 import 'package:rhttp/rhttp.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
-import 'package:working_system_app/Others/Constant.dart';
+import 'package:working_system_app/mixins/ChatWebSocketMixin.dart';
 import 'package:working_system_app/Others/Utils.dart';
 import 'package:working_system_app/Pages/Chatting/ChattingRoom.dart';
 import 'package:working_system_app/Types/JSONObject/Conversation/ConversationChat.dart';
@@ -20,13 +19,10 @@ class ConversationList extends StatefulWidget {
   State<ConversationList> createState() => _ConversationListState();
 }
 
-class _ConversationListState extends State<ConversationList> {
-  WebSocket? client;
+class _ConversationListState extends State<ConversationList>
+    with ChatWebSocketMixin {
   String status = 'Disconnected';
   String? _activeConversationId;
-
-  final StreamController<dynamic> _streamController =
-      StreamController<dynamic>.broadcast();
 
   final ScrollController _scrollController = ScrollController();
 
@@ -36,9 +32,12 @@ class _ConversationListState extends State<ConversationList> {
   bool hasMore = true;
 
   @override
+  String get sessionKey => widget.sessionKey;
+
+  @override
   void initState() {
     super.initState();
-    _connectToWebSocket();
+    connectChatWebSocket();
     _loadMore(); // load page 0
 
     _scrollController.addListener(() {
@@ -50,9 +49,16 @@ class _ConversationListState extends State<ConversationList> {
   }
 
   @override
+  void onWebSocketConnected() {
+    // Update connection status when WebSocket is ready
+    if (mounted) {
+      setState(() => status = 'Connected');
+    }
+  }
+
+  @override
   void dispose() {
-    client?.close();
-    _streamController.close();
+    closeChatWebSocket();
     _scrollController.dispose();
     super.dispose();
   }
@@ -95,69 +101,11 @@ class _ConversationListState extends State<ConversationList> {
     return parsed.conversations;
   }
 
-  /// -------------------------
-  /// WebSocket Setup
-  /// -------------------------
-  Future<String> getToken() async {
-    final response = await Utils.client.get(
-      "/chat/ws-token",
-      headers: HttpHeaders.rawMap({
-        "platform": "mobile",
-        "cookie": widget.sessionKey,
-      }),
-    );
-
-    if (response.statusCode != 200) return '';
-
-    final body = jsonDecode(response.body);
-    return body["token"];
-  }
-
-  void _connectToWebSocket() async {
-    if (client != null) return;
-
-    final token = await getToken();
-    if (token.isEmpty) return;
-
-    client =
-        await WebSocket.connect(
-          "wss://${Constant.backendUrl.substring(8)}/chat/ws",
-        ).then((ws) {
-          ws.add(jsonEncode({"type": "auth", "token": token}));
-          if (!mounted) return ws;
-          setState(() => status = "Connected");
-          return ws;
-        });
-
-    client!.listen(
-      (data) {
-        if (!_streamController.isClosed) {
-          _streamController.add(data);
-        }
-      },
-      onDone: () {
-        if (!mounted) return;
-        setState(() {
-          status = 'Disconnected';
-          client = null;
-        });
-      },
-      onError: (e) => debugPrint("WebSocket error: $e"),
-    );
-  }
-
-  /// -------------------------
-  /// Handle WebSocket Messages
-  /// -------------------------
-  void _handleWSMessage(dynamic raw) {
-    final body = jsonDecode(raw);
-
-    if (body["type"] == "heartbeat_request") {
-      client!.add("{\"type\":\"heartbeat\"}");
-    }
-
-    if (body["type"] == "private_message") {
-      _updateConversation(body);
+  /// Override to handle chat messages for conversation list
+  @override
+  void onChatMessage(Map<String, dynamic> message) {
+    if (message["type"] == "private_message") {
+      _updateConversation(message);
     }
   }
 
@@ -422,8 +370,8 @@ class _ConversationListState extends State<ConversationList> {
                         conversationId: item.conversationId,
                         opponentName: item.opponent.name,
                         opponentId: item.opponent.id,
-                        client: client,
-                        stream: _streamController.stream,
+                        client: chatWebSocket,
+                        stream: chatStream,
                       ),
                     ),
                   );

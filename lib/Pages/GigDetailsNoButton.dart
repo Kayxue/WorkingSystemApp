@@ -71,8 +71,11 @@ class _GigDetailsNoButtonState extends State<GigDetailsNoButton> {
 
   Future<void> _startPrivateChat() async {
     final response = await Utils.client.post(
-      "/gig/${widget.gigId}",
-      headers: HttpHeaders.rawMap({"platform": "mobile", "cookie": widget.sessionKey}),
+      "/chat/gig/${widget.gigId}",
+      headers: HttpHeaders.rawMap({
+        "platform": "mobile",
+        "cookie": widget.sessionKey,
+      }),
     );
 
     if (!mounted) return;
@@ -94,7 +97,9 @@ class _GigDetailsNoButtonState extends State<GigDetailsNoButton> {
       );
     } else {
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('Failed to start private chat: ${response.body}')),
+        SnackBar(
+          content: Text('Failed to start private chat: ${response.body}'),
+        ),
       );
     }
   }
@@ -134,7 +139,7 @@ class _GigDetailsNoButtonState extends State<GigDetailsNoButton> {
                   GigInformation(gigdetail: gigdetail!),
                   SizedBox(height: 16),
                   Row(
-                    children:[
+                    children: [
                       Expanded(
                         child: SizedBox(
                           height: 40,
@@ -145,7 +150,7 @@ class _GigDetailsNoButtonState extends State<GigDetailsNoButton> {
                             child: const Text("Chat"),
                           ),
                         ),
-                      )
+                      ),
                     ],
                   ),
                   SizedBox(height: 32),

@@ -203,7 +203,7 @@ class _GigDetailState extends State<GigDetail> {
 
   Future<void> _startPrivateChat() async {
     final response = await Utils.client.post(
-      "/gig/${widget.gigId}",
+      "/chat/gig/${widget.gigId}",
       headers: HttpHeaders.rawMap({
         "platform": "mobile",
         "cookie": widget.sessionKey,
