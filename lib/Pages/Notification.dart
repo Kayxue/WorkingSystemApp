@@ -18,7 +18,8 @@ class NotificationPage extends StatefulWidget {
   State<NotificationPage> createState() => _NotificationPageState();
 }
 
-class _NotificationPageState extends State<NotificationPage> with PeriodicTaskMixin{
+class _NotificationPageState extends State<NotificationPage>
+    with PeriodicTaskMixin {
   final ScrollController _scrollController = ScrollController();
   bool _isLoading = false;
   bool _hasMore = true;
@@ -41,7 +42,7 @@ class _NotificationPageState extends State<NotificationPage> with PeriodicTaskMi
 
   @override
   Duration get interval => const Duration(seconds: 5);
-  
+
   @override
   void onTick() {
     Utils.fetchUnread(widget.sessionKey).then((unreadStates) {
@@ -197,6 +198,15 @@ class _NotificationPageState extends State<NotificationPage> with PeriodicTaskMi
                   MessageButton(
                     sessionKey: widget.sessionKey,
                     unreadMessages: unreadStates?.unreadMessages,
+                    refetchUnread: () {
+                      Utils.fetchUnread(widget.sessionKey).then((unreadStates) {
+                        if (mounted) {
+                          setState(() {
+                            this.unreadStates = unreadStates;
+                          });
+                        }
+                      });
+                    },
                   ),
                 ],
               ),

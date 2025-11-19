@@ -21,7 +21,7 @@ class Schedule extends StatefulWidget {
   State<Schedule> createState() => _ScheduleState();
 }
 
-class _ScheduleState extends State<Schedule> with PeriodicTaskMixin{
+class _ScheduleState extends State<Schedule> with PeriodicTaskMixin {
   List<ApplicationGig>? previousMonth;
   List<ApplicationGig>? thisMonth;
   List<ApplicationGig>? nextMonth;
@@ -42,7 +42,7 @@ class _ScheduleState extends State<Schedule> with PeriodicTaskMixin{
 
   @override
   Duration get interval => const Duration(seconds: 5);
-  
+
   @override
   void onTick() {
     Utils.fetchUnread(widget.sessionKey).then((unreadStates) {
@@ -199,6 +199,17 @@ class _ScheduleState extends State<Schedule> with PeriodicTaskMixin{
                           ),
                           MessageButton(
                             unreadMessages: unreadStates?.unreadMessages,
+                            refetchUnread: () {
+                              Utils.fetchUnread(widget.sessionKey).then((
+                                unreadStates,
+                              ) {
+                                if (mounted) {
+                                  setState(() {
+                                    this.unreadStates = unreadStates;
+                                  });
+                                }
+                              });
+                            },
                             sessionKey: widget.sessionKey,
                           ),
                         ],

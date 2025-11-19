@@ -4,12 +4,12 @@ import 'dart:io';
 import 'package:intl/intl.dart';
 import 'package:rhttp/rhttp.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
 import 'package:working_system_app/Others/Constant.dart';
 import 'package:working_system_app/Pages/GigDetail.dart';
 import 'package:working_system_app/Others/Utils.dart';
 import 'package:working_system_app/Types/JSONObject/Message/Message.dart';
-import 'package:working_system_app/Types/JSONObject/Message/ReplySnippet.dart';
 
 class ChattingRoom extends StatefulWidget {
   final String sessionKey;
@@ -77,6 +77,18 @@ class _ChattingRoomState extends State<ChattingRoom> {
 
     // websocket new messages
     _streamSubscription = _activeStream?.listen(_handleIncomingMessage);
+
+    markConversationAsRead();
+  }
+
+  Future<void> markConversationAsRead() async {
+    await Utils.client.post(
+      "/chat/conversations/${widget.conversationId}/read",
+      headers: HttpHeaders.rawMap({
+        "platform": "mobile",
+        "cookie": widget.sessionKey,
+      }),
+    );
   }
 
   // --- WebSocket Logic ---
@@ -219,7 +231,8 @@ class _ChattingRoomState extends State<ChattingRoom> {
         .toList();
     if (older.length < 20) {
       setState(() {
-        messages.insertAll(messages.length, older);
+        messages.addAll(older);
+
         hasMore = false;
         isLoadingOlder = false;
       });
@@ -227,7 +240,7 @@ class _ChattingRoomState extends State<ChattingRoom> {
     }
 
     setState(() {
-      messages.insertAll(0, older);
+      messages.addAll(older);
       olderCursor = older.last.createdAt.toIso8601String();
       isLoadingOlder = false;
     });
@@ -254,7 +267,7 @@ class _ChattingRoomState extends State<ChattingRoom> {
           messages[index] = Message(
             messagesId: messages[index].messagesId,
             conversationId: messages[index].conversationId,
-            content: 'Message retracted',
+            content: '[訊息已撤回]',
             createdAt: messages[index].createdAt,
             senderWorkerId: messages[index].senderWorkerId,
             senderEmployerId: messages[index].senderEmployerId,
@@ -283,30 +296,9 @@ class _ChattingRoomState extends State<ChattingRoom> {
 
     _activeClient!.add(jsonEncode(message)); // Use _activeClient
 
-    // optimistic insert
-    final optimistic = Message(
-      messagesId: DateTime.now().millisecondsSinceEpoch.toString(),
-      conversationId: widget.conversationId,
-      content: text,
-      createdAt: DateTime.now(),
-      senderWorkerId: null, // Assuming the user is a worker
-      senderEmployerId: null,
-      replyToId: _replyingToMessage?.messagesId,
-      replySnippet: _replyingToMessage != null
-          ? ReplySnippet(
-              messagesId: _replyingToMessage!.messagesId,
-              content: _replyingToMessage!.content,
-              createdAt: _replyingToMessage!.createdAt,
-            )
-          : null,
-    );
-
-    setState(() {
-      messages.insert(0, optimistic);
-      _replyingToMessage = null;
-    });
-
     _textController.clear();
+
+    _scrollToBottom();
   }
 
   /// ----------------------------------------
@@ -327,7 +319,7 @@ class _ChattingRoomState extends State<ChattingRoom> {
       if (!_scrollController.hasClients) return;
 
       _scrollController.animateTo(
-        _scrollController.position.maxScrollExtent,
+        0,
         duration: Duration(milliseconds: 200),
         curve: Curves.easeOut,
       );
@@ -538,49 +530,63 @@ class _ChattingRoomState extends State<ChattingRoom> {
 
     await showModalBottomSheet(
       context: context,
-      barrierColor: Colors.transparent,
       builder: (BuildContext context) {
-        return SafeArea(
-          child: Wrap(
-            children: <Widget>[
-              ListTile(
-                leading: Icon(Icons.reply),
-                title: Text('Reply'),
-                onTap: () {
-                  setState(() {
-                    _replyingToMessage = message;
-                  });
-                  Navigator.pop(context);
-                },
+        return Container(
+          margin: EdgeInsets.all(8),
+          decoration: BoxDecoration(borderRadius: BorderRadius.circular(16)),
+          child: SafeArea(
+            child: Padding(
+              padding: const EdgeInsets.symmetric(vertical: 16, horizontal: 8),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                children: [
+                  _buildMenuOption(
+                    icon: Icons.copy,
+                    label: '複製',
+                    backgroundColor: Colors.blue[100]!,
+                    iconColor: Colors.blue[700]!,
+                    onTap: () {
+                      Clipboard.setData(ClipboardData(text: message.content));
+                      Navigator.pop(context);
+                      ScaffoldMessenger.of(
+                        context,
+                      ).showSnackBar(SnackBar(content: Text('已複製')));
+                    },
+                  ),
+                  if (isMe && canRetract)
+                    _buildMenuOption(
+                      icon: Icons.undo,
+                      label: '撤回',
+                      backgroundColor: Colors.orange[100]!,
+                      iconColor: Colors.orange[700]!,
+                      onTap: () {
+                        Navigator.pop(context);
+                        _confirmAction(
+                          context,
+                          '撤回訊息',
+                          '您確定要撤回此訊息嗎？此操作將從雙方裝置中刪除訊息',
+                          () => _retractMessage(message.messagesId),
+                        );
+                      },
+                    ),
+                  _buildMenuOption(
+                    icon: Icons.delete_outline,
+                    label: '刪除',
+                    backgroundColor: Colors.red[100]!,
+                    iconColor: Colors.red[700]!,
+                    onTap: () {
+                      Navigator.pop(context);
+                      _confirmAction(
+                        context,
+                        '刪除訊息',
+                        '您確定要刪除此訊息嗎？此操作僅會從您的裝置中刪除訊息，對方仍然可以查看',
+                        () => _deleteMessage(message.messagesId),
+                      );
+                    },
+                  ),
+                ],
               ),
-              if (isMe && canRetract)
-                ListTile(
-                  leading: Icon(Icons.undo),
-                  title: Text('Retract'),
-                  onTap: () {
-                    Navigator.pop(context); // Close bottom sheet first
-                    _confirmAction(
-                      context,
-                      '撤回信息',
-                      '您確定要撤回此訊息嗎？此操作將從雙方裝置中刪除訊息',
-                      () => _retractMessage(message.messagesId),
-                    );
-                  },
-                ),
-              ListTile(
-                leading: Icon(Icons.delete),
-                title: Text('Delete'),
-                onTap: () {
-                  Navigator.pop(context); // Close bottom sheet first
-                  _confirmAction(
-                    context,
-                    '刪除信息',
-                    '您確定要刪除此訊息嗎？此操作僅會從您的裝置中刪除訊息，對方仍然可以查看',
-                    () => _deleteMessage(message.messagesId),
-                  );
-                },
-              ),
-            ],
+            ),
           ),
         );
       },
@@ -589,6 +595,39 @@ class _ChattingRoomState extends State<ChattingRoom> {
     setState(() {
       _activeMessageId = null;
     });
+  }
+
+  Widget _buildMenuOption({
+    required IconData icon,
+    required String label,
+    required Color backgroundColor,
+    required Color iconColor,
+    required VoidCallback onTap,
+  }) {
+    return Expanded(
+      child: InkWell(
+        onTap: onTap,
+        borderRadius: BorderRadius.circular(12),
+        child: Container(
+          padding: EdgeInsets.symmetric(vertical: 16),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Container(
+                padding: EdgeInsets.all(12),
+                decoration: BoxDecoration(
+                  color: backgroundColor,
+                  shape: BoxShape.circle,
+                ),
+                child: Icon(icon, color: iconColor, size: 24),
+              ),
+              SizedBox(height: 8),
+              Text(label, style: TextStyle(color: Colors.black, fontSize: 12)),
+            ],
+          ),
+        ),
+      ),
+    );
   }
 
   // New method for confirmation dialog
@@ -722,6 +761,7 @@ class _ChattingRoomState extends State<ChattingRoom> {
               IconButton(icon: const Icon(Icons.send), onPressed: _sendMessage),
             ],
           ),
+          SizedBox(height: 16),
         ],
       ),
     );

@@ -118,6 +118,17 @@ class _PersonalState extends State<Personal> {
                       MessageButton(
                         sessionKey: widget.sessionKey,
                         unreadMessages: unreadStates?.unreadMessages,
+                        refetchUnread: () {
+                          Utils.fetchUnread(widget.sessionKey).then((
+                            unreadStates,
+                          ) {
+                            if (mounted) {
+                              setState(() {
+                                this.unreadStates = unreadStates;
+                              });
+                            }
+                          });
+                        },
                       ),
                     ],
                   ),

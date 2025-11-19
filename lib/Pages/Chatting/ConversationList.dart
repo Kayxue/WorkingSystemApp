@@ -144,7 +144,6 @@ class _ConversationListState extends State<ConversationList> {
       },
       onError: (e) => debugPrint("WebSocket error: $e"),
     );
-
   }
 
   /// -------------------------
@@ -199,24 +198,28 @@ class _ConversationListState extends State<ConversationList> {
 
     await showModalBottomSheet(
       context: context,
-      barrierColor: Colors.transparent,
-      isScrollControlled: true,
       builder: (BuildContext context) {
         return Container(
-          height: MediaQuery.of(context).size.height * 0.1,
+          margin: EdgeInsets.all(8),
+          decoration: BoxDecoration(borderRadius: BorderRadius.circular(16)),
           child: SafeArea(
-            child: Wrap(
-              children: <Widget>[
-                ListTile(
-                  minTileHeight: MediaQuery.of(context).size.height * 0.1,
-                  leading: Icon(Icons.delete),
-                  title: Text('Delete'),
-                  onTap: () {
-                    Navigator.pop(context);
-                    _confirmDeleteConversation(context, conversation);
-                  },
-                ),
-              ],
+            child: Padding(
+              padding: const EdgeInsets.symmetric(vertical: 16, horizontal: 8),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                children: [
+                  _buildMenuOption(
+                    icon: Icons.delete_outline,
+                    label: '刪除',
+                    backgroundColor: Colors.red[100]!,
+                    iconColor: Colors.red[700]!,
+                    onTap: () {
+                      Navigator.pop(context);
+                      _confirmDeleteConversation(context, conversation);
+                    },
+                  ),
+                ],
+              ),
             ),
           ),
         );
@@ -227,6 +230,39 @@ class _ConversationListState extends State<ConversationList> {
     setState(() {
       _activeConversationId = null;
     });
+  }
+
+  Widget _buildMenuOption({
+    required IconData icon,
+    required String label,
+    required Color backgroundColor,
+    required Color iconColor,
+    required VoidCallback onTap,
+  }) {
+    return Expanded(
+      child: InkWell(
+        onTap: onTap,
+        borderRadius: BorderRadius.circular(12),
+        child: Container(
+          padding: EdgeInsets.symmetric(vertical: 16),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Container(
+                padding: EdgeInsets.all(12),
+                decoration: BoxDecoration(
+                  color: backgroundColor,
+                  shape: BoxShape.circle,
+                ),
+                child: Icon(icon, color: iconColor, size: 24),
+              ),
+              SizedBox(height: 8),
+              Text(label, style: TextStyle(color: Colors.black, fontSize: 12)),
+            ],
+          ),
+        ),
+      ),
+    );
   }
 
   Future<void> _confirmDeleteConversation(

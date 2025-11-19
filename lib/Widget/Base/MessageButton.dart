@@ -5,11 +5,13 @@ import 'package:working_system_app/Pages/Chatting/ConversationList.dart';
 class MessageButton extends StatelessWidget {
   final int? unreadMessages;
   final String sessionKey;
+  final Function() refetchUnread;
 
   const MessageButton({
     super.key,
     required this.sessionKey,
     this.unreadMessages,
+    required this.refetchUnread,
   });
 
   @override
@@ -25,11 +27,14 @@ class MessageButton extends StatelessWidget {
               child: Icon(Icons.message),
             )
           : Icon(Icons.message),
-      onPressed: () => Navigator.of(context).push(
-        MaterialPageRoute(
-          builder: (context) => ConversationList(sessionKey: sessionKey),
-        ),
-      ),
+      onPressed: () async {
+        await Navigator.of(context).push(
+          MaterialPageRoute(
+            builder: (context) => ConversationList(sessionKey: sessionKey),
+          ),
+        );
+        refetchUnread();
+      },
     );
   }
 }
