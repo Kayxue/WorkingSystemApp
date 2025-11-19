@@ -1,3 +1,3 @@
 pub mod core;
-// pub mod websocket;
-// pub use ezsockets::{Client, ClientConnectorTokio};
+pub mod websocket;
+pub use ezsockets::{Client, ClientConnectorTokio};
