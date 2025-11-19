@@ -61,7 +61,9 @@ class _ChattingRoomState extends State<ChattingRoom> with ChatWebSocketMixin {
 
     // Initialize local WebSocket if not provided by widget
     if (widget.client == null) {
-      connectChatWebSocket();
+      connectChatWebSocket().then((_) {
+        _streamSubscription = _activeStream?.listen(_handleIncomingMessage);
+      }); 
     } else {
       // If using parent's WebSocket, set up listener immediately
       _streamSubscription = _activeStream?.listen(_handleIncomingMessage);
@@ -90,14 +92,14 @@ class _ChattingRoomState extends State<ChattingRoom> with ChatWebSocketMixin {
     );
   }
 
-  @override
-  void onWebSocketConnected() {
-    // When local WebSocket is connected, set up stream listener
-    if (widget.client == null) {
-      _streamSubscription?.cancel();
-      _streamSubscription = chatStream?.listen(_handleIncomingMessage);
-    }
-  }
+  // @override
+  // void onWebSocketConnected() {
+  //   // When local WebSocket is connected, set up stream listener
+  //   if (widget.client == null) {
+  //     _streamSubscription?.cancel();
+  //     _streamSubscription = chatStream?.listen(_handleIncomingMessage);
+  //   }
+  // }
 
   // Override to handle specific message types for this widget
   @override
@@ -663,7 +665,7 @@ class _ChattingRoomState extends State<ChattingRoom> with ChatWebSocketMixin {
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Text(
-                          'Replying to ${_replyingToMessage!.senderWorkerId != null ? "Opponent" : "Me"}', // Simplified
+                          'Replying to ${_replyingToMessage!.senderWorkerId != null ? "Me" : "Opponent"}', // Simplified
                           style: TextStyle(fontWeight: FontWeight.bold),
                         ),
                         Text(
