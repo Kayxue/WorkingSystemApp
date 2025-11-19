@@ -1,10 +1,13 @@
 import 'dart:convert';
 
 import 'package:flutter/material.dart';
+import 'package:rhttp/rhttp.dart';
 import 'package:working_system_app/Others/Utils.dart';
 import 'package:working_system_app/Types/JSONObject/GigDetails.dart';
 import 'package:working_system_app/Widget/GigDetail/GigInformation.dart';
 import 'package:working_system_app/Widget/Others/LoadingIndicator.dart';
+import 'package:working_system_app/Pages/Chatting/ChattingRoom.dart';
+import 'package:working_system_app/Types/JSONObject/Message/GigMessage.dart';
 
 class ApplicationGigDetails extends StatefulWidget {
   final String gigId;
@@ -134,6 +137,36 @@ class _ApplicationGigDetailsState extends State<ApplicationGigDetails> {
     }
   }
 
+  Future<void> _startPrivateChat() async {
+    final response = await Utils.client.post(
+      "/gig/${widget.gigId}",
+      headers: HttpHeaders.rawMap({"platform": "mobile", "cookie": widget.sessionKey}),
+    );
+
+    if (!mounted) return;
+
+    if (response.statusCode == 200) {
+      final gigMessage = GigMessage.fromJson(jsonDecode(response.body));
+
+      Navigator.of(context).push(
+        MaterialPageRoute(
+          builder: (context) => ChattingRoom(
+            sessionKey: widget.sessionKey,
+            conversationId: gigMessage.message.conversationId,
+            opponentName: gigMessage.employerName,
+            opponentId: gigMessage.gig.employerId,
+            client: null,
+            stream: null,
+          ),
+        ),
+      );
+    } else {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('Failed to start private chat: ${response.body}')),
+      );
+    }
+  }
+  
   @override
   void initState() {
     super.initState();
@@ -148,20 +181,48 @@ class _ApplicationGigDetailsState extends State<ApplicationGigDetails> {
 
   Widget _buildActionButtons() {
     if (widget.status == 'pending_employer_review') {
-      return ElevatedButton(
-        onPressed: () => _withdrawApplication(widget.applicationId),
-        style: ElevatedButton.styleFrom(
-          fixedSize: Size(MediaQuery.of(context).size.width * 0.9, 50),
-        ),
-        child: const Text(
-          '取消申請',
-          style: TextStyle(fontWeight: .bold, fontSize: 16),
-        ),
+      return Row (
+        children:[
+          Expanded(
+            flex:1,
+            child: Padding (
+              padding: const.only(right: 8),
+              child:ElevatedButton(
+                onPressed: () => _startPrivateChat(),
+                style: ElevatedButton.styleFrom(
+                  minimumSize: Size.fromHeight(50),
+                ),
+                child: const Text('聊天', style: TextStyle(fontSize: 16)),
+              )
+            )
+          ),
+          Expanded (
+            flex:3,
+            child:ElevatedButton(
+              onPressed: () => _withdrawApplication(widget.applicationId),
+              style: ElevatedButton.styleFrom(
+                minimumSize: Size.fromHeight(50),
+              ),
+              child: const Text(
+                '取消申請',
+                style: TextStyle(fontWeight: .bold, fontSize: 16),
+              ),
+            )
+          ),
+        ]
       );
     } else if (widget.status == 'pending_worker_confirmation') {
       return Row(
         mainAxisAlignment: .spaceEvenly,
         children: [
+          ElevatedButton(
+            onPressed: () =>
+                _startPrivateChat(),
+            style: ElevatedButton.styleFrom(
+              fixedSize: Size(MediaQuery.of(context).size.width * 0.9, 50),
+            ),
+            child: const Text('聊天', style: TextStyle(fontSize: 16)),
+          ),  
           ElevatedButton(
             onPressed: () =>
                 _handleApplicationAction(widget.applicationId, 'reject'),
@@ -201,19 +262,41 @@ class _ApplicationGigDetailsState extends State<ApplicationGigDetails> {
         ],
       );
     } else {
-      return ElevatedButton(
-        onPressed: () => _withdrawApplication(widget.applicationId),
-        style: ElevatedButton.styleFrom(
-          fixedSize: Size(MediaQuery.of(context).size.width * 0.9, 50),
-        ),
-        child: Text(switch (widget.status) {
-          'employer_rejected' => '被拒絕',
-          'worker_confirmed' => '已接受',
-          'worker_declined' => '已拒絕',
-          'worker_cancelled' => '已取消',
-          'system_cancelled' => '已取消',
-          _ => '取消申請',
-        }, style: TextStyle(color: Colors.grey, fontSize: 16)),
+      return Row(
+        children: [
+          Expanded(
+            flex:1,
+            child: Padding(
+              padding: const.only(right: 8),
+              child:ElevatedButton(
+                onPressed: () => _startPrivateChat(),
+                style: ElevatedButton.styleFrom(
+                  minimumSize: Size.fromHeight(50),
+                  // fixedSize: Size(MediaQuery.of(context).size.width * 0.4, 50),
+                ),
+                child: const Text('聊天', style: TextStyle(fontSize: 16)),
+              )
+            )
+          ),
+          Expanded(
+            flex:3,
+            child:ElevatedButton(
+              onPressed: () => _withdrawApplication(widget.applicationId),
+              style: ElevatedButton.styleFrom(
+                minimumSize: Size.fromHeight(50),
+                // fixedSize: Size(MediaQuery.of(context).size.width * 0.9, 50),
+              ),
+              child: Text(switch (widget.status) {
+                'employer_rejected' => '被拒絕',
+                'worker_confirmed' => '已接受',
+                'worker_declined' => '已拒絕',
+                'worker_cancelled' => '已取消',
+                'system_cancelled' => '已取消',
+                _ => '取消申請',
+              }, style: TextStyle(color: Colors.grey, fontSize: 16)),
+            ),
+          ),
+        ]
       );
     }
   }

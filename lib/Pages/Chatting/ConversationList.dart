@@ -24,6 +24,7 @@ class _ConversationListState extends State<ConversationList> {
   WebSocket? client;
   String status = 'Disconnected';
   StreamSubscription? _wsSubscription;
+  String? _activeConversationId;
 
   final StreamController<dynamic> _streamController =
       StreamController<dynamic>.broadcast();
@@ -191,6 +192,96 @@ class _ConversationListState extends State<ConversationList> {
     });
   }
 
+  // --- Delete Conversation Logic ---
+
+  void _showConversationContextMenu(BuildContext context, ConversationChat conversation) async {
+    setState(() {
+      _activeConversationId = conversation.conversationId;
+    });
+
+    await showModalBottomSheet(
+      context: context,
+      barrierColor: Colors.transparent,
+      isScrollControlled: true, 
+      builder: (BuildContext context) {
+        return Container(
+          height: MediaQuery.of(context).size.height * 0.1,
+          child: SafeArea(
+            child: Wrap(
+              children: <Widget>[
+                ListTile(
+                  minTileHeight: MediaQuery.of(context).size.height * 0.1,
+                  leading: Icon(Icons.delete),
+                  title: Text('Delete'),
+                  onTap: () {
+                    Navigator.pop(context);
+                    _confirmDeleteConversation(context, conversation);
+                  },
+                ),
+              ],
+            ),
+          ),
+        );
+      },
+    );
+
+    // After the bottom sheet is closed, reset the active conversation ID
+    setState(() {
+      _activeConversationId = null;
+    });
+  }
+
+  Future<void> _confirmDeleteConversation(BuildContext context, ConversationChat conversation) async {
+    return showDialog<void>(
+      context: context,
+      barrierDismissible: false,
+      builder: (BuildContext dialogContext) {
+        return AlertDialog(
+          title: Text('Delete Conversation'),
+          content: Text('Are you sure you want to delete this conversation? This action cannot be undone.'),
+          actions: <Widget>[
+            TextButton(
+              child: const Text('Cancel'),
+              onPressed: () {
+                Navigator.of(dialogContext).pop();
+              },
+            ),
+            TextButton(
+              child: const Text('Confirm'),
+              onPressed: () {
+                Navigator.of(dialogContext).pop();
+                _deleteConversation(conversation.conversationId);
+              },
+            ),
+          ],
+        );
+      },
+    );
+  }
+
+  Future<void> _deleteConversation(String conversationId) async {
+    final response = await Utils.client.delete(
+      "/chat/conversations/$conversationId",
+      headers: HttpHeaders.rawMap({
+        "platform": "mobile",
+        "cookie": widget.sessionKey,
+      }),
+    );
+
+    if (response.statusCode == 200) {
+      setState(() {
+        conversations.removeWhere((c) => c.conversationId == conversationId);
+      });
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('Conversation deleted')),
+      );
+    } else {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('Failed to delete conversation')),
+      );
+    }
+  }
+
   /// -------------------------
   /// UI
   /// -------------------------
@@ -220,79 +311,85 @@ class _ConversationListState extends State<ConversationList> {
 
             final item = conversations[index];
 
-            return InkWell(
-              child: ListTile(
-                leading: CircleAvatar(
-                  radius: 34,
-                  backgroundImage: item.opponent.profilePhoto?.url != null
-                      ? NetworkImage(item.opponent.profilePhoto!.url)
-                      : const AssetImage(
-                              'assets/anonymous-profile-photo.png')
-                          as ImageProvider,
-                ),
-                title: Text(
-                  item.opponent.name,
-                  style: TextStyle(
-                    fontSize: 18,
-                    fontWeight: item.lastMessageAt.isAfter(
-                            item.lastReadAtByWorker ??
-                                DateTime.fromMillisecondsSinceEpoch(0))
-                        ? FontWeight.w600
-                        : FontWeight.normal,
+            return GestureDetector(
+              onLongPress: () {
+                _showConversationContextMenu(context, item);
+              },
+              child: InkWell(
+                child: ListTile(
+                  tileColor: _activeConversationId == item.conversationId ? Colors.grey[300] : null,
+                  leading: CircleAvatar(
+                    radius: 34,
+                    backgroundImage: item.opponent.profilePhoto?.url != null
+                        ? NetworkImage(item.opponent.profilePhoto!.url)
+                        : const AssetImage(
+                                'assets/anonymous-profile-photo.png')
+                            as ImageProvider,
                   ),
-                ),
-                subtitle: Row(
-                  children: [
-                    Expanded(
-                      child: Text(
-                        item.lastMessage ?? 'No messages yet',
-                        maxLines: 1,
-                        overflow: TextOverflow.ellipsis,
-                        style: TextStyle(
-                          fontSize: 16,
-                          color: item.lastMessageAt.isAfter(
-                                  item.lastReadAtByWorker ??
-                                      DateTime.fromMillisecondsSinceEpoch(0))
-                              ? Colors.black
-                              : Colors.grey,
+                  title: Text(
+                    item.opponent.name,
+                    style: TextStyle(
+                      fontSize: 18,
+                      fontWeight: item.lastMessageAt.isAfter(
+                              item.lastReadAtByWorker ??
+                                  DateTime.fromMillisecondsSinceEpoch(0))
+                          ? FontWeight.w600
+                          : FontWeight.normal,
+                    ),
+                  ),
+                  subtitle: Row(
+                    children: [
+                      Expanded(
+                        child: Text(
+                          item.lastMessage ?? 'No messages yet',
+                          maxLines: 1,
+                          overflow: TextOverflow.ellipsis,
+                          style: TextStyle(
+                            fontSize: 16,
+                            color: item.lastMessageAt.isAfter(
+                                    item.lastReadAtByWorker ??
+                                        DateTime.fromMillisecondsSinceEpoch(0))
+                                ? Colors.black
+                                : Colors.grey,
+                          ),
                         ),
                       ),
-                    ),
-                    Text(
-                      '•${DateFormat('yyyy/MM/dd HH:mm').format(item.lastMessageAt.toLocal())}',
-                      style: TextStyle(
-                          fontSize: 14,
-                          color: item.lastMessageAt.isAfter(
-                                  item.lastReadAtByWorker ??
-                                      DateTime.fromMillisecondsSinceEpoch(0))
-                              ? Colors.black
-                              : Colors.grey),
-                    )
-                  ],
-                ),
-              ),
-              onTap: () async {
-                await Navigator.of(context).push(
-                  MaterialPageRoute(
-                    builder: (context) => ChattingRoom(
-                      sessionKey: widget.sessionKey,
-                      conversationId: item.conversationId,
-                      opponentName: item.opponent.name,
-                      opponentId: item.opponent.id,
-                      client: client,
-                      stream: _streamController.stream,
-                    ),
+                      Text(
+                        '•${DateFormat('yyyy/MM/dd HH:mm').format(item.lastMessageAt.toLocal())}',
+                        style: TextStyle(
+                            fontSize: 14,
+                            color: item.lastMessageAt.isAfter(
+                                    item.lastReadAtByWorker ??
+                                        DateTime.fromMillisecondsSinceEpoch(0))
+                                ? Colors.black
+                                : Colors.grey),
+                      )
+                    ],
                   ),
-                );
+                ),
+                onTap: () async {
+                  await Navigator.of(context).push(
+                    MaterialPageRoute(
+                      builder: (context) => ChattingRoom(
+                        sessionKey: widget.sessionKey,
+                        conversationId: item.conversationId,
+                        opponentName: item.opponent.name,
+                        opponentId: item.opponent.id,
+                        client: client,
+                        stream: _streamController.stream,
+                      ),
+                    ),
+                  );
 
-                // After return, refresh latest conversations
-                setState(() {
-                  conversations.clear();
-                  currentPage = 0;
-                  hasMore = true;
-                });
-                _loadMore();
-              },
+                  // After return, refresh latest conversations
+                  setState(() {
+                    conversations.clear();
+                    currentPage = 0;
+                    hasMore = true;
+                  });
+                  _loadMore();
+                },
+              ),
             );
           },
         ),

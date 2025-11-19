@@ -17,6 +17,9 @@ Message _$MessageFromJson(Map<String, dynamic> json) => Message(
   replySnippet: json['replySnippet'] == null
       ? null
       : ReplySnippet.fromJson(json['replySnippet'] as Map<String, dynamic>),
+  gig: json['gig'] == null
+      ? null
+      : GigReturnForMessage.fromJson(json['gig'] as Map<String, dynamic>),
 );
 
 Map<String, dynamic> _$MessageToJson(Message instance) => <String, dynamic>{
@@ -27,5 +30,6 @@ Map<String, dynamic> _$MessageToJson(Message instance) => <String, dynamic>{
   'content': instance.content,
   'createdAt': instance.createdAt.toIso8601String(),
   'replyToId': instance.replyToId,
-  'replySnippet': instance.replySnippet,
+  'replySnippet': instance.replySnippet?.toJson(),
+  'gig': instance.gig?.toJson(),
 };

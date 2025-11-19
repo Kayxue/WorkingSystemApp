@@ -1,9 +1,10 @@
 import 'package:json_annotation/json_annotation.dart';
 import 'package:working_system_app/Types/JSONObject/Message/ReplySnippet.dart';
+import 'package:working_system_app/Types/JSONObject/Message/GigReturnForMessage.dart';
 
 part 'Message.g.dart';
 
-@JsonSerializable()
+@JsonSerializable(explicitToJson: true)
 class Message {
   final String messagesId;
   final String conversationId;
@@ -13,6 +14,7 @@ class Message {
   final DateTime createdAt;
   final String? replyToId;
   final ReplySnippet? replySnippet;
+  final GigReturnForMessage? gig;
 
   Message({
     required this.messagesId,
@@ -23,6 +25,7 @@ class Message {
     required this.createdAt,
     this.replyToId,
     this.replySnippet,
+    this.gig,
   });
 
   factory Message.fromJson(Map<String, dynamic> json) => _$MessageFromJson(json);

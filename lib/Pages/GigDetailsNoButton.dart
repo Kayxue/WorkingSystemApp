@@ -5,6 +5,8 @@ import 'package:rhttp/rhttp.dart';
 import 'package:working_system_app/Others/Utils.dart';
 import 'package:working_system_app/Types/JSONObject/GigDetails.dart';
 import 'package:working_system_app/Widget/GigDetail/GigInformation.dart';
+import 'package:working_system_app/Pages/Chatting/ChattingRoom.dart';
+import 'package:working_system_app/Types/JSONObject/Message/GigMessage.dart';
 
 class GigDetailsNoButton extends StatefulWidget {
   final String gigId;
@@ -67,6 +69,36 @@ class _GigDetailsNoButtonState extends State<GigDetailsNoButton> {
     );
   }
 
+  Future<void> _startPrivateChat() async {
+    final response = await Utils.client.post(
+      "/gig/${widget.gigId}",
+      headers: HttpHeaders.rawMap({"platform": "mobile", "cookie": widget.sessionKey}),
+    );
+
+    if (!mounted) return;
+
+    if (response.statusCode == 200) {
+      final gigMessage = GigMessage.fromJson(jsonDecode(response.body));
+
+      Navigator.of(context).push(
+        MaterialPageRoute(
+          builder: (context) => ChattingRoom(
+            sessionKey: widget.sessionKey,
+            conversationId: gigMessage.message.conversationId,
+            opponentName: gigMessage.employerName,
+            opponentId: gigMessage.gig.employerId,
+            client: null,
+            stream: null,
+          ),
+        ),
+      );
+    } else {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('Failed to start private chat: ${response.body}')),
+      );
+    }
+  }
+
   @override
   void initState() {
     super.initState();
@@ -101,6 +133,22 @@ class _GigDetailsNoButtonState extends State<GigDetailsNoButton> {
                 children: [
                   GigInformation(gigdetail: gigdetail!),
                   SizedBox(height: 32),
+                  Row(
+                    children:[
+                      Expanded(
+                        child: FilledButton(
+                          style: FilledButton.styleFrom(
+                            minimumSize: Size(double.infinity, 50),
+                          ),
+                          onPressed: widget.sessionKey.isEmpty
+                              ? null
+                              : () => _startPrivateChat(),
+                          child: const Text("Chat"),
+                        ),
+                      )
+                    ],
+                  ),
+                  SizedBox(height: 16),
                 ],
               ),
             ),

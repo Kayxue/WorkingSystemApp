@@ -5,6 +5,8 @@ import 'package:intl/intl.dart';
 import 'package:rhttp/rhttp.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
+import 'package:working_system_app/Others/Constant.dart';
+import 'package:working_system_app/Pages/GigDetail.dart';
 import 'package:working_system_app/Others/Utils.dart';
 import 'package:working_system_app/Types/JSONObject/Message/Message.dart';
 import 'package:working_system_app/Types/JSONObject/Message/ReplySnippet.dart';
@@ -15,7 +17,7 @@ class ChattingRoom extends StatefulWidget {
   final String opponentName;
   final String opponentId;
   final WebSocket? client;
-  final Stream<dynamic> stream;
+  final Stream<dynamic>? stream;
 
   const ChattingRoom({
     super.key,
@@ -23,8 +25,8 @@ class ChattingRoom extends StatefulWidget {
     required this.conversationId,
     required this.opponentName,
     required this.opponentId,
-    required this.client,
-    required this.stream,
+    this.client,
+    this.stream,
   });
 
   @override
@@ -40,13 +42,27 @@ class _ChattingRoomState extends State<ChattingRoom> {
   bool isLoadingOlder = false;
   bool hasMore = true;
   Message? _replyingToMessage;
+  String? _activeMessageId;
   String resetKey = "";
 
+  // Local WebSocket and StreamController if we are not getting them from ConversationList
+  WebSocket? _localClient;
+  StreamController<dynamic>? _localStreamController;
   StreamSubscription? _streamSubscription;
+
+  // Getter for the active WebSocket client
+  WebSocket? get _activeClient => widget.client ?? _localClient;
+  // Getter for the active Stream
+  Stream<dynamic>? get _activeStream => widget.stream ?? _localStreamController?.stream;
 
   @override
   void initState() {
     super.initState();
+
+    // Initialize local WebSocket if not provided by widget
+    if (widget.client == null) {
+      _initializeLocalWebSocket();
+    }
 
     _loadInitial();
 
@@ -59,7 +75,79 @@ class _ChattingRoomState extends State<ChattingRoom> {
     });
 
     // websocket new messages
-    _streamSubscription = widget.stream.listen(_handleIncomingMessage);
+    _streamSubscription = _activeStream?.listen(_handleIncomingMessage);
+  }
+
+  // --- WebSocket Logic ---
+  Future<String> _getToken() async {
+    var response = await Utils.client.get(
+      "/chat/ws-token",
+      headers: HttpHeaders.rawMap({
+        "platform": "mobile",
+        "cookie": widget.sessionKey,
+      }),
+    );
+    if (!mounted) return '';
+    if (response.statusCode != 200) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('Failed to get WebSocket token')),
+      );
+    }
+    final body = jsonDecode(response.body) as Map<String, dynamic>;
+    return body['token'] as String;
+  }
+
+  void _addEventListeners(String token) {
+    _localClient!.listen(
+      (message) {
+        _localStreamController?.add(message);
+      },
+      onDone: () {
+        if (mounted) {
+          setState(() {
+            _localClient = null; // Clear local client on disconnect
+          });
+        }
+        _localStreamController?.close();
+      },
+      onError: (error) {
+        _localStreamController?.addError(error);
+      },
+    );
+
+    // Listen to the local broadcast stream for internal logic (heartbeat and list updates)
+    _localStreamController?.stream.listen((message) {
+      final body = jsonDecode(message) as Map<String, dynamic>;
+      if (body['type'] == 'heartbeat_request') {
+        _localClient!.add("{\"type\":\"heartbeat\"}");
+      }
+      // Other global events could be handled here if needed
+    });
+  }
+
+  void _initializeLocalWebSocket() async {
+    if (_localClient != null) {
+      return;
+    }
+
+    final token = await _getToken();
+    if (token.isEmpty) return;
+
+    _localStreamController = StreamController<dynamic>.broadcast();
+
+    _localClient = await WebSocket.connect(
+      "wss://${Constant.backendUrl.substring(8)}/chat/ws",
+    ).then((client) {
+      client.add("{\"type\":\"auth\", \"token\":\"$token\"}");
+      if (mounted) {
+        setState(() {
+          // Update status if needed, but this room is isolated
+        });
+      }
+      return client;
+    });
+
+    _addEventListeners(token);
   }
 
   /// ----------------------------------------
@@ -174,7 +262,7 @@ class _ChattingRoomState extends State<ChattingRoom> {
   /// Send message
   /// ----------------------------------------
   void _sendMessage() {
-    if (_textController.text.trim().isEmpty || widget.client == null) return;
+    if (_textController.text.trim().isEmpty || _activeClient == null) return; // Use _activeClient
 
     final text = _textController.text.trim();
 
@@ -185,7 +273,7 @@ class _ChattingRoomState extends State<ChattingRoom> {
       if (_replyingToMessage != null) "replyToId": _replyingToMessage!.messagesId,
     };
 
-    widget.client!.add(jsonEncode(message));
+    _activeClient!.add(jsonEncode(message)); // Use _activeClient
 
     // optimistic insert
     final optimistic = Message(
@@ -243,6 +331,8 @@ class _ChattingRoomState extends State<ChattingRoom> {
     _textController.dispose();
     _scrollController.dispose();
     _streamSubscription?.cancel();
+    _localClient?.close(); // Close local client if it was created
+    _localStreamController?.close(); // Close local stream controller
     super.dispose();
   }
 
@@ -271,11 +361,13 @@ class _ChattingRoomState extends State<ChattingRoom> {
 
                 final msg = messages[i];
                 final isMe = msg.senderWorkerId != null;
+                final isActive = _activeMessageId == msg.messagesId;
 
                 return Slidable(
                   key: ValueKey("${msg.messagesId}_$resetKey"),
                   startActionPane: ActionPane(
                     motion: const StretchMotion(),
+
                     openThreshold: 0.99,
                     dismissible: DismissiblePane(
                       dismissThreshold: 0.5,
@@ -304,7 +396,11 @@ class _ChattingRoomState extends State<ChattingRoom> {
                     child: Container(
                       padding: const EdgeInsets.symmetric(vertical: 8),
                       alignment: isMe ? Alignment.centerRight : Alignment.centerLeft,
+                      color: isActive ? Colors.grey[500] : Colors.transparent,
                       child: Container(
+                        constraints: BoxConstraints(
+                          maxWidth: MediaQuery.of(context).size.width * 0.8,
+                        ),
                         padding: const EdgeInsets.all(12),
                         decoration: BoxDecoration(
                           color: isMe ? Colors.blue[100] : Colors.grey[300],
@@ -336,15 +432,60 @@ class _ChattingRoomState extends State<ChattingRoom> {
                                   ),
                                 ),
                               ),
-                            Text(msg.content),
-                            const SizedBox(height: 4),
-                            Text(
-                              DateFormat("yyyy-MM-dd HH:mm").format(msg.createdAt.toLocal()),
-                              style: const TextStyle(
-                                fontSize: 10,
-                                color: Colors.grey,
+                              if (msg.gig != null)
+                                GestureDetector(
+                                  onTap: () {
+                                    Navigator.of(context).push(
+                                      MaterialPageRoute(
+                                        builder: (context) => GigDetail(
+                                          gigId: msg.gig!.gigId,
+                                          title: msg.gig!.title,
+                                          sessionKey: widget.sessionKey,
+                                          clearSessionKey: () {}, // Provide a dummy function as it's not used here
+                                        ),
+                                      ),
+                                    );
+                                  },
+                                  child: Container(
+                                    padding: const EdgeInsets.all(8),
+                                    margin: const EdgeInsets.only(bottom: 8),
+                                    decoration: BoxDecoration(
+                                      color: isMe ? Colors.blue[50] : Colors.grey[200],
+                                      borderRadius: BorderRadius.circular(8),
+                                      border: Border.all(color: Colors.blueAccent),
+                                    ),
+                                    child: Column(
+                                      crossAxisAlignment: CrossAxisAlignment.start,
+                                      children: [
+                                        Text(
+                                          msg.gig!.title,
+                                          style: TextStyle(fontWeight: FontWeight.bold),
+                                        ),
+                                        Text(
+                                          '${DateFormat("yyyy-MM-dd").format(msg.gig!.dateStart.toLocal())} - ${DateFormat("yyyy-MM-dd").format(msg.gig!.dateEnd.toLocal())}',
+                                          style: TextStyle(fontSize: 12),
+                                        ),
+                                        Text(
+                                          '${msg.gig!.timeStart} - ${msg.gig!.timeEnd}',
+                                          style: TextStyle(fontSize: 12),
+                                        ),
+                                        Text(
+                                          '地址: ${msg.gig!.city}${msg.gig!.district}${msg.gig!.address}',
+                                          style: TextStyle(fontSize: 12),
+                                        ),
+                                      ],
+                                    ),
+                                  ),
+                                ),
+                              Text(msg.content),
+                              const SizedBox(height: 4),
+                              Text(
+                                DateFormat("yyyy-MM-dd HH:mm").format(msg.createdAt.toLocal()),
+                                style: const TextStyle(
+                                  fontSize: 10,
+                                  color: Colors.grey,
+                                ),
                               ),
-                            ),
                           ],
                         ),
                       ),
@@ -360,11 +501,15 @@ class _ChattingRoomState extends State<ChattingRoom> {
     );
   }
 
-  void _showContextMenu(BuildContext context, Message message) {
+  void _showContextMenu(BuildContext context, Message message) async {
+    setState(() {
+      _activeMessageId = message.messagesId;
+    });
+
     final isMe = message.senderWorkerId != null; // Simplified check
     final canRetract = DateTime.now().difference(message.createdAt).inHours <= 3;
 
-    showModalBottomSheet(
+    await showModalBottomSheet(
       context: context,
       barrierColor: Colors.transparent,
       builder: (BuildContext context) {
@@ -381,27 +526,69 @@ class _ChattingRoomState extends State<ChattingRoom> {
                   Navigator.pop(context);
                 },
               ),
-              if (isMe)
+              if (isMe && canRetract)
                 ListTile(
                   leading: Icon(Icons.undo),
                   title: Text('Retract'),
-                  onTap: canRetract
-                      ? () {
-                          _retractMessage(message.messagesId);
-                          Navigator.pop(context);
-                        }
-                      : null,
+                  onTap: () {
+                    Navigator.pop(context); // Close bottom sheet first
+                    _confirmAction(
+                      context,
+                      '撤回信息',
+                      '您確定要撤回此訊息嗎？此操作將從雙方裝置中刪除訊息',
+                      () => _retractMessage(message.messagesId),
+                    );
+                  },
                 ),
               ListTile(
                 leading: Icon(Icons.delete),
                 title: Text('Delete'),
                 onTap: () {
-                  _deleteMessage(message.messagesId);
-                  Navigator.pop(context);
+                  Navigator.pop(context); // Close bottom sheet first
+                  _confirmAction(
+                    context,
+                    '刪除信息',
+                    '您確定要刪除此訊息嗎？此操作僅會從您的裝置中刪除訊息，對方仍然可以查看',
+                    () => _deleteMessage(message.messagesId),
+                  );
                 },
               ),
             ],
           ),
+        );
+      },
+    );
+
+    setState(() {
+      _activeMessageId = null;
+    });
+  }
+
+  // New method for confirmation dialog
+  Future<void> _confirmAction(
+      BuildContext context, String title, String content, Function onConfirm) async {
+    return showDialog<void>(
+      context: context,
+      barrierDismissible: false, // User must tap a button to close the dialog
+      builder: (BuildContext dialogContext) {
+        return AlertDialog(
+          title: Text(title),
+          content: Text(content, style: TextStyle(fontSize: 16)),
+          actions: <Widget>[
+            TextButton(
+              child: const Text('Cancel'),
+              onPressed: () {
+                Navigator.of(dialogContext).pop(); // Dismiss dialog
+              },
+            ),
+            TextButton(
+              child: const Text('Confirm'),
+              onPressed: () {
+                Navigator.of(dialogContext).pop(); // Dismiss dialog
+                onConfirm(); // Execute the confirmed action
+              },
+            ),
+          ],
         );
       },
     );
