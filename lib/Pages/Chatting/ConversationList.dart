@@ -23,13 +23,10 @@ class ConversationList extends StatefulWidget {
 class _ConversationListState extends State<ConversationList> {
   WebSocket? client;
   String status = 'Disconnected';
-  StreamSubscription? _wsSubscription;
   String? _activeConversationId;
 
   final StreamController<dynamic> _streamController =
       StreamController<dynamic>.broadcast();
-
-  
 
   final ScrollController _scrollController = ScrollController();
 
@@ -122,14 +119,15 @@ class _ConversationListState extends State<ConversationList> {
     final token = await getToken();
     if (token.isEmpty) return;
 
-    client = await WebSocket.connect(
-      "wss://${Constant.backendUrl.substring(8)}/chat/ws",
-    ).then((ws) {
-      ws.add(jsonEncode({"type": "auth", "token": token}));
-      if (!mounted) return ws;
-      setState(() => status = "Connected");
-      return ws;
-    });
+    client =
+        await WebSocket.connect(
+          "wss://${Constant.backendUrl.substring(8)}/chat/ws",
+        ).then((ws) {
+          ws.add(jsonEncode({"type": "auth", "token": token}));
+          if (!mounted) return ws;
+          setState(() => status = "Connected");
+          return ws;
+        });
 
     client!.listen(
       (data) {
@@ -147,10 +145,6 @@ class _ConversationListState extends State<ConversationList> {
       onError: (e) => debugPrint("WebSocket error: $e"),
     );
 
-    _wsSubscription = _streamController.stream.listen((message) {
-      if (!mounted) return;
-      _handleWSMessage(message);
-    });
   }
 
   /// -------------------------
@@ -176,8 +170,9 @@ class _ConversationListState extends State<ConversationList> {
     final newLastMessage = data["content"];
     final newLastMessageAt = DateTime.parse(data["createdAt"]);
 
-    final index =
-        conversations.indexWhere((c) => c.conversationId == conversationId);
+    final index = conversations.indexWhere(
+      (c) => c.conversationId == conversationId,
+    );
 
     if (index == -1) return;
     if (!mounted) return;
@@ -194,7 +189,10 @@ class _ConversationListState extends State<ConversationList> {
 
   // --- Delete Conversation Logic ---
 
-  void _showConversationContextMenu(BuildContext context, ConversationChat conversation) async {
+  void _showConversationContextMenu(
+    BuildContext context,
+    ConversationChat conversation,
+  ) async {
     setState(() {
       _activeConversationId = conversation.conversationId;
     });
@@ -202,7 +200,7 @@ class _ConversationListState extends State<ConversationList> {
     await showModalBottomSheet(
       context: context,
       barrierColor: Colors.transparent,
-      isScrollControlled: true, 
+      isScrollControlled: true,
       builder: (BuildContext context) {
         return Container(
           height: MediaQuery.of(context).size.height * 0.1,
@@ -231,14 +229,19 @@ class _ConversationListState extends State<ConversationList> {
     });
   }
 
-  Future<void> _confirmDeleteConversation(BuildContext context, ConversationChat conversation) async {
+  Future<void> _confirmDeleteConversation(
+    BuildContext context,
+    ConversationChat conversation,
+  ) async {
     return showDialog<void>(
       context: context,
       barrierDismissible: false,
       builder: (BuildContext dialogContext) {
         return AlertDialog(
           title: Text('Delete Conversation'),
-          content: Text('Are you sure you want to delete this conversation? This action cannot be undone.'),
+          content: Text(
+            'Are you sure you want to delete this conversation? This action cannot be undone.',
+          ),
           actions: <Widget>[
             TextButton(
               child: const Text('Cancel'),
@@ -272,13 +275,13 @@ class _ConversationListState extends State<ConversationList> {
       setState(() {
         conversations.removeWhere((c) => c.conversationId == conversationId);
       });
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('Conversation deleted')),
-      );
+      ScaffoldMessenger.of(
+        context,
+      ).showSnackBar(SnackBar(content: Text('Conversation deleted')));
     } else {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('Failed to delete conversation')),
-      );
+      ScaffoldMessenger.of(
+        context,
+      ).showSnackBar(SnackBar(content: Text('Failed to delete conversation')));
     }
   }
 
@@ -317,22 +320,25 @@ class _ConversationListState extends State<ConversationList> {
               },
               child: InkWell(
                 child: ListTile(
-                  tileColor: _activeConversationId == item.conversationId ? Colors.grey[300] : null,
+                  tileColor: _activeConversationId == item.conversationId
+                      ? Colors.grey[300]
+                      : null,
                   leading: CircleAvatar(
                     radius: 34,
                     backgroundImage: item.opponent.profilePhoto?.url != null
                         ? NetworkImage(item.opponent.profilePhoto!.url)
-                        : const AssetImage(
-                                'assets/anonymous-profile-photo.png')
-                            as ImageProvider,
+                        : const AssetImage('assets/anonymous-profile-photo.png')
+                              as ImageProvider,
                   ),
                   title: Text(
                     item.opponent.name,
                     style: TextStyle(
                       fontSize: 18,
-                      fontWeight: item.lastMessageAt.isAfter(
-                              item.lastReadAtByWorker ??
-                                  DateTime.fromMillisecondsSinceEpoch(0))
+                      fontWeight:
+                          item.lastMessageAt.isAfter(
+                            item.lastReadAtByWorker ??
+                                DateTime.fromMillisecondsSinceEpoch(0),
+                          )
                           ? FontWeight.w600
                           : FontWeight.normal,
                     ),
@@ -346,9 +352,11 @@ class _ConversationListState extends State<ConversationList> {
                           overflow: TextOverflow.ellipsis,
                           style: TextStyle(
                             fontSize: 16,
-                            color: item.lastMessageAt.isAfter(
-                                    item.lastReadAtByWorker ??
-                                        DateTime.fromMillisecondsSinceEpoch(0))
+                            color:
+                                item.lastMessageAt.isAfter(
+                                  item.lastReadAtByWorker ??
+                                      DateTime.fromMillisecondsSinceEpoch(0),
+                                )
                                 ? Colors.black
                                 : Colors.grey,
                           ),
@@ -357,13 +365,16 @@ class _ConversationListState extends State<ConversationList> {
                       Text(
                         '•${DateFormat('yyyy/MM/dd HH:mm').format(item.lastMessageAt.toLocal())}',
                         style: TextStyle(
-                            fontSize: 14,
-                            color: item.lastMessageAt.isAfter(
-                                    item.lastReadAtByWorker ??
-                                        DateTime.fromMillisecondsSinceEpoch(0))
-                                ? Colors.black
-                                : Colors.grey),
-                      )
+                          fontSize: 14,
+                          color:
+                              item.lastMessageAt.isAfter(
+                                item.lastReadAtByWorker ??
+                                    DateTime.fromMillisecondsSinceEpoch(0),
+                              )
+                              ? Colors.black
+                              : Colors.grey,
+                        ),
+                      ),
                     ],
                   ),
                 ),

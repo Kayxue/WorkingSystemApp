@@ -53,7 +53,8 @@ class _ChattingRoomState extends State<ChattingRoom> {
   // Getter for the active WebSocket client
   WebSocket? get _activeClient => widget.client ?? _localClient;
   // Getter for the active Stream
-  Stream<dynamic>? get _activeStream => widget.stream ?? _localStreamController?.stream;
+  Stream<dynamic>? get _activeStream =>
+      widget.stream ?? _localStreamController?.stream;
 
   @override
   void initState() {
@@ -135,17 +136,18 @@ class _ChattingRoomState extends State<ChattingRoom> {
 
     _localStreamController = StreamController<dynamic>.broadcast();
 
-    _localClient = await WebSocket.connect(
-      "wss://${Constant.backendUrl.substring(8)}/chat/ws",
-    ).then((client) {
-      client.add("{\"type\":\"auth\", \"token\":\"$token\"}");
-      if (mounted) {
-        setState(() {
-          // Update status if needed, but this room is isolated
+    _localClient =
+        await WebSocket.connect(
+          "wss://${Constant.backendUrl.substring(8)}/chat/ws",
+        ).then((client) {
+          client.add("{\"type\":\"auth\", \"token\":\"$token\"}");
+          if (mounted) {
+            setState(() {
+              // Update status if needed, but this room is isolated
+            });
+          }
+          return client;
         });
-      }
-      return client;
-    });
 
     _addEventListeners(token);
   }
@@ -173,7 +175,7 @@ class _ChattingRoomState extends State<ChattingRoom> {
       messages = msgs.reversed.toList();
       if (msgs.length == 20) {
         olderCursor = msgs.first.createdAt.toIso8601String();
-      }else {
+      } else {
         hasMore = false;
       }
     });
@@ -210,7 +212,11 @@ class _ChattingRoomState extends State<ChattingRoom> {
     }
 
     final list = jsonDecode(response.body) as List;
-    final older = list.map((e) => Message.fromJson(e)).toList().reversed.toList();
+    final older = list
+        .map((e) => Message.fromJson(e))
+        .toList()
+        .reversed
+        .toList();
     if (older.length < 20) {
       setState(() {
         messages.insertAll(messages.length, older);
@@ -262,7 +268,8 @@ class _ChattingRoomState extends State<ChattingRoom> {
   /// Send message
   /// ----------------------------------------
   void _sendMessage() {
-    if (_textController.text.trim().isEmpty || _activeClient == null) return; // Use _activeClient
+    if (_textController.text.trim().isEmpty || _activeClient == null)
+      return; // Use _activeClient
 
     final text = _textController.text.trim();
 
@@ -270,7 +277,8 @@ class _ChattingRoomState extends State<ChattingRoom> {
       "type": "private_message",
       "recipientId": widget.opponentId,
       "text": text,
-      if (_replyingToMessage != null) "replyToId": _replyingToMessage!.messagesId,
+      if (_replyingToMessage != null)
+        "replyToId": _replyingToMessage!.messagesId,
     };
 
     _activeClient!.add(jsonEncode(message)); // Use _activeClient
@@ -371,7 +379,8 @@ class _ChattingRoomState extends State<ChattingRoom> {
                     openThreshold: 0.99,
                     dismissible: DismissiblePane(
                       dismissThreshold: 0.5,
-                      onDismissed: () {}, // 這裡是必填的，但在這個情境下不會真的執行到，因為下面會 return false
+                      onDismissed:
+                          () {}, // 這裡是必填的，但在這個情境下不會真的執行到，因為下面會 return false
                       confirmDismiss: () async {
                         // 1. 在這裡執行你的回覆邏輯
                         setState(() {
@@ -383,7 +392,7 @@ class _ChattingRoomState extends State<ChattingRoom> {
                       },
                     ),
                     children: [
-                      SlidableAction( 
+                      SlidableAction(
                         onPressed: null,
                         backgroundColor: Colors.transparent,
                         foregroundColor: Colors.grey,
@@ -395,7 +404,9 @@ class _ChattingRoomState extends State<ChattingRoom> {
                     onLongPress: () => _showContextMenu(context, msg),
                     child: Container(
                       padding: const EdgeInsets.symmetric(vertical: 8),
-                      alignment: isMe ? Alignment.centerRight : Alignment.centerLeft,
+                      alignment: isMe
+                          ? Alignment.centerRight
+                          : Alignment.centerLeft,
                       color: isActive ? Colors.grey[500] : Colors.transparent,
                       child: Container(
                         constraints: BoxConstraints(
@@ -411,16 +422,21 @@ class _ChattingRoomState extends State<ChattingRoom> {
                           children: [
                             if (msg.replySnippet != null)
                               GestureDetector(
-                                onTap: () => _scrollToMessage(msg.replySnippet!.messagesId),
+                                onTap: () => _scrollToMessage(
+                                  msg.replySnippet!.messagesId,
+                                ),
                                 child: Container(
                                   padding: const EdgeInsets.all(8),
                                   margin: const EdgeInsets.only(bottom: 8),
                                   decoration: BoxDecoration(
-                                    color: isMe ? Colors.blue[50] : Colors.grey[200],
+                                    color: isMe
+                                        ? Colors.blue[50]
+                                        : Colors.grey[200],
                                     borderRadius: BorderRadius.circular(8),
                                   ),
                                   child: Column(
-                                    crossAxisAlignment: CrossAxisAlignment.start,
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.start,
                                     children: [
                                       Text(
                                         msg.replySnippet!.content,
@@ -432,60 +448,70 @@ class _ChattingRoomState extends State<ChattingRoom> {
                                   ),
                                 ),
                               ),
-                              if (msg.gig != null)
-                                GestureDetector(
-                                  onTap: () {
-                                    Navigator.of(context).push(
-                                      MaterialPageRoute(
-                                        builder: (context) => GigDetail(
-                                          gigId: msg.gig!.gigId,
-                                          title: msg.gig!.title,
-                                          sessionKey: widget.sessionKey,
-                                          clearSessionKey: () {}, // Provide a dummy function as it's not used here
-                                        ),
+                            if (msg.gig != null)
+                              GestureDetector(
+                                onTap: () {
+                                  Navigator.of(context).push(
+                                    MaterialPageRoute(
+                                      builder: (context) => GigDetail(
+                                        gigId: msg.gig!.gigId,
+                                        title: msg.gig!.title,
+                                        sessionKey: widget.sessionKey,
+                                        clearSessionKey:
+                                            () {}, // Provide a dummy function as it's not used here
                                       ),
-                                    );
-                                  },
-                                  child: Container(
-                                    padding: const EdgeInsets.all(8),
-                                    margin: const EdgeInsets.only(bottom: 8),
-                                    decoration: BoxDecoration(
-                                      color: isMe ? Colors.blue[50] : Colors.grey[200],
-                                      borderRadius: BorderRadius.circular(8),
-                                      border: Border.all(color: Colors.blueAccent),
                                     ),
-                                    child: Column(
-                                      crossAxisAlignment: CrossAxisAlignment.start,
-                                      children: [
-                                        Text(
-                                          msg.gig!.title,
-                                          style: TextStyle(fontWeight: FontWeight.bold),
-                                        ),
-                                        Text(
-                                          '${DateFormat("yyyy-MM-dd").format(msg.gig!.dateStart.toLocal())} - ${DateFormat("yyyy-MM-dd").format(msg.gig!.dateEnd.toLocal())}',
-                                          style: TextStyle(fontSize: 12),
-                                        ),
-                                        Text(
-                                          '${msg.gig!.timeStart} - ${msg.gig!.timeEnd}',
-                                          style: TextStyle(fontSize: 12),
-                                        ),
-                                        Text(
-                                          '地址: ${msg.gig!.city}${msg.gig!.district}${msg.gig!.address}',
-                                          style: TextStyle(fontSize: 12),
-                                        ),
-                                      ],
+                                  );
+                                },
+                                child: Container(
+                                  padding: const EdgeInsets.all(8),
+                                  margin: const EdgeInsets.only(bottom: 8),
+                                  decoration: BoxDecoration(
+                                    color: isMe
+                                        ? Colors.blue[50]
+                                        : Colors.grey[200],
+                                    borderRadius: BorderRadius.circular(8),
+                                    border: Border.all(
+                                      color: Colors.blueAccent,
                                     ),
                                   ),
-                                ),
-                              Text(msg.content),
-                              const SizedBox(height: 4),
-                              Text(
-                                DateFormat("yyyy-MM-dd HH:mm").format(msg.createdAt.toLocal()),
-                                style: const TextStyle(
-                                  fontSize: 10,
-                                  color: Colors.grey,
+                                  child: Column(
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.start,
+                                    children: [
+                                      Text(
+                                        msg.gig!.title,
+                                        style: TextStyle(
+                                          fontWeight: FontWeight.bold,
+                                        ),
+                                      ),
+                                      Text(
+                                        '${DateFormat("yyyy-MM-dd").format(msg.gig!.dateStart.toLocal())} - ${DateFormat("yyyy-MM-dd").format(msg.gig!.dateEnd.toLocal())}',
+                                        style: TextStyle(fontSize: 12),
+                                      ),
+                                      Text(
+                                        '${msg.gig!.timeStart} - ${msg.gig!.timeEnd}',
+                                        style: TextStyle(fontSize: 12),
+                                      ),
+                                      Text(
+                                        '地址: ${msg.gig!.city}${msg.gig!.district}${msg.gig!.address}',
+                                        style: TextStyle(fontSize: 12),
+                                      ),
+                                    ],
+                                  ),
                                 ),
                               ),
+                            Text(msg.content),
+                            const SizedBox(height: 4),
+                            Text(
+                              DateFormat(
+                                "yyyy-MM-dd HH:mm",
+                              ).format(msg.createdAt.toLocal()),
+                              style: const TextStyle(
+                                fontSize: 10,
+                                color: Colors.grey,
+                              ),
+                            ),
                           ],
                         ),
                       ),
@@ -507,7 +533,8 @@ class _ChattingRoomState extends State<ChattingRoom> {
     });
 
     final isMe = message.senderWorkerId != null; // Simplified check
-    final canRetract = DateTime.now().difference(message.createdAt).inHours <= 3;
+    final canRetract =
+        DateTime.now().difference(message.createdAt).inHours <= 3;
 
     await showModalBottomSheet(
       context: context,
@@ -566,7 +593,11 @@ class _ChattingRoomState extends State<ChattingRoom> {
 
   // New method for confirmation dialog
   Future<void> _confirmAction(
-      BuildContext context, String title, String content, Function onConfirm) async {
+    BuildContext context,
+    String title,
+    String content,
+    Function onConfirm,
+  ) async {
     return showDialog<void>(
       context: context,
       barrierDismissible: false, // User must tap a button to close the dialog
@@ -621,9 +652,9 @@ class _ChattingRoomState extends State<ChattingRoom> {
       });
     } else {
       // Handle error
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('Failed to delete message')),
-      );
+      ScaffoldMessenger.of(
+        context,
+      ).showSnackBar(SnackBar(content: Text('Failed to delete message')));
     }
   }
 
@@ -688,10 +719,7 @@ class _ChattingRoomState extends State<ChattingRoom> {
                   ),
                 ),
               ),
-              IconButton(
-                icon: const Icon(Icons.send),
-                onPressed: _sendMessage,
-              ),
+              IconButton(icon: const Icon(Icons.send), onPressed: _sendMessage),
             ],
           ),
         ],
