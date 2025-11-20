@@ -110,6 +110,29 @@ class _ConversationListState extends State<ConversationList>
   }
 
   /// -------------------------
+  /// Mark Conversation as Read
+  /// -------------------------
+  Future<void> markConversationAsRead(String conversationId) async {
+    await Utils.client.post(
+      "/chat/conversations/$conversationId/read",
+      headers: HttpHeaders.rawMap({
+        "platform": "mobile",
+        "cookie": widget.sessionKey,
+      }),
+    );
+
+    // Update the local state to reflect the read status
+    final index = conversations.indexWhere(
+      (c) => c.conversationId == conversationId,
+    );
+    if (index != -1 && mounted) {
+      setState(() {
+        conversations[index].lastReadAtByWorker = DateTime.now();
+      });
+    }
+  }
+
+  /// -------------------------
   /// Update One Conversation
   /// -------------------------
   void _updateConversation(Map<String, dynamic> data) {
@@ -156,6 +179,16 @@ class _ConversationListState extends State<ConversationList>
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                 children: [
+                  _buildMenuOption(
+                    icon: Icons.mark_chat_read,
+                    label: '標記已讀',
+                    backgroundColor: Colors.blue[100]!,
+                    iconColor: Colors.blue[700]!,
+                    onTap: () {
+                      Navigator.pop(context);
+                      markConversationAsRead(conversation.conversationId);
+                    },
+                  ),
                   _buildMenuOption(
                     icon: Icons.delete_outline,
                     label: '刪除',
