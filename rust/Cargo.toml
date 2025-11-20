@@ -12,9 +12,17 @@ async-trait = "0.1.89"
 ezsockets = { version = "0.7.0", features = ["native-tls"] }
 openssl = { version = "0.10", features = ["vendored"] }
 flutter_rust_bridge = "=2.11.1"
-image = "0.25.8"
+# Optimize image crate - only include common formats
+image = { version = "0.25.8", default-features = false, features = ["png", "jpeg", "webp"] }
 log = "0.4.28"
 parking_lot = "0.12.5"
+
+[profile.release]
+opt-level = "z"     # Optimize for size
+lto = true          # Link Time Optimization
+codegen-units = 1   # Better optimization
+strip = true        # Strip symbols
+panic = "abort"     # Smaller panic handler
 
 [lints.rust]
 unexpected_cfgs = { level = "warn", check-cfg = ['cfg(frb_expand)'] }
