@@ -4,6 +4,7 @@ import 'package:apple_like_avatar_generator/apple_like_avatar_generator.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:image_cropper/image_cropper.dart';
+import 'package:working_system_app/Others/Utils.dart';
 import 'package:working_system_app/Types/JSONObject/WorkerProfile.dart';
 import 'package:working_system_app/src/rust/api/core.dart';
 
@@ -100,7 +101,7 @@ class AvatarEditor extends StatelessWidget {
                 if (image == null) {
                   return;
                 }
-                debugPrint('Selected image path: ${image.path}');
+                Utils.logger.d('Selected image path: ${image.path}');
                 CroppedFile? croppedFile = await ImageCropper().cropImage(
                   sourcePath: image.path,
                   aspectRatio: CropAspectRatio(ratioX: 1, ratioY: 1),
@@ -122,7 +123,7 @@ class AvatarEditor extends StatelessWidget {
                 if (croppedFile == null) {
                   return;
                 }
-                debugPrint('Cropped image path: ${croppedFile.path}');
+                Utils.logger.d('Cropped image path: ${croppedFile.path}');
                 final (croppedImageName, croppedImageSize) =
                     await getImageNameAndSize(croppedFile.path);
                 if (croppedImageSize > 2) {

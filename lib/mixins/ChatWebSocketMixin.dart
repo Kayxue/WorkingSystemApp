@@ -46,7 +46,7 @@ mixin ChatWebSocketMixin<T extends StatefulWidget> on State<T> {
       final body = jsonDecode(response.body) as Map<String, dynamic>;
       return body['token'] as String;
     } catch (e) {
-      debugPrint('Error getting chat token: $e');
+      Utils.logger.e('Error getting chat token: $e');
       return '';
     }
   }
@@ -66,13 +66,13 @@ mixin ChatWebSocketMixin<T extends StatefulWidget> on State<T> {
 
       // Set up message handler before connecting
       chatWebSocket!.onText((text) async {
-        debugPrint('📨 Received message: $text');
+        Utils.logger.d('📨 Received message: $text');
         _chatStreamController?.add(text);
       });
 
       // Set up connection handler
       chatWebSocket!.onConnect(() async {
-        debugPrint('✅ WebSocket connected');
+        Utils.logger.i('✅ WebSocket connected');
         // Send authentication message after connection
         chatWebSocket!.sendText(jsonEncode({"type": "auth", "token": token}));
 
@@ -88,7 +88,9 @@ mixin ChatWebSocketMixin<T extends StatefulWidget> on State<T> {
 
       // Set up close handler
       chatWebSocket!.onClose((frame) async {
-        debugPrint('❌ WebSocket closed: ${frame?.reason ?? "Unknown reason"}');
+        Utils.logger.w(
+          '❌ WebSocket closed: ${frame?.reason ?? "Unknown reason"}',
+        );
         if (mounted) {
           setState(() {
             chatStatus = 'Disconnected';
@@ -99,7 +101,7 @@ mixin ChatWebSocketMixin<T extends StatefulWidget> on State<T> {
 
       // Set up disconnect handler
       chatWebSocket!.onDisconnect(() async {
-        debugPrint('🔌 WebSocket disconnected');
+        Utils.logger.w('🔌 WebSocket disconnected');
         if (mounted) {
           setState(() {
             chatStatus = 'Disconnected';
@@ -110,7 +112,7 @@ mixin ChatWebSocketMixin<T extends StatefulWidget> on State<T> {
 
       // Set up error handler
       chatWebSocket!.onConnectionFailed((error) async {
-        debugPrint('⚠️ WebSocket connection failed: ${error.message}');
+        Utils.logger.e('⚠️ WebSocket connection failed: ${error.message}');
         if (mounted) {
           setState(() {
             chatStatus = 'Error';
@@ -129,9 +131,9 @@ mixin ChatWebSocketMixin<T extends StatefulWidget> on State<T> {
         "wss://${Constant.backendUrl.substring(8)}/chat/ws",
       );
 
-      debugPrint('🔄 Connecting to chat WebSocket...');
+      Utils.logger.i('🔄 Connecting to chat WebSocket...');
     } catch (e) {
-      debugPrint('Error connecting to chat WebSocket: $e');
+      Utils.logger.e('Error connecting to chat WebSocket: $e');
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(content: Text('Failed to connect to chat: $e')),
@@ -157,7 +159,7 @@ mixin ChatWebSocketMixin<T extends StatefulWidget> on State<T> {
         // Call the custom message handler
         onChatMessage(body);
       } catch (e) {
-        debugPrint('Error handling chat message: $e');
+        Utils.logger.e('Error handling chat message: $e');
       }
     });
 

@@ -1,5 +1,5 @@
-import 'package:flutter/foundation.dart';
 import 'dart:io';
+import 'package:flutter/foundation.dart';
 import 'package:working_system_app/Services/FCMService.dart';
 import 'package:working_system_app/Others/Utils.dart';
 
@@ -27,13 +27,9 @@ class NotificationManager {
       await _subscribeToDefaultTopics();
       _isInitialized = true;
 
-      if (kDebugMode) {
-        debugPrint('通知管理器初始化完成');
-      }
+      Utils.logger.i('通知管理器初始化完成');
     } catch (e) {
-      if (kDebugMode) {
-        debugPrint('通知管理器初始化失敗: $e');
-      }
+      Utils.logger.e('通知管理器初始化失敗: $e');
     }
   }
 
@@ -42,9 +38,7 @@ class NotificationManager {
   }
 
   static void _onTokenUpdated(String newToken) {
-    if (kDebugMode) {
-      debugPrint('FCM Token 已更新: $newToken');
-    }
+    Utils.logger.i('FCM Token 已更新: $newToken');
 
     _currentFCMToken = newToken;
     _sendTokenToServer(newToken);
@@ -53,9 +47,7 @@ class NotificationManager {
   static Future<void> _sendTokenToServer(String token) async {
     try {
       if (_currentSessionKey == null || _currentSessionKey!.isEmpty) {
-        if (kDebugMode) {
-          debugPrint('使用者未登入，跳過 FCM Token 註冊');
-        }
+        Utils.logger.d('使用者未登入，跳過 FCM Token 註冊');
         return;
       }
 
@@ -72,9 +64,7 @@ class NotificationManager {
         "cookie": _currentSessionKey!,
       };
 
-      if (kDebugMode) {
-        debugPrint('發送 FCM Token 到伺服器');
-      }
+      Utils.logger.d('發送 FCM Token 到伺服器');
 
       final response = await Utils.client.post(
         "/fcm/register",
@@ -83,24 +73,18 @@ class NotificationManager {
       );
 
       if (response.statusCode == 200) {
-        if (kDebugMode) {
-          debugPrint('FCM Token 註冊成功');
-        }
+        Utils.logger.i('FCM Token 註冊成功');
       } else {
-        if (kDebugMode) {
-          debugPrint('FCM Token 註冊失敗，狀態碼: ${response.statusCode}');
-          debugPrint('回應內容: ${response.body}');
+        Utils.logger.e('FCM Token 註冊失敗，狀態碼: ${response.statusCode}');
+        Utils.logger.e('回應內容: ${response.body}');
 
-          if (response.statusCode == 401) {
-            debugPrint('Session 可能已過期，清除本地 sessionKey');
-            _currentSessionKey = null;
-          }
+        if (response.statusCode == 401) {
+          Utils.logger.w('Session 可能已過期，清除本地 sessionKey');
+          _currentSessionKey = null;
         }
       }
     } catch (e) {
-      if (kDebugMode) {
-        debugPrint('發送 Token 到伺服器失敗: $e');
-      }
+      Utils.logger.e('發送 Token 到伺服器失敗: $e');
     }
   }
 
@@ -121,9 +105,7 @@ class NotificationManager {
   static Future<void> _subscribeToDefaultTopics() async {
     await FCMService.subscribeToTopic('general_notifications');
 
-    if (kDebugMode) {
-      debugPrint('已訂閱一般通知主題');
-    }
+    Utils.logger.i('已訂閱一般通知主題');
   }
 
   /// 根據使用者登入狀態管理訂閱

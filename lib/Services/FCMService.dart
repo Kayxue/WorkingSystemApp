@@ -1,8 +1,8 @@
 import 'dart:io';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
-import 'package:flutter/foundation.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
+import 'package:working_system_app/Others/Utils.dart';
 import 'package:working_system_app/firebase_options.dart';
 
 class FCMService {
@@ -21,9 +21,7 @@ class FCMService {
         options: DefaultFirebaseOptions.currentPlatform,
       );
     } catch (e) {
-      if (kDebugMode) {
-        debugPrint('Firebase 初始化錯誤: $e');
-      }
+      Utils.logger.e('Firebase 初始化錯誤: $e');
     }
 
     await _requestPermission();
@@ -45,9 +43,7 @@ class FCMService {
       sound: true,
     );
 
-    if (kDebugMode) {
-      debugPrint('通知權限狀態: ${settings.authorizationStatus}');
-    }
+    Utils.logger.i('通知權限狀態: ${settings.authorizationStatus}');
   }
 
   /// 初始化本地通知
@@ -82,14 +78,10 @@ class FCMService {
 
     try {
       String? token = await _firebaseMessaging.getToken();
-      if (kDebugMode) {
-        debugPrint('FCM Token: $token');
-      }
+      Utils.logger.i('FCM Token: $token');
       return token;
     } catch (e) {
-      if (kDebugMode) {
-        debugPrint('獲取 FCM Token 錯誤: $e');
-      }
+      Utils.logger.e('獲取 FCM Token 錯誤: $e');
       return null;
     }
   }
@@ -97,9 +89,7 @@ class FCMService {
   /// 設定前景訊息處理
   static void _setupForegroundMessageHandler() {
     FirebaseMessaging.onMessage.listen((RemoteMessage message) {
-      if (kDebugMode) {
-        debugPrint('收到前景訊息: ${message.notification?.title}');
-      }
+      Utils.logger.i('收到前景訊息: ${message.notification?.title}');
 
       _showLocalNotification(message);
     });
@@ -141,9 +131,7 @@ class FCMService {
   /// 設定點擊通知處理
   static void _setupNotificationClickHandler() {
     FirebaseMessaging.onMessageOpenedApp.listen((RemoteMessage message) {
-      if (kDebugMode) {
-        debugPrint('點擊通知開啟應用程式: ${message.notification?.title}');
-      }
+      Utils.logger.i('點擊通知開啟應用程式: ${message.notification?.title}');
       _handleNotificationClick(message.data);
     });
 
@@ -152,9 +140,7 @@ class FCMService {
       RemoteMessage? message,
     ) {
       if (message != null) {
-        if (kDebugMode) {
-          debugPrint('從終止狀態點擊通知開啟應用程式: ${message.notification?.title}');
-        }
+        Utils.logger.i('從終止狀態點擊通知開啟應用程式: ${message.notification?.title}');
         _handleNotificationClick(message.data);
       }
     });
@@ -162,16 +148,12 @@ class FCMService {
 
   /// 處理通知點擊事件
   static void _handleNotificationClick(Map<String, dynamic> data) {
-    if (kDebugMode) {
-      debugPrint('處理通知點擊，資料: $data');
-    }
+    Utils.logger.d('處理通知點擊，資料: $data');
   }
 
   /// 本地通知點擊處理
   static void _onNotificationTap(NotificationResponse notificationResponse) {
-    if (kDebugMode) {
-      debugPrint('點擊本地通知: ${notificationResponse.payload}');
-    }
+    Utils.logger.d('點擊本地通知: ${notificationResponse.payload}');
   }
 
   /// 訂閱主題
@@ -182,13 +164,9 @@ class FCMService {
 
     try {
       await _firebaseMessaging.subscribeToTopic(topic);
-      if (kDebugMode) {
-        debugPrint('成功訂閱主題: $topic');
-      }
+      Utils.logger.i('成功訂閱主題: $topic');
     } catch (e) {
-      if (kDebugMode) {
-        debugPrint('訂閱主題錯誤: $e');
-      }
+      Utils.logger.e('訂閱主題錯誤: $e');
     }
   }
 
@@ -200,13 +178,9 @@ class FCMService {
 
     try {
       await _firebaseMessaging.unsubscribeFromTopic(topic);
-      if (kDebugMode) {
-        debugPrint('成功取消訂閱主題: $topic');
-      }
+      Utils.logger.i('成功取消訂閱主題: $topic');
     } catch (e) {
-      if (kDebugMode) {
-        debugPrint('取消訂閱主題錯誤: $e');
-      }
+      Utils.logger.e('取消訂閱主題錯誤: $e');
     }
   }
 
@@ -223,11 +197,9 @@ class FCMService {
 /// 背景訊息處理器
 @pragma('vm:entry-point')
 Future<void> _backgroundMessageHandler(RemoteMessage message) async {
-  await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
+  await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform  );
 
-  if (kDebugMode) {
-    debugPrint('收到背景訊息: ${message.notification?.title}');
-  }
+  Utils.logger.i('收到背景訊息: ${message.notification?.title}');
 
   // 注意：不要在背景處理器中顯示 UI
 }

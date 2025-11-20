@@ -154,12 +154,12 @@ class _ChattingRoomState extends State<ChattingRoom> with ChatWebSocketMixin {
     if (isLoadingOlder || !hasMore || olderCursor == null) return;
 
     setState(() => isLoadingOlder = true);
-    print("Loading older messages before $olderCursor");
+    Utils.logger.d("Loading older messages before $olderCursor");
 
     final url =
         "/chat/conversations/${widget.conversationId}/messages?limit=20&before=$olderCursor";
 
-    print(url);
+    Utils.logger.d(url);
     final response = await Utils.client.get(
       url,
       headers: HttpHeaders.rawMap({
@@ -169,8 +169,8 @@ class _ChattingRoomState extends State<ChattingRoom> with ChatWebSocketMixin {
     );
 
     if (response.statusCode != 200) {
-      print("Failed to load older messages");
-      print(response.body);
+      Utils.logger.e("Failed to load older messages");
+      Utils.logger.e(response.body);
       setState(() => isLoadingOlder = false);
       return;
     }
@@ -735,19 +735,19 @@ class _ChattingRoomState extends State<ChattingRoom> with ChatWebSocketMixin {
           Row(
             children: [
               Expanded(
-                child: Container(
-                  padding: EdgeInsets.all(8),
-                  decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(24),
-                    border: Border.all(color: Colors.grey),
-                  ),
-                  child: TextField(
-                    controller: _textController,
-                    keyboardType: TextInputType.multiline,
-                    minLines: 1,
-                    maxLines: 6,
-                    decoration: const InputDecoration.collapsed(
-                      hintText: 'Send a message...',
+                child: TextField(
+                  controller: _textController,
+                  keyboardType: TextInputType.multiline,
+                  minLines: 1,
+                  maxLines: 6,
+                  decoration: InputDecoration(
+                    hintText: 'Send a message...',
+                    border: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(24),
+                    ),
+                    contentPadding: EdgeInsets.symmetric(
+                      horizontal: 8,
+                      vertical: 8,
                     ),
                   ),
                 ),

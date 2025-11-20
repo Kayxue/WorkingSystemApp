@@ -33,7 +33,7 @@ class _GivingReviewState extends State<GivingReview> {
     if (response.statusCode == 201) {
       return (true, null);
     }
-    debugPrint("Response body: ${response.body}");
+    Utils.logger.e("Response body: ${response.body}");
     try {
       final bodyJson = jsonDecode(response.body) as Map<String, dynamic>;
       final errors = (bodyJson["errors"] as List<dynamic>)

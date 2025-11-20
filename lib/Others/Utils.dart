@@ -1,9 +1,11 @@
 import 'dart:convert';
 
+import 'package:flutter/foundation.dart';
 import 'package:flutter/services.dart';
 import 'package:rhttp/rhttp.dart';
 import 'package:working_system_app/Others/Constant.dart';
 import 'package:working_system_app/Types/JSONObject/PersonalUnread.dart';
+import 'package:logger/logger.dart';
 
 class Utils {
   static Future<Map<String, List<String>>> loadCityDistrictMap() async {
@@ -31,4 +33,6 @@ class Utils {
     final result = PersonalUnread.fromJson(body);
     return result;
   }
+
+  static var logger = Logger(level: kDebugMode ? Level.all : Level.off);
 }

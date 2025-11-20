@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:working_system_app/Others/Constant.dart';
+import 'package:working_system_app/Others/Utils.dart';
 import 'package:working_system_app/Pages/ApplicationGigDetails.dart';
 import 'package:working_system_app/Pages/ViewConflict.dart';
 import 'package:working_system_app/Types/JSONObject/Application.dart';
@@ -50,7 +51,7 @@ class _ApplicationCardState extends State<ApplicationCard> {
             ),
           );
 
-          debugPrint('ApplicationGigDetails returned: $result');
+          Utils.logger.d('ApplicationGigDetails returned: $result');
 
           if (result != null && result == true) {
             await widget.moveToPage(2);
