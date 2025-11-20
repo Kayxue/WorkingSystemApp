@@ -249,6 +249,7 @@ class _UpdateUserInfoState extends State<UpdateUserInfo>
                         }),
                         onTapOutside: (event) =>
                             FocusManager.instance.primaryFocus?.unfocus(),
+                        keyboardType: TextInputType.name,
                       ),
                       SizedBox(height: 16),
                       TextField(
@@ -261,6 +262,7 @@ class _UpdateUserInfoState extends State<UpdateUserInfo>
                         }),
                         onTapOutside: (event) =>
                             FocusManager.instance.primaryFocus?.unfocus(),
+                        keyboardType: TextInputType.name,
                       ),
                       SizedBox(height: 16),
                       Text('Study status', style: TextStyle(fontSize: 16)),

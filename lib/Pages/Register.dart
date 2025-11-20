@@ -82,7 +82,10 @@ class _RegisterState extends State<Register> with TickerProviderStateMixin {
       final errorMessages = (jsonDecode(errors["message"]) as List<dynamic>)
           .groupListsBy((e) => e["path"][0] as String)
           .entries
-          .map((e) => "${e.key} field:\n${e.value.map((v) => " -${v["message"]}").join("\n")}")
+          .map(
+            (e) =>
+                "${e.key} field:\n${e.value.map((v) => " -${v["message"]}").join("\n")}",
+          )
           .join("\n");
       return (false, errorMessages);
     } on FormatException {
@@ -117,6 +120,7 @@ class _RegisterState extends State<Register> with TickerProviderStateMixin {
                         onChanged: (value) => setState(() {
                           registerForm.firstName = value;
                         }),
+                        keyboardType: TextInputType.name,
                       ),
                       SizedBox(height: 16),
                       TextField(
@@ -126,6 +130,7 @@ class _RegisterState extends State<Register> with TickerProviderStateMixin {
                         onChanged: (value) => setState(() {
                           registerForm.lastName = value;
                         }),
+                        keyboardType: TextInputType.name,
                       ),
                       SizedBox(height: 16),
                       TextField(
@@ -135,6 +140,7 @@ class _RegisterState extends State<Register> with TickerProviderStateMixin {
                         onChanged: (value) => setState(() {
                           registerForm.phoneNumber = value;
                         }),
+                        keyboardType: TextInputType.phone,
                       ),
                       SizedBox(height: 16),
                       TextField(
@@ -142,6 +148,7 @@ class _RegisterState extends State<Register> with TickerProviderStateMixin {
                         onChanged: (value) => setState(() {
                           registerForm.email = value;
                         }),
+                        keyboardType: TextInputType.emailAddress,
                       ),
                       SizedBox(height: 16),
                       TextField(
@@ -152,6 +159,7 @@ class _RegisterState extends State<Register> with TickerProviderStateMixin {
                           registerForm.password = value;
                         }),
                         obscureText: true,
+                        keyboardType: TextInputType.visiblePassword,
                       ),
                       SizedBox(height: 16),
                       TextField(
@@ -162,6 +170,7 @@ class _RegisterState extends State<Register> with TickerProviderStateMixin {
                           confirmPassword = value;
                         }),
                         obscureText: true,
+                        keyboardType: TextInputType.visiblePassword,
                       ),
                       SizedBox(height: 16),
                       Text('Highest education', style: TextStyle(fontSize: 16)),
@@ -207,6 +216,7 @@ class _RegisterState extends State<Register> with TickerProviderStateMixin {
                               ? null
                               : value;
                         }),
+                        keyboardType: TextInputType.name,
                       ),
                       SizedBox(height: 16),
                       TextField(
@@ -214,6 +224,7 @@ class _RegisterState extends State<Register> with TickerProviderStateMixin {
                         onChanged: (value) => setState(() {
                           registerForm.major = value.isEmpty ? null : value;
                         }),
+                        keyboardType: TextInputType.name,
                       ),
                       SizedBox(height: 16),
                       Text('Study status', style: TextStyle(fontSize: 16)),

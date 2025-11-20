@@ -91,6 +91,7 @@ class _UpdateUserPasswordState extends State<UpdateUserPassword> {
                           obscureText: true,
                           onTapOutside: (event) =>
                               FocusManager.instance.primaryFocus?.unfocus(),
+                          keyboardType: TextInputType.visiblePassword,
                         ),
                         const SizedBox(height: 16),
                         TextField(
@@ -101,6 +102,7 @@ class _UpdateUserPasswordState extends State<UpdateUserPassword> {
                           obscureText: true,
                           onTapOutside: (event) =>
                               FocusManager.instance.primaryFocus?.unfocus(),
+                          keyboardType: TextInputType.visiblePassword,
                         ),
                         const SizedBox(height: 16),
                         TextField(
@@ -113,6 +115,7 @@ class _UpdateUserPasswordState extends State<UpdateUserPassword> {
                           obscureText: true,
                           onTapOutside: (event) =>
                               FocusManager.instance.primaryFocus?.unfocus(),
+                          keyboardType: TextInputType.visiblePassword,
                         ),
                       ],
                     ),
