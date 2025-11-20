@@ -64,6 +64,7 @@ class _FilterBarState extends State<FilterBar> {
                   expandedInsets: .zero,
                   requestFocusOnTap: false,
                   initialSelection: "",
+                  menuHeight: 300,
                   dropdownMenuEntries: [
                     const DropdownMenuEntry<String>(value: "", label: "無指定縣市"),
                     if (widget.cityDistrictMap != null)
@@ -88,6 +89,7 @@ class _FilterBarState extends State<FilterBar> {
                   initialSelection: "",
                   enabled: widget.selectedCity.isNotEmpty,
                   requestFocusOnTap: false,
+                  menuHeight: 300,
                   dropdownMenuEntries: [
                     const DropdownMenuEntry<String>(value: "", label: "無指定區"),
                     if (widget.cityDistrictMap != null &&
