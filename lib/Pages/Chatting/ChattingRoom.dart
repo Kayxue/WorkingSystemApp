@@ -5,6 +5,7 @@ import 'package:rhttp/rhttp.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
+import 'package:scrollable_positioned_list/scrollable_positioned_list.dart';
 import 'package:working_system_app/mixins/ChatWebSocketMixin.dart';
 import 'package:working_system_app/Pages/GigDetail.dart';
 import 'package:working_system_app/Others/Utils.dart';
@@ -35,7 +36,9 @@ class ChattingRoom extends StatefulWidget {
 
 class _ChattingRoomState extends State<ChattingRoom> with ChatWebSocketMixin {
   final TextEditingController _textController = TextEditingController();
-  final ScrollController _scrollController = ScrollController();
+  final ItemScrollController _itemScrollController = ItemScrollController();
+  final ItemPositionsListener _itemPositionsListener =
+      ItemPositionsListener.create();
 
   List<Message> messages = [];
   String? olderCursor; // ISO timestamp
@@ -70,10 +73,17 @@ class _ChattingRoomState extends State<ChattingRoom> with ChatWebSocketMixin {
     _loadInitial();
 
     // detect reach top -> load older messages
-    _scrollController.addListener(() {
-      if (_scrollController.position.pixels <=
-          _scrollController.position.minScrollExtent + 20) {
-        _loadOlderMessages();
+    _itemPositionsListener.itemPositions.addListener(() {
+      final positions = _itemPositionsListener.itemPositions.value;
+      if (positions.isNotEmpty) {
+        final lastVisibleIndex = positions
+            .where((position) => position.itemTrailingEdge > 0)
+            .reduce((a, b) => a.index > b.index ? a : b)
+            .index;
+        // If we're near the end (showing older messages), load more
+        if (lastVisibleIndex >= messages.length - 3 && hasMore) {
+          _loadOlderMessages();
+        }
       }
     });
 
@@ -255,20 +265,22 @@ class _ChattingRoomState extends State<ChattingRoom> with ChatWebSocketMixin {
   /// ----------------------------------------
   void _scrollToMessage(String messageId) {
     final index = messages.indexWhere((m) => m.messagesId == messageId);
-    if (index != -1) {
-      // This is a simplification. For a robust solution, you might need
-      // a package like scroll_to_index to handle cases where the item
-      // isn't rendered yet.
-      _scrollController.jumpTo(index * 56.0); // Assuming average item height
+    if (index != -1 && _itemScrollController.isAttached) {
+      _itemScrollController.scrollTo(
+        index: index,
+        duration: Duration(milliseconds: 300),
+        curve: Curves.easeInOut,
+        alignment: 0.5, // Center the item
+      );
     }
   }
 
   void _scrollToBottom() {
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      if (!_scrollController.hasClients) return;
+      if (!_itemScrollController.isAttached || messages.isEmpty) return;
 
-      _scrollController.animateTo(
-        0,
+      _itemScrollController.scrollTo(
+        index: 0,
         duration: Duration(milliseconds: 200),
         curve: Curves.easeOut,
       );
@@ -278,7 +290,6 @@ class _ChattingRoomState extends State<ChattingRoom> with ChatWebSocketMixin {
   @override
   void dispose() {
     _textController.dispose();
-    _scrollController.dispose();
     _streamSubscription?.cancel();
     // Close local WebSocket if it was created by this widget
     if (widget.client == null) {
@@ -297,9 +308,10 @@ class _ChattingRoomState extends State<ChattingRoom> with ChatWebSocketMixin {
       body: Column(
         children: [
           Expanded(
-            child: ListView.builder(
+            child: ScrollablePositionedList.builder(
               reverse: true,
-              controller: _scrollController,
+              itemScrollController: _itemScrollController,
+              itemPositionsListener: _itemPositionsListener,
               itemCount: messages.length + (isLoadingOlder ? 1 : 0),
               padding: const EdgeInsets.all(16),
               itemBuilder: (context, i) {
