@@ -14,7 +14,8 @@ class ReplySnippet {
     required this.createdAt,
   });
 
-  factory ReplySnippet.fromJson(Map<String, dynamic> json) => _$ReplySnippetFromJson(json);
+  factory ReplySnippet.fromJson(Map<String, dynamic> json) =>
+      _$ReplySnippetFromJson(json);
 
   Map<String, dynamic> toJson() => _$ReplySnippetToJson(this);
 }

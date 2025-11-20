@@ -244,6 +244,10 @@ class _ChattingRoomState extends State<ChattingRoom> with ChatWebSocketMixin {
 
     // Mark conversation as read after sending
     markConversationAsRead();
+
+    setState(() {
+      _replyingToMessage = null;
+    });
   }
 
   /// ----------------------------------------
@@ -312,33 +316,64 @@ class _ChattingRoomState extends State<ChattingRoom> with ChatWebSocketMixin {
 
                 return Slidable(
                   key: ValueKey("${msg.messagesId}_$resetKey"),
-                  startActionPane: ActionPane(
-                    motion: const StretchMotion(),
-
-                    openThreshold: 0.99,
-                    dismissible: DismissiblePane(
-                      dismissThreshold: 0.5,
-                      onDismissed:
-                          () {}, // 這裡是必填的，但在這個情境下不會真的執行到，因為下面會 return false
-                      confirmDismiss: () async {
-                        // 1. 在這裡執行你的回覆邏輯
-                        setState(() {
-                          _replyingToMessage = msg;
-                          resetKey = DateTime.now().toString();
-                        });
-                        // 2. 回傳 false，代表「不要刪除」這個 Item，它會自動彈回去
-                        return false;
-                      },
-                    ),
-                    children: [
-                      SlidableAction(
-                        onPressed: null,
-                        backgroundColor: Colors.transparent,
-                        foregroundColor: Colors.grey,
-                        icon: Icons.reply,
-                      ),
-                    ],
-                  ),
+                  startActionPane: msg.senderEmployerId != null
+                      ? ActionPane(
+                          motion: const StretchMotion(),
+                          extentRatio: 0.15,
+                          openThreshold: 0.05,
+                          dismissible: DismissiblePane(
+                            dismissThreshold: 0.1,
+                            onDismissed:
+                                () {}, // 這裡是必填的，但在這個情境下不會真的執行到，因為下面會 return false
+                            confirmDismiss: () async {
+                              // 1. 在這裡執行你的回覆邏輯
+                              setState(() {
+                                _replyingToMessage = msg;
+                                resetKey = DateTime.now().toString();
+                              });
+                              // 2. 回傳 false，代表「不要刪除」這個 Item，它會自動彈回去
+                              return false;
+                            },
+                          ),
+                          children: [
+                            SlidableAction(
+                              onPressed: null,
+                              backgroundColor: Colors.transparent,
+                              foregroundColor: Colors.grey,
+                              icon: Icons.reply,
+                            ),
+                          ],
+                        )
+                      : null,
+                  endActionPane: msg.senderWorkerId != null
+                      ? ActionPane(
+                          motion: const StretchMotion(),
+                          extentRatio: 0.15,
+                          openThreshold: 0.05,
+                          dismissible: DismissiblePane(
+                            dismissThreshold: 0.1,
+                            onDismissed:
+                                () {}, // 這裡是必填的，但在這個情境下不會真的執行到，因為下面會 return false
+                            confirmDismiss: () async {
+                              // 1. 在這裡執行你的回覆邏輯
+                              setState(() {
+                                _replyingToMessage = msg;
+                                resetKey = DateTime.now().toString();
+                              });
+                              // 2. 回傳 false，代表「不要刪除」這個 Item，它會自動彈回去
+                              return false;
+                            },
+                          ),
+                          children: [
+                            SlidableAction(
+                              onPressed: null,
+                              backgroundColor: Colors.transparent,
+                              foregroundColor: Colors.grey,
+                              icon: Icons.reply,
+                            ),
+                          ],
+                        )
+                      : null,
                   child: GestureDetector(
                     onLongPress: () => _showContextMenu(context, msg),
                     child: Container(
@@ -649,42 +684,42 @@ class _ChattingRoomState extends State<ChattingRoom> with ChatWebSocketMixin {
       padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
       child: Column(
         children: [
-          if (_replyingToMessage != null)
-            Container(
-              padding: const EdgeInsets.all(8),
-              decoration: BoxDecoration(
-                color: Colors.grey[200],
-                borderRadius: BorderRadius.circular(12),
-              ),
-              child: Row(
-                children: [
-                  Expanded(
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text(
-                          'Replying to ${_replyingToMessage!.senderWorkerId != null ? "Opponent" : "Me"}', // Simplified
-                          style: TextStyle(fontWeight: FontWeight.bold),
-                        ),
-                        Text(
-                          _replyingToMessage!.content,
-                          maxLines: 1,
-                          overflow: TextOverflow.ellipsis,
-                        ),
-                      ],
+          if (_replyingToMessage != null) ...[
+            Card(
+              child: Padding(
+                padding: const .only(left: 16, right: 8, top: 8, bottom: 8),
+                child: Row(
+                  children: [
+                    Expanded(
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            'Replying to ${_replyingToMessage!.senderWorkerId != null ? "Me" : widget.opponentName}', // Simplified
+                            style: TextStyle(fontWeight: FontWeight.bold),
+                          ),
+                          Text(
+                            _replyingToMessage!.content,
+                            maxLines: 1,
+                            overflow: TextOverflow.ellipsis,
+                          ),
+                        ],
+                      ),
                     ),
-                  ),
-                  IconButton(
-                    icon: Icon(Icons.close),
-                    onPressed: () {
-                      setState(() {
-                        _replyingToMessage = null;
-                      });
-                    },
-                  ),
-                ],
+                    IconButton(
+                      icon: Icon(Icons.close),
+                      onPressed: () {
+                        setState(() {
+                          _replyingToMessage = null;
+                        });
+                      },
+                    ),
+                  ],
+                ),
               ),
             ),
+            SizedBox(height: 8),
+          ],
           Row(
             children: [
               Expanded(
