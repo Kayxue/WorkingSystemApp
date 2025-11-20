@@ -305,18 +305,11 @@ class GigInformation extends StatelessWidget {
               ),
             ),
             const SizedBox(height: 16),
-            Column(
-              mainAxisAlignment: .center,
-              children: [
-                Text(
-                  "Updated: ${DateFormat.yMd().format(gigdetail.updatedAt)} ${DateFormat.Hms().format(gigdetail.updatedAt)}",
-                  style: const TextStyle(fontSize: 12, color: Colors.grey),
-                ),
-                Text(
-                  "Published: ${DateFormat.yMd().format(gigdetail.publishedAt)} ${DateFormat.Hms().format(gigdetail.publishedAt)}",
-                  style: const TextStyle(fontSize: 12, color: Colors.grey),
-                ),
-              ],
+            Center(
+              child: Text(
+                "Updated: ${DateFormat.yMd().format(gigdetail.updatedAt)} ${DateFormat.Hms().format(gigdetail.updatedAt)}",
+                style: const TextStyle(fontSize: 12, color: Colors.grey),
+              ),
             ),
           ],
         ),
