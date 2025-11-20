@@ -91,6 +91,7 @@ class _LoginState extends State<Login> {
               password = value;
             }),
             obscureText: true,
+            keyboardType: TextInputType.visiblePassword,
           ),
           SizedBox(height: 16),
           FilledButton(
