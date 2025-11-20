@@ -88,10 +88,10 @@ jobs:
           ls -lh lib/firebase_options.dart
 
       - name: Build APK
-        run: flutter build apk --release --build-name="${{ github.event.inputs.version || github.ref_name }}" --build-number="${{ github.run_number }}"
+        run: flutter build apk --release --target-platform android-arm,android-arm64 --build-name="${{ github.event.inputs.version || github.ref_name }}" --build-number="${{ github.run_number }}"
 
       - name: Build App Bundle
-        run: flutter build appbundle --release --build-name="${{ github.event.inputs.version || github.ref_name }}" --build-number="${{ github.run_number }}"
+        run: flutter build appbundle --release --target-platform android-arm,android-arm64 --build-name="${{ github.event.inputs.version || github.ref_name }}" --build-number="${{ github.run_number }}"
 
       - name: Verify Build Outputs
         run: |
@@ -140,7 +140,7 @@ jobs:
         uses: dtolnay/rust-toolchain@stable
         with:
           toolchain: stable
-          targets: aarch64-apple-ios,aarch64-apple-ios-sim,x86_64-apple-ios
+          targets: aarch64-apple-ios
 
       - name: Setup Flutter SDK
         uses: flutter-actions/setup-flutter@v4
