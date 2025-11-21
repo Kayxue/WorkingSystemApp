@@ -58,12 +58,21 @@ class _MyApplicationStates extends State<MyApplications>
   Future<void> _handleApplicationAction(
     String applicationId,
     String action,
+    bool hasConflict,
   ) async {
     final title = action == 'accept' ? '確認接受' : '確認婉拒';
     final content = action == 'accept' ? '您確定要接受此工作邀請嗎？' : '您確定要婉拒此工作邀請嗎？';
 
     final confirmed = await _showConfirmationDialog(title, content);
     if (!confirmed || !mounted) return;
+
+    if (hasConflict) {
+      final confirmed = await _showConfirmationDialog(
+        '確認接受',
+        '此工作與其他已確認的工作有衝突，您確定要接受此工作邀請嗎？',
+      );
+      if (!confirmed || !mounted) return;
+    }
 
     try {
       final response = await Utils.client.put(

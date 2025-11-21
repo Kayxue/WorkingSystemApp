@@ -12,7 +12,7 @@ class ApplicationList extends StatefulWidget {
   final ApplicationStatus currentPageStatus;
   final String sessionKey;
   final Function(int) moveToPage;
-  final Function(String, String) handleActions;
+  final Function(String, String, bool) handleActions;
   final Function(String) handleWithdraw;
 
   const ApplicationList({

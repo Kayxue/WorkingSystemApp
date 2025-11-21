@@ -9,7 +9,7 @@ class ApplicationCard extends StatefulWidget {
   final String sessionKey;
   final Application application;
   final Function(int) moveToPage;
-  final Function(String, String) handleActions;
+  final Function(String, String, bool) handleActions;
   final Function(String) handleWithdraw;
   final Function() refreshPage;
 
@@ -140,8 +140,8 @@ class _ApplicationCardState extends State<ApplicationCard> {
                     ),
                     child: Row(
                       children: [
-                        const Text(
-                          '此申請與其他申請的工作時間有衝突。',
+                        Text(
+                          '此申請與${widget.application.hasConflict == true ? '其他已確認' : '其他申請'}的工作有衝突。',
                           style: TextStyle(
                             color: Colors.red,
                             fontWeight: .bold,
@@ -183,6 +183,7 @@ class _ApplicationCardState extends State<ApplicationCard> {
             onPressed: () async => widget.handleActions(
               widget.application.applicationId,
               'reject',
+              false,
             ),
             style: OutlinedButton.styleFrom(
               side: const BorderSide(color: Colors.red),
@@ -197,6 +198,7 @@ class _ApplicationCardState extends State<ApplicationCard> {
             onPressed: () async => widget.handleActions(
               widget.application.applicationId,
               'accept',
+              widget.application.hasConflict == true,
             ),
             style: OutlinedButton.styleFrom(
               side: const BorderSide(color: Colors.green),

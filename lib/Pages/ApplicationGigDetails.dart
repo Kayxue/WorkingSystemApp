@@ -194,9 +194,9 @@ class _ApplicationGigDetailsState extends State<ApplicationGigDetails> {
               padding: const .only(right: 8),
               child: ElevatedButton(
                 onPressed: () => _startPrivateChat(),
-                style: ElevatedButton.styleFrom(
-                  minimumSize: Size.fromHeight(50),
-                ),
+                // style: ElevatedButton.styleFrom(
+                //   minimumSize: Size.fromHeight(50),
+                // ),
                 child: const Text('聊天', style: TextStyle(fontSize: 16)),
               ),
             ),
@@ -205,7 +205,7 @@ class _ApplicationGigDetailsState extends State<ApplicationGigDetails> {
             flex: 3,
             child: ElevatedButton(
               onPressed: () => _withdrawApplication(widget.applicationId),
-              style: ElevatedButton.styleFrom(minimumSize: Size.fromHeight(50)),
+              // style: ElevatedButton.styleFrom(minimumSize: Size.fromHeight(50)),
               child: const Text(
                 '取消申請',
                 style: TextStyle(fontWeight: .bold, fontSize: 16),
@@ -216,48 +216,58 @@ class _ApplicationGigDetailsState extends State<ApplicationGigDetails> {
       );
     } else if (widget.status == 'pending_worker_confirmation') {
       return Row(
-        mainAxisAlignment: .spaceEvenly,
         children: [
-          ElevatedButton(
-            onPressed: () => _startPrivateChat(),
-            style: ElevatedButton.styleFrom(
-              fixedSize: Size(MediaQuery.of(context).size.width * 0.9, 50),
-            ),
-            child: const Text('聊天', style: TextStyle(fontSize: 16)),
-          ),
-          ElevatedButton(
-            onPressed: () =>
-                _handleApplicationAction(widget.applicationId, 'reject'),
-            style: ElevatedButton.styleFrom(
-              fixedSize: Size(MediaQuery.of(context).size.width * 0.4, 50),
-              side: const BorderSide(color: Colors.red, width: 1),
-            ),
-            child: const Text(
-              '拒絕',
-              style: TextStyle(
-                color: Colors.red,
-                fontWeight: .bold,
-                fontSize: 16,
+          Expanded(
+            flex: 2,
+            child: Padding(
+              padding: const .only(right: 8),
+              child: ElevatedButton(
+                onPressed: () => _startPrivateChat(),
+                child: const Text('聊天', style: TextStyle(fontSize: 16)),
               ),
             ),
           ),
-          ElevatedButton(
-            onPressed: widget.acceptEnabled
-                ? () => _handleApplicationAction(widget.applicationId, 'accept')
-                : null,
-            style: ElevatedButton.styleFrom(
-              fixedSize: Size(MediaQuery.of(context).size.width * 0.4, 50),
-              side: BorderSide(
-                color: widget.acceptEnabled ? Colors.green : Colors.grey,
-                width: 1,
+          Expanded(
+            flex: 3,
+            child: Padding(
+              padding: const .only(right: 8),
+              child: ElevatedButton(
+                onPressed: () =>
+                    _handleApplicationAction(widget.applicationId, 'reject'),
+                style: ElevatedButton.styleFrom(
+                  side: const BorderSide(color: Colors.red, width: 1),
+                ),
+                child: const Text(
+                  '拒絕',
+                  style: TextStyle(
+                    color: Colors.red,
+                    fontWeight: .bold,
+                    fontSize: 16,
+                  ),
+                ),
               ),
             ),
-            child: Text(
-              '接受',
-              style: TextStyle(
-                color: widget.acceptEnabled ? Colors.green : Colors.grey,
-                fontWeight: .bold,
-                fontSize: 16,
+          ),
+          Expanded(
+            flex: 3,
+            child: ElevatedButton(
+              onPressed: widget.acceptEnabled
+                  ? () =>
+                        _handleApplicationAction(widget.applicationId, 'accept')
+                  : null,
+              style: ElevatedButton.styleFrom(
+                side: BorderSide(
+                  color: widget.acceptEnabled ? Colors.green : Colors.grey,
+                  width: 1,
+                ),
+              ),
+              child: Text(
+                '接受',
+                style: TextStyle(
+                  color: widget.acceptEnabled ? Colors.green : Colors.grey,
+                  fontWeight: .bold,
+                  fontSize: 16,
+                ),
               ),
             ),
           ),
@@ -272,10 +282,6 @@ class _ApplicationGigDetailsState extends State<ApplicationGigDetails> {
               padding: const .only(right: 8),
               child: ElevatedButton(
                 onPressed: () => _startPrivateChat(),
-                style: ElevatedButton.styleFrom(
-                  minimumSize: Size.fromHeight(50),
-                  // fixedSize: Size(MediaQuery.of(context).size.width * 0.4, 50),
-                ),
                 child: const Text('聊天', style: TextStyle(fontSize: 16)),
               ),
             ),
@@ -284,10 +290,6 @@ class _ApplicationGigDetailsState extends State<ApplicationGigDetails> {
             flex: 3,
             child: ElevatedButton(
               onPressed: () => _withdrawApplication(widget.applicationId),
-              style: ElevatedButton.styleFrom(
-                minimumSize: Size.fromHeight(50),
-                // fixedSize: Size(MediaQuery.of(context).size.width * 0.9, 50),
-              ),
               child: Text(switch (widget.status) {
                 'employer_rejected' => '被拒絕',
                 'worker_confirmed' => '已接受',
@@ -321,6 +323,7 @@ class _ApplicationGigDetailsState extends State<ApplicationGigDetails> {
                   ),
                   const SizedBox(height: 16),
                   _buildActionButtons(),
+                  const SizedBox(height: 32),
                 ],
               ),
             ),
