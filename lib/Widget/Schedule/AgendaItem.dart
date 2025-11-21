@@ -61,20 +61,20 @@ class AgendaItem extends StatelessWidget {
                 children: [
                   Text(
                     DateFormat('j').format(appointment.startTime),
-                    style: TextStyle(
+                    style: const TextStyle(
                       fontSize: 14,
                       fontWeight: FontWeight.w600,
-                      color: Colors.grey[700],
+                      color: Colors.grey,
                     ),
                   ),
                   Text(
                     _calculateDayOffset(),
-                    style: TextStyle(fontSize: 12, color: Colors.grey),
+                    style: const TextStyle(fontSize: 12, color: Colors.grey),
                   ),
                 ],
               ),
             ),
-            SizedBox(width: 8),
+            const SizedBox(width: 8),
             Expanded(
               child: Container(
                 padding: const .symmetric(horizontal: 2.0),
@@ -88,7 +88,7 @@ class AgendaItem extends StatelessWidget {
                   children: [
                     Text(
                       appointment.subject,
-                      style: TextStyle(
+                      style: const TextStyle(
                         fontSize: 18,
                         fontWeight: .bold,
                         color: Colors.black,
@@ -96,7 +96,7 @@ class AgendaItem extends StatelessWidget {
                     ),
                     Text(
                       timeFormat,
-                      style: TextStyle(fontSize: 16, color: Colors.grey[600]),
+                      style: const TextStyle(fontSize: 16, color: Colors.grey),
                     ),
                   ],
                 ),

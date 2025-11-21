@@ -179,14 +179,14 @@ class _ScheduleState extends State<Schedule> with PeriodicTaskMixin {
                   Row(
                     mainAxisAlignment: .spaceBetween,
                     children: [
-                      Text(
+                      const Text(
                         "Schedule",
                         style: TextStyle(fontSize: 24, fontWeight: .bold),
                       ),
                       Row(
                         children: [
                           IconButton(
-                            icon: Icon(Icons.event_available),
+                            icon: const Icon(Icons.event_available),
                             onPressed: () {
                               Navigator.of(context).push(
                                 MaterialPageRoute(

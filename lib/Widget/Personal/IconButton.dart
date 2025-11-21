@@ -27,21 +27,21 @@ class ButtonWithIcon extends StatelessWidget {
         children: [
           withBadge
               ? badges.Badge(
-                  badgeStyle: badges.BadgeStyle(badgeColor: Colors.blue),
+                  badgeStyle: const badges.BadgeStyle(badgeColor: Colors.blue),
                   badgeContent: badgeNumber > 99
-                      ? Text('99+',
+                      ? const Text('99+',
                           style: TextStyle(color: Colors.white, fontSize: 8))
                       : Text(badgeNumber.toString(),
-                          style: TextStyle(color: Colors.white, fontSize: 10)),
+                          style: const TextStyle(color: Colors.white, fontSize: 10)),
                   child: Icon(icon, color: iconColor, size: 30)
                 )
               : Icon(icon, color: iconColor, size: 30),
-          SizedBox(height: 8),
+          const SizedBox(height: 8),
           SizedBox(
             width: 65,
             child: Text(
               text,
-              style: TextStyle(fontSize: 12),
+              style: const TextStyle(fontSize: 12),
               textAlign: .center,
               softWrap: true,
               overflow: .visible,

@@ -288,9 +288,9 @@ class _NotificationPageState extends State<NotificationPage>
                                       Text(
                                         notification.message,
                                         textAlign: .center,
-                                        style: TextStyle(
+                                        style: const TextStyle(
                                           fontSize: 16,
-                                          color: Colors.grey[600],
+                                          color: Colors.grey,
                                         ),
                                       ),
                                     ],

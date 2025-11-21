@@ -21,12 +21,12 @@ class MessageButton extends StatelessWidget {
           ? badges.Badge(
               badgeContent: Text(
                 unreadMessages.toString(),
-                style: TextStyle(color: Colors.white, fontSize: 8),
+                style: const TextStyle(color: Colors.white, fontSize: 8),
               ),
-              badgeStyle: badges.BadgeStyle(badgeColor: Colors.blue),
-              child: Icon(Icons.message),
+              badgeStyle: const badges.BadgeStyle(badgeColor: Colors.blue),
+              child: const Icon(Icons.message),
             )
-          : Icon(Icons.message),
+          : const Icon(Icons.message),
       onPressed: () async {
         await Navigator.of(context).push(
           MaterialPageRoute(

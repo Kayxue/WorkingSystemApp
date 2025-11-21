@@ -41,7 +41,7 @@ class _PendingListState extends State<PendingList> {
     if (!mounted) return [];
     if (response.statusCode != 200) {
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text("Failed to fetch works. Please try again.")),
+        const SnackBar(content: Text("Failed to fetch works. Please try again.")),
       );
       return [];
     }

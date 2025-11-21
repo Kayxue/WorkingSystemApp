@@ -59,16 +59,16 @@ class GigCard extends StatelessWidget {
                   children: [
                     TextSpan(
                       text: '時薪${gig.hourlyRate} ',
-                      style: TextStyle(
+                      style: const TextStyle(
                         fontSize: 14,
-                        color: Colors.orange[500],
+                        color: Colors.orange,
                         fontWeight: .w500,
                       ),
                     ),
                     TextSpan(
                       text:
                           '| ${gig.dateStart} - ${gig.dateEnd} (${gig.timeStart} - ${gig.timeEnd})',
-                      style: TextStyle(
+                      style: const TextStyle(
                         fontSize: 14,
                         color: Colors.black,
                         fontWeight: .w500,

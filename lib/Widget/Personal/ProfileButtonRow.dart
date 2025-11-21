@@ -31,7 +31,7 @@ class ProfileButtonRow extends StatelessWidget {
     return Column(
       crossAxisAlignment: .start,
       children: [
-        Padding(
+        const Padding(
           padding: .only(top: 4, bottom: 16, left: 16),
           child: Text("Actions List", style: TextStyle(fontSize: 16)),
         ),
@@ -86,7 +86,7 @@ class ProfileButtonRow extends StatelessWidget {
                   if (!context.mounted) return;
                   ScaffoldMessenger.of(
                     context,
-                  ).showSnackBar(SnackBar(content: Text("Profile updated")));
+                  ).showSnackBar(const SnackBar(content: Text("Profile updated")));
                   await refetchProfile();
                 }
               },
@@ -108,13 +108,13 @@ class ProfileButtonRow extends StatelessWidget {
                   if (!context.mounted) return;
                   ScaffoldMessenger.of(
                     context,
-                  ).showSnackBar(SnackBar(content: Text("Password updated")));
+                  ).showSnackBar(const SnackBar(content: Text("Password updated")));
                 }
               },
             ),
           ],
         ),
-        SizedBox(height: 4),
+        const SizedBox(height: 4),
       ],
     );
   }

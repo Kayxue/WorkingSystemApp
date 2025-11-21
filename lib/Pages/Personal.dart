@@ -111,7 +111,7 @@ class _PersonalState extends State<Personal> {
                   Row(
                     mainAxisAlignment: .spaceBetween,
                     children: [
-                      Text(
+                      const Text(
                         "Personal",
                         style: TextStyle(fontSize: 24, fontWeight: .bold),
                       ),
@@ -132,9 +132,9 @@ class _PersonalState extends State<Personal> {
                       ),
                     ],
                   ),
-                  SizedBox(height: 8),
+                  const SizedBox(height: 8),
                   ProfileCard(profile: profile, sessionKey: widget.sessionKey),
-                  SizedBox(height: 8),
+                  const SizedBox(height: 8),
                   Expanded(
                     child: SingleChildScrollView(
                       child: Column(
