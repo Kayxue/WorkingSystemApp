@@ -10,6 +10,8 @@ plugins {
     id("com.google.gms.google-services")
 }
 
+val isBuildingBundle = gradle.startParameter.taskNames.any { it.contains("bundle") }
+
 android {
     namespace = "com.example.working_system_app"
     compileSdk = flutter.compileSdkVersion
@@ -58,7 +60,7 @@ android {
 
     splits {
         abi {
-            isEnable = true
+            isEnable = !isBuildingBundle
             reset()
             include("armeabi-v7a", "arm64-v8a")
             isUniversalApk = true
@@ -74,26 +76,28 @@ android {
     }
 }
 
-val flutterVersionCode = project.extensions.getByType<BaseAppModuleExtension>()
-    .defaultConfig.versionCode ?: 1
+if (!isBuildingBundle) {
+    val flutterVersionCode = project.extensions.getByType<BaseAppModuleExtension>()
+        .defaultConfig.versionCode ?: 1
 
-android.applicationVariants.all {
-    val variant = this
-    variant.outputs
-        .map { it as com.android.build.gradle.internal.api.ApkVariantOutputImpl }
-        .forEach { output ->
-            // Assign a prefix:
-            // arm64-v8a -> 2000 + version
-            // armeabi-v7a -> 1000 + version
-            // universal -> 3000 + version
-            val abi = output.getFilter(com.android.build.OutputFile.ABI)
-            val baseAbiVersionCode = when (abi) {
-                "arm64-v8a" -> 2000
-                "armeabi-v7a" -> 1000
-                else -> 3000 
+    android.applicationVariants.all {
+        val variant = this
+        variant.outputs
+            .map { it as com.android.build.gradle.internal.api.ApkVariantOutputImpl }
+            .forEach { output ->
+                val abi = output.getFilter(com.android.build.OutputFile.ABI)
+                
+                // Only override if ABI is not null (it is null for bundles/universal)
+                if (abi != null) {
+                    val baseAbiVersionCode = when (abi) {
+                        "arm64-v8a" -> 2000
+                        "armeabi-v7a" -> 1000
+                        else -> 3000 
+                    }
+                    output.versionCodeOverride = baseAbiVersionCode + flutterVersionCode
+                }
             }
-            output.versionCodeOverride = baseAbiVersionCode + flutterVersionCode
-        }
+    }
 }
 
 dependencies {
