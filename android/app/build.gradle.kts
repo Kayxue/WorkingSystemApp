@@ -73,6 +73,28 @@ android {
     }
 }
 
+val flutterVersionCode = project.extensions.getByType<BaseAppModuleExtension>()
+    .defaultConfig.versionCode ?: 1
+
+android.applicationVariants.all {
+    val variant = this
+    variant.outputs
+        .map { it as com.android.build.gradle.internal.api.ApkVariantOutputImpl }
+        .forEach { output ->
+            // Assign a prefix:
+            // arm64-v8a -> 2000 + version
+            // armeabi-v7a -> 1000 + version
+            // universal -> 3000 + version
+            val abi = output.getFilter(com.android.build.OutputFile.ABI)
+            val baseAbiVersionCode = when (abi) {
+                "arm64-v8a" -> 2000
+                "armeabi-v7a" -> 1000
+                else -> 3000 
+            }
+            output.versionCodeOverride = baseAbiVersionCode + flutterVersionCode
+        }
+}
+
 dependencies {
     coreLibraryDesugaring("com.android.tools:desugar_jdk_libs:2.1.5")
     implementation("com.google.android.play:core:1.10.3")
