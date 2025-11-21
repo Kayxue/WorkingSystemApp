@@ -1,5 +1,6 @@
 import java.util.Properties
 import java.io.FileInputStream
+import com.android.build.gradle.internal.dsl.BaseAppModuleExtension
 
 plugins {
     id("com.android.application")
