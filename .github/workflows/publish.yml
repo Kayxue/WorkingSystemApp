@@ -95,19 +95,20 @@ jobs:
 
       - name: Verify Build Outputs
         run: |
-          echo "Checking for APK file..."
-          if [ -f "build/app/outputs/flutter-apk/app-release.apk" ]; then
-            echo "✅ APK found: build/app/outputs/flutter-apk/app-release.apk"
-            ls -lh build/app/outputs/flutter-apk/app-release.apk
+          echo "Checking for APK files..."
+          echo "Contents of build/app/outputs/flutter-apk/:"
+          ls -lh build/app/outputs/flutter-apk/
+          
+          APK_COUNT=$(find build/app/outputs/flutter-apk/ -name "*.apk" -type f | wc -l)
+          if [ "$APK_COUNT" -gt 0 ]; then
+            echo "✅ Found $APK_COUNT APK file(s):"
+            find build/app/outputs/flutter-apk/ -name "*.apk" -type f -exec ls -lh {} \;
           else
-            echo "❌ APK not found at expected location"
-            echo "Contents of build/app/outputs/flutter-apk/:"
-            ls -la build/app/outputs/flutter-apk/ || echo "Directory does not exist"
-            echo "Contents of build/app/outputs/:"
-            ls -la build/app/outputs/ || echo "Directory does not exist"
+            echo "❌ No APK files found"
             exit 1
           fi
           
+          echo ""
           echo "Checking for AAB file..."
           if [ -f "build/app/outputs/bundle/release/app-release.aab" ]; then
             echo "✅ AAB found: build/app/outputs/bundle/release/app-release.aab"
@@ -124,7 +125,7 @@ jobs:
         with:
           name: android-builds
           path: |
-            build/app/outputs/flutter-apk/app-release.apk
+            build/app/outputs/flutter-apk/*.apk
             build/app/outputs/bundle/release/app-release.aab
           retention-days: 1
 
@@ -242,15 +243,32 @@ jobs:
           echo "Repository name: $REPO_NAME"
           echo "Version: $VERSION"
           
-          # Find and copy APK file
-          APK_FILE=$(find android-builds -name "*.apk" -type f | head -1)
-          if [ -n "$APK_FILE" ]; then
-            echo "Found APK: $APK_FILE"
-            APK_NAME="${REPO_NAME}-${VERSION}.apk"
-            cp "$APK_FILE" "./$APK_NAME"
-            echo "✅ APK file prepared as: $APK_NAME"
+          # Find and copy all APK files
+          APK_FILES=$(find android-builds -name "*.apk" -type f)
+          APK_COUNT=$(echo "$APK_FILES" | wc -l)
+          
+          if [ "$APK_COUNT" -gt 0 ]; then
+            echo "Found $APK_COUNT APK file(s):"
+            while IFS= read -r APK_FILE; do
+              # Extract the architecture or type from the filename
+              BASENAME=$(basename "$APK_FILE" .apk)
+              
+              # Rename files appropriately
+              if [[ "$BASENAME" == *"armeabi-v7a"* ]]; then
+                APK_NAME="${REPO_NAME}-${VERSION}-armeabi-v7a.apk"
+              elif [[ "$BASENAME" == *"arm64-v8a"* ]]; then
+                APK_NAME="${REPO_NAME}-${VERSION}-arm64-v8a.apk"
+              elif [[ "$BASENAME" == *"universal"* ]]; then
+                APK_NAME="${REPO_NAME}-${VERSION}-universal.apk"
+              else
+                APK_NAME="${REPO_NAME}-${VERSION}.apk"
+              fi
+              
+              cp "$APK_FILE" "./$APK_NAME"
+              echo "✅ APK file prepared as: $APK_NAME"
+            done <<< "$APK_FILES"
           else
-            echo "❌ No APK file found in android-builds"
+            echo "❌ No APK files found in android-builds"
             exit 1
           fi
           
@@ -278,8 +296,9 @@ jobs:
             exit 1
           fi
           
+          echo ""
           echo "Release files prepared:"
-          ls -lh ${REPO_NAME}-${VERSION}.*
+          ls -lh ${REPO_NAME}-${VERSION}*
 
       - name: Create Release
         uses: softprops/action-gh-release@v2
@@ -289,7 +308,7 @@ jobs:
           draft: false
           prerelease: false
           files: |
-            ${{ github.event.repository.name }}-${{ steps.version.outputs.version }}.apk
+            ${{ github.event.repository.name }}-${{ steps.version.outputs.version }}-*.apk
             ${{ github.event.repository.name }}-${{ steps.version.outputs.version }}.aab
             ${{ github.event.repository.name }}-${{ steps.version.outputs.version }}.ipa
           token: ${{ secrets.RELEASE_PAT }}
