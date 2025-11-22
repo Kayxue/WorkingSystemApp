@@ -66,12 +66,14 @@ class _MyApplicationStates extends State<MyApplications>
     final confirmed = await _showConfirmationDialog(title, content);
     if (!confirmed || !mounted) return;
 
-    if (hasConflict) {
-      final confirmed = await _showConfirmationDialog(
-        '確認接受',
-        '此工作與其他已確認的工作有衝突，您確定要接受此工作邀請嗎？',
-      );
-      if (!confirmed || !mounted) return;
+    if (action == 'accept') {
+      if (hasConflict) {
+        final confirmed = await _showConfirmationDialog(
+          '確認接受',
+          '此工作與其他已確認的工作有衝突，您確定要接受此工作邀請嗎？',
+        );
+        if (!confirmed || !mounted) return;
+      }
     }
 
     try {
@@ -79,6 +81,10 @@ class _MyApplicationStates extends State<MyApplications>
         '/application/$applicationId/confirm',
         headers: .rawMap({'cookie': widget.sessionKey}),
         body: .json({'action': action}),
+      );
+
+      Utils.logger.d(
+        'Application action response: ${response.statusCode} ${response.body}',
       );
 
       if (response.statusCode == 200) {
@@ -108,7 +114,9 @@ class _MyApplicationStates extends State<MyApplications>
       if (response.statusCode == 200) {
         moveToPage(3);
       } else {
-        // Handle error
+        Utils.logger.e(
+          'Failed to withdraw application: ${response.statusCode} ${response.body}',
+        );
       }
     } catch (e) {
       // Handle error

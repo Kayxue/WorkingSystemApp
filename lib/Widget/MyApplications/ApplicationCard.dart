@@ -182,7 +182,7 @@ class _ApplicationCardState extends State<ApplicationCard> {
           OutlinedButton(
             onPressed: () async => widget.handleActions(
               widget.application.applicationId,
-              'reject',
+              'decline',
               false,
             ),
             style: OutlinedButton.styleFrom(

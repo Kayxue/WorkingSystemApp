@@ -82,6 +82,16 @@ class _ApplicationGigDetailsState extends State<ApplicationGigDetails> {
     final confirmed = await _showConfirmationDialog(title, content);
     if (!confirmed || !mounted) return;
 
+    if (action == 'accept') {
+      if (gigdetail?.hasConflict == true) {
+        final confirmed = await _showConfirmationDialog(
+          '確認接受',
+          '此工作與其他已確認的工作有衝突，您確定要接受此工作邀請嗎？',
+        );
+        if (!confirmed || !mounted) return;
+      }
+    }
+
     try {
       final response = await Utils.client.put(
         '/application/$applicationId/confirm',
@@ -233,7 +243,7 @@ class _ApplicationGigDetailsState extends State<ApplicationGigDetails> {
               padding: const .only(right: 8),
               child: ElevatedButton(
                 onPressed: () =>
-                    _handleApplicationAction(widget.applicationId, 'reject'),
+                    _handleApplicationAction(widget.applicationId, 'decline'),
                 style: ElevatedButton.styleFrom(
                   side: const BorderSide(color: Colors.red, width: 1),
                 ),
