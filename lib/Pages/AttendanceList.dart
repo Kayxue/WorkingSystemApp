@@ -157,8 +157,8 @@ class _AttendanceListState extends State<AttendanceList> {
                                 ? attendanceList[index].timeEnd
                                 : attendanceList[index].timeStart,
                             attendanceType: attendanceList[index].checkedIn
-                                ? "CheckOut"
-                                : "CheckIn",
+                                ? "check_out"
+                                : "check_in",
                             sessionKey: widget.sessionKey,
                           ),
                         ),
