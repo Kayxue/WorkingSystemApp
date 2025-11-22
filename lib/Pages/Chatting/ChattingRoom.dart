@@ -659,7 +659,7 @@ class _ChattingRoomState extends State<ChattingRoom> with ChatWebSocketMixin {
   }
 
   void _retractMessage(String messageId) {
-    if (widget.client == null) return;
+    if (_activeClient == null) return;
 
     final message = {
       "type": "retract_message",
@@ -667,7 +667,7 @@ class _ChattingRoomState extends State<ChattingRoom> with ChatWebSocketMixin {
       "recipientId": widget.opponentId,
     };
 
-    widget.client!.sendText(jsonEncode(message));
+    _activeClient!.sendText(jsonEncode(message));
   }
 
   Future<void> _deleteMessage(String messageId) async {
