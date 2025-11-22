@@ -164,7 +164,6 @@ class _GigDetailState extends State<GigDetail> {
                           child: FilledButton(
                             onPressed:
                                 widget.sessionKey.isEmpty ||
-                                    gigdetail!.hasConflict == true ||
                                     gigdetail!.applicationStatus ==
                                         'pending_employer_review' ||
                                     gigdetail!.applicationStatus ==
@@ -185,8 +184,6 @@ class _GigDetailState extends State<GigDetail> {
                                         gigdetail!.applicationStatus ==
                                             'worker_confirmed'
                                   ? "You have already applied to this job"
-                                  : gigdetail!.hasConflict == true
-                                  ? "There is a confirm job conflict with this job"
                                   : "Apply",
                             ),
                           ),
