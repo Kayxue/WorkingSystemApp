@@ -36,9 +36,9 @@ class GigInformation extends StatelessWidget {
               ),
             ),
             const SizedBox(height: 8),
-            if (gigdetail.hasPendingConflict == true &&
-                !(gigdetail.hasConflict == true ||
-                    gigdetail.applicationStatus == 'pending_employer_review' ||
+            if ((gigdetail.hasPendingConflict == true ||
+                    gigdetail.hasConflict == true) &&
+                !(gigdetail.applicationStatus == 'pending_employer_review' ||
                     gigdetail.applicationStatus ==
                         'pending_worker_confirmation' ||
                     gigdetail.applicationStatus == 'worker_confirmed'))
@@ -50,7 +50,7 @@ class GigInformation extends StatelessWidget {
                   borderRadius: .circular(8.0),
                 ),
                 child: const Text(
-                  'This job has a pending conflict with another application.',
+                  'This job has a conflict with another application.',
                   style: TextStyle(color: Colors.black),
                   textAlign: .center,
                 ),
