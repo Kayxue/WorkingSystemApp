@@ -12,7 +12,7 @@ class WorkerRegisterForm {
   String highestEducation = '';
   String? schoolName;
   String? major;
-  String studyStatus = '';
+  String studyStatus = "就讀中";
   List<String> certificates = [];
   List<String> jobExperience = [];
 
