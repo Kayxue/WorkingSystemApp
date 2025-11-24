@@ -6,6 +6,7 @@ import 'package:multi_dropdown/multi_dropdown.dart';
 import 'package:working_system_app/Others/Utils.dart';
 import 'package:working_system_app/Types/JSONObject/WorkerRegisterForm.dart';
 import 'package:working_system_app/Widget/UpdateUserInfo/JobExperienceEditor.dart';
+import 'package:working_system_app/mixins/WaitingDialogMixin.dart';
 
 class Register extends StatefulWidget {
   const Register({super.key});
@@ -14,7 +15,8 @@ class Register extends StatefulWidget {
   State<Register> createState() => _RegisterState();
 }
 
-class _RegisterState extends State<Register> with TickerProviderStateMixin {
+class _RegisterState extends State<Register>
+    with TickerProviderStateMixin, WaitingDialogMixin {
   WorkerRegisterForm registerForm = WorkerRegisterForm();
   String confirmPassword = '';
 
@@ -68,11 +70,13 @@ class _RegisterState extends State<Register> with TickerProviderStateMixin {
   }
 
   Future<(bool, String?)> register() async {
+    showWaitingDialog();
     final response = await Utils.client.post(
       "/user/register/worker",
       headers: .rawMap({"platform": "mobile"}),
       body: .json(registerForm.toJson()),
     );
+    hideWaitingDialog();
     if (response.statusCode == 201) {
       return (true, null);
     }

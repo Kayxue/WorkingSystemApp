@@ -17,6 +17,7 @@ image = { version = "0.25.8", default-features = false, features = ["png", "jpeg
 log = "0.4.28"
 parking_lot = "0.12.5"
 email_address = "0.2.4"
+captcha = "1.0.0"
 
 [profile.release]
 opt-level = "z"     # Optimize for size

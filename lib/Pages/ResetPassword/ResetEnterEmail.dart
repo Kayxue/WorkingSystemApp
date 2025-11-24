@@ -1,7 +1,10 @@
+import 'dart:typed_data';
+
 import 'package:flutter/material.dart';
 import 'package:working_system_app/Others/Utils.dart';
 import 'package:working_system_app/Pages/ResetPassword/ResetVerification.dart';
 import 'package:working_system_app/mixins/WaitingDialogMixin.dart';
+import 'package:working_system_app/src/rust/api/captcha.dart';
 import 'package:working_system_app/src/rust/api/password_reset.dart';
 
 class ResetEnterEmail extends StatefulWidget {
@@ -11,8 +14,43 @@ class ResetEnterEmail extends StatefulWidget {
   State<ResetEnterEmail> createState() => _ResetEnterEmailState();
 }
 
-class _ResetEnterEmailState extends State<ResetEnterEmail> with WaitingDialogMixin {
+class _ResetEnterEmailState extends State<ResetEnterEmail>
+    with WaitingDialogMixin {
   String email = '';
+  String captchaCode = "";
+  Uint8List? captchaImage;
+  String? captchaAnswer;
+  TextEditingController captchaController = TextEditingController();
+
+  @override
+  void initState() {
+    super.initState();
+    fetchCaptcha();
+  }
+
+  void fetchCaptcha() {
+    generateCaptcha().then((value) {
+      final (img, ans) = value;
+      setState(() {
+        captchaImage = img;
+        captchaAnswer = ans;
+      });
+    });
+  }
+
+  bool checkCaptcha() {
+    if (captchaAnswer != null &&
+        captchaCode.toLowerCase() == captchaAnswer!.toLowerCase()) {
+      return true;
+    } else {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text("Incorrect captcha code. Please try again.")),
+      );
+      fetchCaptcha();
+      captchaController.clear();
+      return false;
+    }
+  }
 
   Future<bool> sendResetPasswordEmail() async {
     showWaitingDialog();
@@ -73,9 +111,36 @@ class _ResetEnterEmailState extends State<ResetEnterEmail> with WaitingDialogMix
                     }),
                     onTapOutside: (event) =>
                         FocusManager.instance.primaryFocus?.unfocus(),
-                        keyboardType: TextInputType.emailAddress,
+                    keyboardType: TextInputType.emailAddress,
                   ),
-                  //TODO: Add captcha verification here
+                  SizedBox(height: 16),
+                  TextField(
+                    controller: captchaController,
+                    decoration: InputDecoration(
+                      labelText: "Captcha Code",
+                      border: OutlineInputBorder(),
+                    ),
+                    onChanged: (value) => setState(() {
+                      captchaCode = value;
+                    }),
+                    keyboardType: TextInputType.text,
+                  ),
+                  SizedBox(height: 16),
+                  if (captchaImage != null && captchaAnswer?.isNotEmpty == true)
+                    SizedBox(
+                      height: 100,
+                      child: Row(
+                        mainAxisAlignment: .center,
+                        children: [
+                          Image.memory(captchaImage!),
+                          SizedBox(width: 8),
+                          IconButton(
+                            onPressed: fetchCaptcha,
+                            icon: Icon(Icons.refresh),
+                          ),
+                        ],
+                      ),
+                    ),
                 ],
               ),
             ),
@@ -95,7 +160,9 @@ class _ResetEnterEmailState extends State<ResetEnterEmail> with WaitingDialogMix
                         );
                         return;
                       }
-                      //TODO: Check captcha
+                      if (!checkCaptcha()) {
+                        return;
+                      }
                       bool success = await sendResetPasswordEmail();
                       if (success) {
                         if (!context.mounted) return;

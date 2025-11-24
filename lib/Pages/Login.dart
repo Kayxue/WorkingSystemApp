@@ -1,7 +1,10 @@
+import 'dart:typed_data';
+
 import 'package:flutter/material.dart';
 import 'package:working_system_app/Others/Utils.dart';
 import 'package:working_system_app/Pages/Register.dart';
 import 'package:working_system_app/Pages/ResetPassword/ResetEnterEmail.dart';
+import 'package:working_system_app/src/rust/api/captcha.dart';
 
 class Login extends StatefulWidget {
   final Function(String key) setSessionKey;
@@ -20,16 +23,46 @@ class Login extends StatefulWidget {
 class _LoginState extends State<Login> {
   String email = "";
   String password = "";
-
-  _LoginState();
+  String captchaCode = "";
+  Uint8List? captchaImage;
+  String? captchaAnswer;
+  TextEditingController captchaController = TextEditingController();
 
   @override
   void initState() {
     super.initState();
+    fetchCaptcha();
+  }
+
+  void fetchCaptcha() {
+    generateCaptcha().then((value) {
+      final (img, ans) = value;
+      setState(() {
+        captchaImage = img;
+        captchaAnswer = ans;
+      });
+    });
+  }
+
+  bool checkCaptcha() {
+    if (captchaAnswer != null &&
+        captchaCode.toLowerCase() == captchaAnswer!.toLowerCase()) {
+      return true;
+    } else {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text("Incorrect captcha code. Please try again.")),
+      );
+      fetchCaptcha();
+      captchaController.clear();
+      return false;
+    }
   }
 
   void login() async {
     if (email.isNotEmpty && password.isNotEmpty) {
+      if (!checkCaptcha()) {
+        return;
+      }
       Map<String, String> body = {"email": email, "password": password};
       final response = await Utils.client.post(
         "/user/login",
@@ -54,7 +87,9 @@ class _LoginState extends State<Login> {
       }
     } else {
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text("Please enter both email and password.")),
+        SnackBar(
+          content: Text("Please enter email, password, and captcha code."),
+        ),
       );
     }
   }
@@ -95,6 +130,34 @@ class _LoginState extends State<Login> {
             obscureText: true,
             keyboardType: TextInputType.visiblePassword,
           ),
+          SizedBox(height: 16),
+          TextField(
+            controller: captchaController,
+            decoration: InputDecoration(
+              labelText: "Captcha Code",
+              border: OutlineInputBorder(),
+            ),
+            onChanged: (value) => setState(() {
+              captchaCode = value;
+            }),
+            keyboardType: TextInputType.text,
+          ),
+          SizedBox(height: 16),
+          if (captchaImage != null && captchaAnswer?.isNotEmpty == true)
+            SizedBox(
+              height: 100,
+              child: Row(
+                mainAxisAlignment: .center,
+                children: [
+                  Image.memory(captchaImage!),
+                  SizedBox(width: 8),
+                  IconButton(
+                    onPressed: fetchCaptcha,
+                    icon: Icon(Icons.refresh),
+                  ),
+                ],
+              ),
+            ),
           SizedBox(height: 16),
           Row(
             children: [

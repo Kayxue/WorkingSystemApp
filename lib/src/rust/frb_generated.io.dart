@@ -3,6 +3,7 @@
 
 // ignore_for_file: unused_import, unused_element, unnecessary_import, duplicate_ignore, invalid_use_of_internal_member, annotate_overrides, non_constant_identifier_names, curly_braces_in_flow_control_structures, prefer_const_literals_to_create_immutables, unused_field
 
+import 'api/captcha.dart';
 import 'api/core.dart';
 import 'api/password_reset.dart';
 import 'api/websocket.dart';
@@ -97,6 +98,11 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
   CloseFrame? dco_decode_opt_box_autoadd_close_frame(dynamic raw);
 
   @protected
+  (Uint8List, String) dco_decode_record_list_prim_u_8_strict_string(
+    dynamic raw,
+  );
+
+  @protected
   (String, double) dco_decode_record_string_f_32(dynamic raw);
 
   @protected
@@ -161,6 +167,11 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
 
   @protected
   CloseFrame? sse_decode_opt_box_autoadd_close_frame(
+    SseDeserializer deserializer,
+  );
+
+  @protected
+  (Uint8List, String) sse_decode_record_list_prim_u_8_strict_string(
     SseDeserializer deserializer,
   );
 
@@ -277,6 +288,12 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
   @protected
   void sse_encode_opt_box_autoadd_close_frame(
     CloseFrame? self,
+    SseSerializer serializer,
+  );
+
+  @protected
+  void sse_encode_record_list_prim_u_8_strict_string(
+    (Uint8List, String) self,
     SseSerializer serializer,
   );
 

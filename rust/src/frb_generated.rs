@@ -38,7 +38,7 @@ flutter_rust_bridge::frb_generated_boilerplate!(
     default_rust_auto_opaque = RustAutoOpaqueMoi,
 );
 pub(crate) const FLUTTER_RUST_BRIDGE_CODEGEN_VERSION: &str = "2.11.1";
-pub(crate) const FLUTTER_RUST_BRIDGE_CODEGEN_CONTENT_HASH: i32 = 1093875719;
+pub(crate) const FLUTTER_RUST_BRIDGE_CODEGEN_CONTENT_HASH: i32 = -762230698;
 
 // Section: executor
 
@@ -535,6 +535,38 @@ fn wire__crate__api__core__change_filename_extension_impl(
         },
     )
 }
+fn wire__crate__api__captcha__generate_captcha_impl(
+    port_: flutter_rust_bridge::for_generated::MessagePort,
+    ptr_: flutter_rust_bridge::for_generated::PlatformGeneralizedUint8ListPtr,
+    rust_vec_len_: i32,
+    data_len_: i32,
+) {
+    FLUTTER_RUST_BRIDGE_HANDLER.wrap_normal::<flutter_rust_bridge::for_generated::SseCodec, _, _>(
+        flutter_rust_bridge::for_generated::TaskInfo {
+            debug_name: "generate_captcha",
+            port: Some(port_),
+            mode: flutter_rust_bridge::for_generated::FfiCallMode::Normal,
+        },
+        move || {
+            let message = unsafe {
+                flutter_rust_bridge::for_generated::Dart2RustMessageSse::from_wire(
+                    ptr_,
+                    rust_vec_len_,
+                    data_len_,
+                )
+            };
+            let mut deserializer =
+                flutter_rust_bridge::for_generated::SseDeserializer::new(message);
+            deserializer.end();
+            move |context| {
+                transform_result_sse::<_, ()>((move || {
+                    let output_ok = Result::<_, ()>::Ok(crate::api::captcha::generate_captcha())?;
+                    Ok(output_ok)
+                })())
+            }
+        },
+    )
+}
 fn wire__crate__api__core__get_image_name_and_size_impl(
     port_: flutter_rust_bridge::for_generated::MessagePort,
     ptr_: flutter_rust_bridge::for_generated::PlatformGeneralizedUint8ListPtr,
@@ -978,6 +1010,15 @@ impl SseDecode for Option<crate::api::websocket::CloseFrame> {
     }
 }
 
+impl SseDecode for (Vec<u8>, String) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    fn sse_decode(deserializer: &mut flutter_rust_bridge::for_generated::SseDeserializer) -> Self {
+        let mut var_field0 = <Vec<u8>>::sse_decode(deserializer);
+        let mut var_field1 = <String>::sse_decode(deserializer);
+        return (var_field0, var_field1);
+    }
+}
+
 impl SseDecode for (String, f32) {
     // Codec=Sse (Serialization based), see doc to use other codecs
     fn sse_decode(deserializer: &mut flutter_rust_bridge::for_generated::SseDeserializer) -> Self {
@@ -1051,12 +1092,13 @@ fn pde_ffi_dispatcher_primary_impl(
             rust_vec_len,
             data_len,
         ),
-        11 => {
+        11 => wire__crate__api__captcha__generate_captcha_impl(port, ptr, rust_vec_len, data_len),
+        12 => {
             wire__crate__api__core__get_image_name_and_size_impl(port, ptr, rust_vec_len, data_len)
         }
-        12 => wire__crate__api__core__init_app_impl(port, ptr, rust_vec_len, data_len),
-        13 => wire__crate__api__websocket__init_app_impl(port, ptr, rust_vec_len, data_len),
-        15 => wire__crate__api__core__read_image_impl(port, ptr, rust_vec_len, data_len),
+        13 => wire__crate__api__core__init_app_impl(port, ptr, rust_vec_len, data_len),
+        14 => wire__crate__api__websocket__init_app_impl(port, ptr, rust_vec_len, data_len),
+        16 => wire__crate__api__core__read_image_impl(port, ptr, rust_vec_len, data_len),
         _ => unreachable!(),
     }
 }
@@ -1095,7 +1137,7 @@ fn pde_ffi_dispatcher_sync_impl(
         9 => {
             wire__crate__api__websocket__WebSocketClient_send_text_impl(ptr, rust_vec_len, data_len)
         }
-        14 => wire__crate__api__password_reset__is_valid_email_impl(ptr, rust_vec_len, data_len),
+        15 => wire__crate__api__password_reset__is_valid_email_impl(ptr, rust_vec_len, data_len),
         _ => unreachable!(),
     }
 }
@@ -1244,6 +1286,14 @@ impl SseEncode for Option<crate::api::websocket::CloseFrame> {
         if let Some(value) = self {
             <crate::api::websocket::CloseFrame>::sse_encode(value, serializer);
         }
+    }
+}
+
+impl SseEncode for (Vec<u8>, String) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    fn sse_encode(self, serializer: &mut flutter_rust_bridge::for_generated::SseSerializer) {
+        <Vec<u8>>::sse_encode(self.0, serializer);
+        <String>::sse_encode(self.1, serializer);
     }
 }
 
