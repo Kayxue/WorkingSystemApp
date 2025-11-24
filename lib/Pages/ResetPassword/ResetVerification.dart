@@ -3,6 +3,7 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:collection/collection.dart';
 import 'package:working_system_app/Others/Utils.dart';
+import 'package:working_system_app/mixins/WaitingDialogMixin.dart';
 
 class ResetVerification extends StatefulWidget {
   final String email;
@@ -12,11 +13,12 @@ class ResetVerification extends StatefulWidget {
   State<ResetVerification> createState() => _ResetVerificationState();
 }
 
-class _ResetVerificationState extends State<ResetVerification> {
+class _ResetVerificationState extends State<ResetVerification> with WaitingDialogMixin {
   String verificationCode = "";
   String newPassword = "";
 
   Future<(bool, String?)> sendResetPasswordRequest() async {
+    showWaitingDialog();
     final response = await Utils.client.post(
       "/user/pw-reset/verify",
       headers: .rawMap({"platform": "mobile"}),
@@ -27,6 +29,7 @@ class _ResetVerificationState extends State<ResetVerification> {
       }),
     );
     if (!mounted) return (false, null);
+    hideWaitingDialog();
     if (response.statusCode == 200) {
       return (true, null);
     }

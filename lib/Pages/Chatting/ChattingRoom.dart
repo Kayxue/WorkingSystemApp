@@ -698,35 +698,39 @@ class _ChattingRoomState extends State<ChattingRoom> with ChatWebSocketMixin {
         children: [
           if (_replyingToMessage != null) ...[
             Card(
-              child: Padding(
-                padding: const .only(left: 16, right: 8, top: 8, bottom: 8),
-                child: Row(
-                  children: [
-                    Expanded(
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Text(
-                            'Replying to ${_replyingToMessage!.senderWorkerId != null ? "Me" : widget.opponentName}', // Simplified
-                            style: TextStyle(fontWeight: FontWeight.bold),
-                          ),
-                          Text(
-                            _replyingToMessage!.content,
-                            maxLines: 1,
-                            overflow: TextOverflow.ellipsis,
-                          ),
-                        ],
+              clipBehavior: .hardEdge,
+              child: InkWell(
+                onTap: () => _scrollToMessage(_replyingToMessage!.messagesId),
+                child: Padding(
+                  padding: const .only(left: 16, right: 8, top: 8, bottom: 8),
+                  child: Row(
+                    children: [
+                      Expanded(
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text(
+                              'Replying to ${_replyingToMessage!.senderWorkerId != null ? "Me" : widget.opponentName}', // Simplified
+                              style: TextStyle(fontWeight: FontWeight.bold),
+                            ),
+                            Text(
+                              _replyingToMessage!.content,
+                              maxLines: 1,
+                              overflow: TextOverflow.ellipsis,
+                            ),
+                          ],
+                        ),
                       ),
-                    ),
-                    IconButton(
-                      icon: Icon(Icons.close),
-                      onPressed: () {
-                        setState(() {
-                          _replyingToMessage = null;
-                        });
-                      },
-                    ),
-                  ],
+                      IconButton(
+                        icon: Icon(Icons.close),
+                        onPressed: () {
+                          setState(() {
+                            _replyingToMessage = null;
+                          });
+                        },
+                      ),
+                    ],
+                  ),
                 ),
               ),
             ),

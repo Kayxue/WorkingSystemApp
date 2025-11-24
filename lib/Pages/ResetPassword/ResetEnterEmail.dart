@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:working_system_app/Others/Utils.dart';
 import 'package:working_system_app/Pages/ResetPassword/ResetVerification.dart';
+import 'package:working_system_app/mixins/WaitingDialogMixin.dart';
 import 'package:working_system_app/src/rust/api/password_reset.dart';
 
 class ResetEnterEmail extends StatefulWidget {
@@ -10,16 +11,18 @@ class ResetEnterEmail extends StatefulWidget {
   State<ResetEnterEmail> createState() => _ResetEnterEmailState();
 }
 
-class _ResetEnterEmailState extends State<ResetEnterEmail> {
+class _ResetEnterEmailState extends State<ResetEnterEmail> with WaitingDialogMixin {
   String email = '';
 
   Future<bool> sendResetPasswordEmail() async {
+    showWaitingDialog();
     final response = await Utils.client.post(
       "/user/pw-reset/request",
       headers: .rawMap({"platform": "mobile"}),
       body: .json({"email": email}),
     );
     if (!mounted) return false;
+    hideWaitingDialog();
     if (response.statusCode == 429) {
       ScaffoldMessenger.of(
         context,
