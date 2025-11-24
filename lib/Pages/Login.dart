@@ -64,6 +64,7 @@ class _LoginState extends State<Login> {
     return Padding(
       padding: .only(left: 24, right: 24, top: 16),
       child: Column(
+        mainAxisAlignment: .center,
         children: [
           Row(
             mainAxisAlignment: .center,
@@ -135,9 +136,21 @@ class _LoginState extends State<Login> {
               Text("|"),
               SizedBox(width: 4),
               GestureDetector(
-                onTap: () => Navigator.of(context).push(
-                  MaterialPageRoute(builder: (context) => ResetEnterEmail()),
-                ),
+                onTap: () async {
+                  final result = await Navigator.of(context).push<bool>(
+                    MaterialPageRoute(builder: (context) => ResetEnterEmail()),
+                  );
+                  if (result == true) {
+                    if (!context.mounted) return;
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      SnackBar(
+                        content: Text(
+                          "Password reset successful. Please log in with your new password.",
+                        ),
+                      ),
+                    );
+                  }
+                },
                 child: Text(
                   "Reset Password",
                   style: TextStyle(

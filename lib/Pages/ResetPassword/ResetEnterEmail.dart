@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:working_system_app/Others/Utils.dart';
+import 'package:working_system_app/Pages/ResetPassword/ResetVerification.dart';
 import 'package:working_system_app/src/rust/api/password_reset.dart';
 
 class ResetEnterEmail extends StatefulWidget {
@@ -23,6 +24,12 @@ class _ResetEnterEmailState extends State<ResetEnterEmail> {
       ScaffoldMessenger.of(
         context,
       ).showSnackBar(SnackBar(content: Text(response.body)));
+      return false;
+    }
+    if(response.statusCode == 400) {
+      ScaffoldMessenger.of(
+        context,
+      ).showSnackBar(SnackBar(content: Text("Please enter a valid email address.")));
       return false;
     }
     if (response.statusCode != 200) {
@@ -72,15 +79,48 @@ class _ResetEnterEmailState extends State<ResetEnterEmail> {
                 Expanded(
                   child: FilledButton(
                     onPressed: () async {
-                      if(email.isEmpty || !isValidEmail(email)){
+                      if (email.isEmpty || !isValidEmail(email)) {
                         ScaffoldMessenger.of(context).showSnackBar(
-                          SnackBar(content: Text("Please enter a valid email address.")),
+                          SnackBar(
+                            content: Text(
+                              "Please enter a valid email address.",
+                            ),
+                          ),
                         );
                         return;
                       }
                       //TODO: Check captcha
                       bool success = await sendResetPasswordEmail();
-                      if (success) {}
+                      if (success) {
+                        if (!context.mounted) return;
+                        await showDialog(
+                          barrierDismissible: false,
+                          context: context,
+                          builder: (context) => AlertDialog(
+                            title: Text("Success"),
+                            content: Text(
+                              "A password reset email has been sent to your email address. Please check your inbox.",
+                            ),
+                            actions: [
+                              TextButton(
+                                onPressed: () {
+                                  Navigator.of(context).pop();
+                                },
+                                child: Text("OK"),
+                              ),
+                            ],
+                          ),
+                        );
+                        if (!context.mounted) return;
+                        final result = await Navigator.of(context).push<bool>(
+                          MaterialPageRoute(
+                            builder: (context) =>
+                                ResetVerification(email: email),
+                          ),
+                        );
+                        if (!context.mounted) return;
+                        Navigator.of(context).pop(result);
+                      }
                     },
                     child: Text("Reset Password"),
                   ),
