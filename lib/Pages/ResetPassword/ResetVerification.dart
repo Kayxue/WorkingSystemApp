@@ -75,6 +75,9 @@ class _ResetVerificationState extends State<ResetVerification> {
                         verificationCode = value;
                       });
                     },
+                    onTapOutside: (event) =>
+                        FocusManager.instance.primaryFocus?.unfocus(),
+                        keyboardType: TextInputType.number,
                   ),
                   SizedBox(height: 32),
                   TextField(
@@ -88,6 +91,10 @@ class _ResetVerificationState extends State<ResetVerification> {
                         newPassword = value;
                       });
                     },
+                    obscureText: true,
+                    keyboardType: TextInputType.visiblePassword,
+                    onTapOutside: (event) =>
+                        FocusManager.instance.primaryFocus?.unfocus(),
                   ),
                 ],
               ),
@@ -102,18 +109,21 @@ class _ResetVerificationState extends State<ResetVerification> {
                   if (success) {
                     Navigator.of(context).pop(true);
                   } else {
-                    showDialog(context: context, builder: (context) => AlertDialog(
-                      title: Text("Error"),
-                      content: Text(
-                        errorMessage ?? "An unknown error occurred.",
-                      ),
-                      actions: [
-                        TextButton(
-                          onPressed: () => Navigator.of(context).pop(),
-                          child: Text("OK"),
+                    showDialog(
+                      context: context,
+                      builder: (context) => AlertDialog(
+                        title: Text("Error"),
+                        content: Text(
+                          errorMessage ?? "An unknown error occurred.",
                         ),
-                      ],
-                    ));
+                        actions: [
+                          TextButton(
+                            onPressed: () => Navigator.of(context).pop(),
+                            child: Text("OK"),
+                          ),
+                        ],
+                      ),
+                    );
                   }
                 },
                 child: Text("Reset Password"),

@@ -26,10 +26,10 @@ class _ResetEnterEmailState extends State<ResetEnterEmail> {
       ).showSnackBar(SnackBar(content: Text(response.body)));
       return false;
     }
-    if(response.statusCode == 400) {
-      ScaffoldMessenger.of(
-        context,
-      ).showSnackBar(SnackBar(content: Text("Please enter a valid email address.")));
+    if (response.statusCode == 400) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text("Please enter a valid email address.")),
+      );
       return false;
     }
     if (response.statusCode != 200) {
@@ -68,6 +68,9 @@ class _ResetEnterEmailState extends State<ResetEnterEmail> {
                     onChanged: (value) => setState(() {
                       email = value;
                     }),
+                    onTapOutside: (event) =>
+                        FocusManager.instance.primaryFocus?.unfocus(),
+                        keyboardType: TextInputType.emailAddress,
                   ),
                   //TODO: Add captcha verification here
                 ],
