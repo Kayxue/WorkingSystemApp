@@ -191,7 +191,10 @@ class _PersonalState extends State<Personal> {
                                 leading: const Icon(Icons.school),
                                 title: const Text("Education"),
                                 subtitle: Text(
-                                  "${profile.schoolName?.isNotEmpty == true ? profile.schoolName : ""} ${profile.major?.isNotEmpty == true ? profile.major : ""}",
+                                  profile.schoolName?.isEmpty == true &&
+                                          profile.major?.isEmpty == true
+                                      ? profile.highestEducation
+                                      : "${profile.schoolName?.isNotEmpty == true ? profile.schoolName : ""} ${profile.major?.isNotEmpty == true ? profile.major : ""}",
                                 ),
                               ),
                               ListTile(
