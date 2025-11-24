@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:working_system_app/Others/Utils.dart';
 import 'package:working_system_app/Pages/Register.dart';
+import 'package:working_system_app/Pages/ResetPassword/ResetEnterEmail.dart';
 
 class Login extends StatefulWidget {
   final Function(String key) setSessionKey;
@@ -94,28 +95,57 @@ class _LoginState extends State<Login> {
             keyboardType: TextInputType.visiblePassword,
           ),
           SizedBox(height: 16),
-          FilledButton(
-            onPressed: () {
-              login();
-            },
-            child: Text("Login"),
+          Row(
+            children: [
+              Expanded(
+                child: FilledButton(onPressed: login, child: Text("Login")),
+              ),
+            ],
           ),
           SizedBox(height: 16),
-          ElevatedButton(
-            onPressed: () async {
-              final result = await Navigator.of(
-                context,
-              ).push<bool>(MaterialPageRoute(builder: (context) => Register()));
-              if (result == true) {
-                if (!context.mounted) return;
-                ScaffoldMessenger.of(context).showSnackBar(
-                  SnackBar(
-                    content: Text("Registration successful. Please log in."),
+          Row(
+            mainAxisAlignment: .center,
+            children: [
+              Text("Don't have an account?"),
+              SizedBox(width: 8),
+              GestureDetector(
+                onTap: () async {
+                  final result = await Navigator.of(context).push<bool>(
+                    MaterialPageRoute(builder: (context) => Register()),
+                  );
+                  if (result == true) {
+                    if (!context.mounted) return;
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      SnackBar(
+                        content: Text(
+                          "Registration successful. Please log in.",
+                        ),
+                      ),
+                    );
+                  }
+                },
+                child: Text(
+                  "Register",
+                  style: TextStyle(
+                    color: Theme.of(context).colorScheme.primary,
                   ),
-                );
-              }
-            },
-            child: Text("Register"),
+                ),
+              ),
+              SizedBox(width: 4),
+              Text("|"),
+              SizedBox(width: 4),
+              GestureDetector(
+                onTap: () => Navigator.of(context).push(
+                  MaterialPageRoute(builder: (context) => ResetEnterEmail()),
+                ),
+                child: Text(
+                  "Reset Password",
+                  style: TextStyle(
+                    color: Theme.of(context).colorScheme.primary,
+                  ),
+                ),
+              ),
+            ],
           ),
         ],
       ),

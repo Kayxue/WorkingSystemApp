@@ -16,6 +16,7 @@ flutter_rust_bridge = "=2.11.1"
 image = { version = "0.25.8", default-features = false, features = ["png", "jpeg", "webp"] }
 log = "0.4.28"
 parking_lot = "0.12.5"
+email_address = "0.2.4"
 
 [profile.release]
 opt-level = "z"     # Optimize for size
