@@ -10,6 +10,7 @@ import 'package:working_system_app/Widget/Others/loading_indicator.dart';
 import 'package:working_system_app/Widget/Personal/profile_button_row.dart';
 import 'package:working_system_app/Widget/Personal/profile_card.dart';
 import 'package:working_system_app/Widget/Personal/profile_info_list.dart';
+import 'package:working_system_app/mixins/periodic_mixin.dart';
 
 class Personal extends StatefulWidget {
   final String sessionKey;
@@ -27,7 +28,15 @@ class Personal extends StatefulWidget {
   State<Personal> createState() => _PersonalState();
 }
 
-class _PersonalState extends State<Personal> {
+class _PersonalState extends State<Personal> with PeriodicTaskMixin {
+  @override
+  Duration get interval => const Duration(seconds: 5);
+
+  @override
+  void onTick() {
+    refetchUnread();
+  }
+
   late WorkerProfile profile;
   PersonalUnread? unreadStates;
   bool isLoading = true;
