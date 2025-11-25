@@ -25,7 +25,7 @@ class _ViewConflictState extends State<ViewConflict> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('${widget.gigTitle}衝突'),
+        title: Text(widget.gigTitle),
         backgroundColor: Colors.transparent,
         scrolledUnderElevation: 0.0,
       ),

@@ -8,6 +8,7 @@
 
 import 'api/captcha.dart';
 import 'api/core.dart';
+import 'api/images.dart';
 import 'api/password_reset.dart';
 import 'api/websocket.dart';
 import 'dart:async';

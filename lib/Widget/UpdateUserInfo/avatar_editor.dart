@@ -6,7 +6,7 @@ import 'package:image_picker/image_picker.dart';
 import 'package:image_cropper/image_cropper.dart';
 import 'package:working_system_app/Others/utils.dart';
 import 'package:working_system_app/Types/JSONObject/worker_profile.dart';
-import 'package:working_system_app/src/rust/api/core.dart';
+import 'package:working_system_app/src/rust/api/images.dart';
 
 class AvatarEditor extends StatelessWidget {
   final WorkerProfile profile;
@@ -32,9 +32,11 @@ class AvatarEditor extends StatelessWidget {
           child: !updateAvatar
               ? (profile.profilePhoto == null
                     ? FutureBuilder<Uint8List>(
-                        future: AppleLikeAvatarGenerator.generateWithName(
-                          "${profile.firstName}${profile.lastName}",
-                        ),
+                        future:
+                            AppleLikeAvatarGenerator.generateWithFirstNameLastName(
+                              firstName: profile.firstName,
+                              lastName: profile.lastName,
+                            ),
                         builder: (context, snapshot) {
                           if (snapshot.connectionState == .waiting) {
                             return Container(
@@ -63,9 +65,11 @@ class AvatarEditor extends StatelessWidget {
                       ))
               : (avatarBytes == null
                     ? FutureBuilder<Uint8List>(
-                        future: AppleLikeAvatarGenerator.generateWithName(
-                          "${profile.firstName}${profile.lastName}",
-                        ),
+                        future:
+                            AppleLikeAvatarGenerator.generateWithFirstNameLastName(
+                              firstName: profile.firstName,
+                              lastName: profile.lastName,
+                            ),
                         builder: (context, snapshot) {
                           if (snapshot.connectionState == .waiting) {
                             return Container(

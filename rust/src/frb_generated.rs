@@ -38,7 +38,7 @@ flutter_rust_bridge::frb_generated_boilerplate!(
     default_rust_auto_opaque = RustAutoOpaqueMoi,
 );
 pub(crate) const FLUTTER_RUST_BRIDGE_CODEGEN_VERSION: &str = "2.11.1";
-pub(crate) const FLUTTER_RUST_BRIDGE_CODEGEN_CONTENT_HASH: i32 = -762230698;
+pub(crate) const FLUTTER_RUST_BRIDGE_CODEGEN_CONTENT_HASH: i32 = 316007113;
 
 // Section: executor
 
@@ -499,7 +499,7 @@ fn wire__crate__api__websocket__WebSocketClient_send_text_impl(
         },
     )
 }
-fn wire__crate__api__core__change_filename_extension_impl(
+fn wire__crate__api__images__change_filename_extension_impl(
     port_: flutter_rust_bridge::for_generated::MessagePort,
     ptr_: flutter_rust_bridge::for_generated::PlatformGeneralizedUint8ListPtr,
     rust_vec_len_: i32,
@@ -527,7 +527,7 @@ fn wire__crate__api__core__change_filename_extension_impl(
             move |context| {
                 transform_result_sse::<_, ()>((move || {
                     let output_ok = Result::<_, ()>::Ok(
-                        crate::api::core::change_filename_extension(api_filename, api_extension),
+                        crate::api::images::change_filename_extension(api_filename, api_extension),
                     )?;
                     Ok(output_ok)
                 })())
@@ -567,7 +567,7 @@ fn wire__crate__api__captcha__generate_captcha_impl(
         },
     )
 }
-fn wire__crate__api__core__get_image_name_and_size_impl(
+fn wire__crate__api__images__get_image_name_and_size_impl(
     port_: flutter_rust_bridge::for_generated::MessagePort,
     ptr_: flutter_rust_bridge::for_generated::PlatformGeneralizedUint8ListPtr,
     rust_vec_len_: i32,
@@ -594,11 +594,45 @@ fn wire__crate__api__core__get_image_name_and_size_impl(
             move |context| {
                 transform_result_sse::<_, flutter_rust_bridge::for_generated::anyhow::Error>(
                     (move || {
-                        let output_ok = crate::api::core::get_image_name_and_size(api_path)?;
+                        let output_ok = crate::api::images::get_image_name_and_size(api_path)?;
                         Ok(output_ok)
                     })(),
                 )
             }
+        },
+    )
+}
+fn wire__crate__api__core__get_name_to_display_impl(
+    ptr_: flutter_rust_bridge::for_generated::PlatformGeneralizedUint8ListPtr,
+    rust_vec_len_: i32,
+    data_len_: i32,
+) -> flutter_rust_bridge::for_generated::WireSyncRust2DartSse {
+    FLUTTER_RUST_BRIDGE_HANDLER.wrap_sync::<flutter_rust_bridge::for_generated::SseCodec, _>(
+        flutter_rust_bridge::for_generated::TaskInfo {
+            debug_name: "get_name_to_display",
+            port: None,
+            mode: flutter_rust_bridge::for_generated::FfiCallMode::Sync,
+        },
+        move || {
+            let message = unsafe {
+                flutter_rust_bridge::for_generated::Dart2RustMessageSse::from_wire(
+                    ptr_,
+                    rust_vec_len_,
+                    data_len_,
+                )
+            };
+            let mut deserializer =
+                flutter_rust_bridge::for_generated::SseDeserializer::new(message);
+            let api_first_name = <String>::sse_decode(&mut deserializer);
+            let api_last_name = <String>::sse_decode(&mut deserializer);
+            deserializer.end();
+            transform_result_sse::<_, ()>((move || {
+                let output_ok = Result::<_, ()>::Ok(crate::api::core::get_name_to_display(
+                    api_first_name,
+                    api_last_name,
+                ))?;
+                Ok(output_ok)
+            })())
         },
     )
 }
@@ -701,7 +735,7 @@ fn wire__crate__api__password_reset__is_valid_email_impl(
         },
     )
 }
-fn wire__crate__api__core__read_image_impl(
+fn wire__crate__api__images__read_image_impl(
     port_: flutter_rust_bridge::for_generated::MessagePort,
     ptr_: flutter_rust_bridge::for_generated::PlatformGeneralizedUint8ListPtr,
     rust_vec_len_: i32,
@@ -728,7 +762,7 @@ fn wire__crate__api__core__read_image_impl(
             move |context| {
                 transform_result_sse::<_, flutter_rust_bridge::for_generated::anyhow::Error>(
                     (move || {
-                        let output_ok = crate::api::core::read_image(api_path)?;
+                        let output_ok = crate::api::images::read_image(api_path)?;
                         Ok(output_ok)
                     })(),
                 )
@@ -1086,19 +1120,22 @@ fn pde_ffi_dispatcher_primary_impl(
             rust_vec_len,
             data_len,
         ),
-        10 => wire__crate__api__core__change_filename_extension_impl(
+        10 => wire__crate__api__images__change_filename_extension_impl(
             port,
             ptr,
             rust_vec_len,
             data_len,
         ),
         11 => wire__crate__api__captcha__generate_captcha_impl(port, ptr, rust_vec_len, data_len),
-        12 => {
-            wire__crate__api__core__get_image_name_and_size_impl(port, ptr, rust_vec_len, data_len)
-        }
-        13 => wire__crate__api__core__init_app_impl(port, ptr, rust_vec_len, data_len),
-        14 => wire__crate__api__websocket__init_app_impl(port, ptr, rust_vec_len, data_len),
-        16 => wire__crate__api__core__read_image_impl(port, ptr, rust_vec_len, data_len),
+        12 => wire__crate__api__images__get_image_name_and_size_impl(
+            port,
+            ptr,
+            rust_vec_len,
+            data_len,
+        ),
+        14 => wire__crate__api__core__init_app_impl(port, ptr, rust_vec_len, data_len),
+        15 => wire__crate__api__websocket__init_app_impl(port, ptr, rust_vec_len, data_len),
+        17 => wire__crate__api__images__read_image_impl(port, ptr, rust_vec_len, data_len),
         _ => unreachable!(),
     }
 }
@@ -1137,7 +1174,8 @@ fn pde_ffi_dispatcher_sync_impl(
         9 => {
             wire__crate__api__websocket__WebSocketClient_send_text_impl(ptr, rust_vec_len, data_len)
         }
-        15 => wire__crate__api__password_reset__is_valid_email_impl(ptr, rust_vec_len, data_len),
+        13 => wire__crate__api__core__get_name_to_display_impl(ptr, rust_vec_len, data_len),
+        16 => wire__crate__api__password_reset__is_valid_email_impl(ptr, rust_vec_len, data_len),
         _ => unreachable!(),
     }
 }

@@ -11,6 +11,7 @@ class ProfileButtonRow extends StatelessWidget {
   final Function clearSessionKey;
   final Function(int) updateIndex;
   final Function refetchProfile;
+  final Function refetchUnread;
   final WorkerProfile profile;
   final int? pendingJobs;
   final int? unratedEmployers;
@@ -24,6 +25,7 @@ class ProfileButtonRow extends StatelessWidget {
     required this.refetchProfile,
     required this.pendingJobs,
     required this.unratedEmployers,
+    required this.refetchUnread,
   });
 
   @override
@@ -44,13 +46,14 @@ class ProfileButtonRow extends StatelessWidget {
               iconColor: Colors.black,
               icon: Icons.business_center,
               text: "Gigs Requests",
-              onPressed: () {
-                Navigator.of(context).push(
+              onPressed: () async {
+                await Navigator.of(context).push(
                   MaterialPageRoute(
                     builder: (context) =>
                         MyApplications(sessionKey: sessionKey),
                   ),
                 );
+                refetchUnread();
               },
             ),
             ButtonWithIcon(
@@ -59,11 +62,14 @@ class ProfileButtonRow extends StatelessWidget {
               iconColor: Colors.black,
               icon: Icons.star,
               text: "Gig Reviews",
-              onPressed: () => Navigator.of(context).push<void>(
-                MaterialPageRoute(
-                  builder: (context) => Reviews(sessionKey: sessionKey),
-                ),
-              ),
+              onPressed: () async {
+                await Navigator.of(context).push<void>(
+                  MaterialPageRoute(
+                    builder: (context) => Reviews(sessionKey: sessionKey),
+                  ),
+                );
+                refetchUnread();
+              },
             ),
             ButtonWithIcon(
               withBadge: false,
@@ -84,10 +90,11 @@ class ProfileButtonRow extends StatelessWidget {
                 );
                 if (result != null && result) {
                   if (!context.mounted) return;
-                  ScaffoldMessenger.of(
-                    context,
-                  ).showSnackBar(const SnackBar(content: Text("Profile updated")));
-                  await refetchProfile();
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    const SnackBar(content: Text("Profile updated")),
+                  );
+                  refetchProfile();
+                  return;
                 }
               },
             ),
@@ -106,10 +113,11 @@ class ProfileButtonRow extends StatelessWidget {
                 );
                 if (result != null && result) {
                   if (!context.mounted) return;
-                  ScaffoldMessenger.of(
-                    context,
-                  ).showSnackBar(const SnackBar(content: Text("Password updated")));
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    const SnackBar(content: Text("Password updated")),
+                  );
                 }
+                refetchUnread();
               },
             ),
           ],

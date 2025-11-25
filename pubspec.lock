@@ -37,10 +37,10 @@ packages:
     dependency: "direct main"
     description:
       name: apple_like_avatar_generator
-      sha256: "9824f1dcfb236be76be9d77bbed9a4281c1f52120d8cd4fa499c38d5715b61e7"
+      sha256: d9c8c4db529b1e67d73c3ff84d852e60630fa67826e28424c4d714db849196a9
       url: "https://pub.dev"
     source: hosted
-    version: "0.0.7"
+    version: "0.0.8"
   archive:
     dependency: transitive
     description:

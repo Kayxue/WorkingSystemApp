@@ -54,6 +54,10 @@ class _PersonalState extends State<Personal> {
       this.profile = profile;
       isLoading = false;
     });
+    refetchUnread();
+  }
+
+  void refetchUnread() {
     Utils.fetchUnread(widget.sessionKey).then((unreadStates) {
       if (mounted) {
         setState(() {
@@ -72,13 +76,7 @@ class _PersonalState extends State<Personal> {
         isLoading = false;
       });
     });
-    Utils.fetchUnread(widget.sessionKey).then((unreadStates) {
-      if (mounted) {
-        setState(() {
-          this.unreadStates = unreadStates;
-        });
-      }
-    });
+    refetchUnread();
   }
 
   Future<void> logout() async {
@@ -151,6 +149,7 @@ class _PersonalState extends State<Personal> {
                                 updateIndex: widget.updateIndex,
                                 profile: profile,
                                 refetchProfile: refetchProfile,
+                                refetchUnread: refetchUnread,
                               ),
                             ),
                           ),

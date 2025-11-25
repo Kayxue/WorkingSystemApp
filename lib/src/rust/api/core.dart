@@ -6,14 +6,7 @@
 import '../frb_generated.dart';
 import 'package:flutter_rust_bridge/flutter_rust_bridge_for_generated.dart';
 
-Future<Uint8List> readImage(String path) =>
-    RustLib.instance.api.crateApiCoreReadImage(path: path);
-
-Future<(String, double)> getImageNameAndSize(String path) =>
-    RustLib.instance.api.crateApiCoreGetImageNameAndSize(path: path);
-
-Future<String> changeFilenameExtension(String filename, String extension_) =>
-    RustLib.instance.api.crateApiCoreChangeFilenameExtension(
-      filename: filename,
-      extension_: extension_,
-    );
+String getNameToDisplay(String firstName, String lastName) => RustLib
+    .instance
+    .api
+    .crateApiCoreGetNameToDisplay(firstName: firstName, lastName: lastName);

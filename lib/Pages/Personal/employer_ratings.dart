@@ -10,15 +10,18 @@ import 'package:working_system_app/Others/utils.dart';
 import 'package:working_system_app/Types/JSONObject/employer_rating.dart';
 import 'package:working_system_app/Types/JSONObject/employer_review_return.dart';
 import 'package:working_system_app/Types/JSONObject/worker_profile.dart';
+import 'package:working_system_app/src/rust/api/core.dart';
 
 class EmployerRatings extends StatefulWidget {
   final WorkerProfile profile;
   final String sessionKey;
+  final Uint8List? avatarData;
 
   const EmployerRatings({
     super.key,
     required this.profile,
     required this.sessionKey,
+    this.avatarData,
   });
 
   @override
@@ -73,10 +76,18 @@ class _EmployerRatingsState extends State<EmployerRatings> {
                             width: 70,
                             height: 70,
                           )
+                        : widget.avatarData != null
+                        ? Image.memory(
+                            widget.avatarData!,
+                            width: 70,
+                            height: 70,
+                          )
                         : FutureBuilder<Uint8List>(
-                            future: AppleLikeAvatarGenerator.generateWithName(
-                              "${widget.profile.firstName}${widget.profile.lastName}",
-                            ),
+                            future:
+                                AppleLikeAvatarGenerator.generateWithFirstNameLastName(
+                                  firstName: widget.profile.firstName,
+                                  lastName: widget.profile.lastName,
+                                ),
                             builder: (context, snapshot) {
                               if (snapshot.connectionState == .waiting) {
                                 return Container(
@@ -85,8 +96,6 @@ class _EmployerRatingsState extends State<EmployerRatings> {
                                   color: Colors
                                       .transparent, // Transparent background
                                 );
-                              } else if (snapshot.hasError) {
-                                return Text('Error: ${snapshot.error}');
                               } else if (snapshot.hasData) {
                                 return Image.memory(
                                   snapshot.data!,
@@ -101,7 +110,10 @@ class _EmployerRatingsState extends State<EmployerRatings> {
                   ),
                   SizedBox(height: 8),
                   Text(
-                    "${widget.profile.firstName} ${widget.profile.lastName}",
+                    getNameToDisplay(
+                      widget.profile.firstName,
+                      widget.profile.lastName,
+                    ),
                     style: TextStyle(fontSize: 16, fontWeight: .bold),
                   ),
                 ],

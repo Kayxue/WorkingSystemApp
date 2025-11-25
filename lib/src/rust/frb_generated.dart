@@ -5,6 +5,7 @@
 
 import 'api/captcha.dart';
 import 'api/core.dart';
+import 'api/images.dart';
 import 'api/password_reset.dart';
 import 'api/websocket.dart';
 import 'dart:async';
@@ -70,7 +71,7 @@ class RustLib extends BaseEntrypoint<RustLibApi, RustLibApiImpl, RustLibWire> {
   String get codegenVersion => '2.11.1';
 
   @override
-  int get rustContentHash => -762230698;
+  int get rustContentHash => 316007113;
 
   static const kDefaultExternalLibraryLoaderConfig =
       ExternalLibraryLoaderConfig(
@@ -123,15 +124,20 @@ abstract class RustLibApi extends BaseApi {
     required String text,
   });
 
-  Future<String> crateApiCoreChangeFilenameExtension({
+  Future<String> crateApiImagesChangeFilenameExtension({
     required String filename,
     required String extension_,
   });
 
   Future<(Uint8List, String)> crateApiCaptchaGenerateCaptcha();
 
-  Future<(String, double)> crateApiCoreGetImageNameAndSize({
+  Future<(String, double)> crateApiImagesGetImageNameAndSize({
     required String path,
+  });
+
+  String crateApiCoreGetNameToDisplay({
+    required String firstName,
+    required String lastName,
   });
 
   Future<void> crateApiCoreInitApp();
@@ -140,7 +146,7 @@ abstract class RustLibApi extends BaseApi {
 
   bool crateApiPasswordResetIsValidEmail({required String email});
 
-  Future<Uint8List> crateApiCoreReadImage({required String path});
+  Future<Uint8List> crateApiImagesReadImage({required String path});
 
   RustArcIncrementStrongCountFnType
   get rust_arc_increment_strong_count_WebSocketClient;
@@ -472,7 +478,7 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
       );
 
   @override
-  Future<String> crateApiCoreChangeFilenameExtension({
+  Future<String> crateApiImagesChangeFilenameExtension({
     required String filename,
     required String extension_,
   }) {
@@ -493,14 +499,14 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
           decodeSuccessData: sse_decode_String,
           decodeErrorData: null,
         ),
-        constMeta: kCrateApiCoreChangeFilenameExtensionConstMeta,
+        constMeta: kCrateApiImagesChangeFilenameExtensionConstMeta,
         argValues: [filename, extension_],
         apiImpl: this,
       ),
     );
   }
 
-  TaskConstMeta get kCrateApiCoreChangeFilenameExtensionConstMeta =>
+  TaskConstMeta get kCrateApiImagesChangeFilenameExtensionConstMeta =>
       const TaskConstMeta(
         debugName: "change_filename_extension",
         argNames: ["filename", "extension_"],
@@ -534,7 +540,7 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
       const TaskConstMeta(debugName: "generate_captcha", argNames: []);
 
   @override
-  Future<(String, double)> crateApiCoreGetImageNameAndSize({
+  Future<(String, double)> crateApiImagesGetImageNameAndSize({
     required String path,
   }) {
     return handler.executeNormal(
@@ -553,17 +559,47 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
           decodeSuccessData: sse_decode_record_string_f_32,
           decodeErrorData: sse_decode_AnyhowException,
         ),
-        constMeta: kCrateApiCoreGetImageNameAndSizeConstMeta,
+        constMeta: kCrateApiImagesGetImageNameAndSizeConstMeta,
         argValues: [path],
         apiImpl: this,
       ),
     );
   }
 
-  TaskConstMeta get kCrateApiCoreGetImageNameAndSizeConstMeta =>
+  TaskConstMeta get kCrateApiImagesGetImageNameAndSizeConstMeta =>
       const TaskConstMeta(
         debugName: "get_image_name_and_size",
         argNames: ["path"],
+      );
+
+  @override
+  String crateApiCoreGetNameToDisplay({
+    required String firstName,
+    required String lastName,
+  }) {
+    return handler.executeSync(
+      SyncTask(
+        callFfi: () {
+          final serializer = SseSerializer(generalizedFrbRustBinding);
+          sse_encode_String(firstName, serializer);
+          sse_encode_String(lastName, serializer);
+          return pdeCallFfi(generalizedFrbRustBinding, serializer, funcId: 13)!;
+        },
+        codec: SseCodec(
+          decodeSuccessData: sse_decode_String,
+          decodeErrorData: null,
+        ),
+        constMeta: kCrateApiCoreGetNameToDisplayConstMeta,
+        argValues: [firstName, lastName],
+        apiImpl: this,
+      ),
+    );
+  }
+
+  TaskConstMeta get kCrateApiCoreGetNameToDisplayConstMeta =>
+      const TaskConstMeta(
+        debugName: "get_name_to_display",
+        argNames: ["firstName", "lastName"],
       );
 
   @override
@@ -575,7 +611,7 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
           pdeCallFfi(
             generalizedFrbRustBinding,
             serializer,
-            funcId: 13,
+            funcId: 14,
             port: port_,
           );
         },
@@ -602,7 +638,7 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
           pdeCallFfi(
             generalizedFrbRustBinding,
             serializer,
-            funcId: 14,
+            funcId: 15,
             port: port_,
           );
         },
@@ -627,7 +663,7 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
         callFfi: () {
           final serializer = SseSerializer(generalizedFrbRustBinding);
           sse_encode_String(email, serializer);
-          return pdeCallFfi(generalizedFrbRustBinding, serializer, funcId: 15)!;
+          return pdeCallFfi(generalizedFrbRustBinding, serializer, funcId: 16)!;
         },
         codec: SseCodec(
           decodeSuccessData: sse_decode_bool,
@@ -644,7 +680,7 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
       const TaskConstMeta(debugName: "is_valid_email", argNames: ["email"]);
 
   @override
-  Future<Uint8List> crateApiCoreReadImage({required String path}) {
+  Future<Uint8List> crateApiImagesReadImage({required String path}) {
     return handler.executeNormal(
       NormalTask(
         callFfi: (port_) {
@@ -653,7 +689,7 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
           pdeCallFfi(
             generalizedFrbRustBinding,
             serializer,
-            funcId: 16,
+            funcId: 17,
             port: port_,
           );
         },
@@ -661,14 +697,14 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
           decodeSuccessData: sse_decode_list_prim_u_8_strict,
           decodeErrorData: sse_decode_AnyhowException,
         ),
-        constMeta: kCrateApiCoreReadImageConstMeta,
+        constMeta: kCrateApiImagesReadImageConstMeta,
         argValues: [path],
         apiImpl: this,
       ),
     );
   }
 
-  TaskConstMeta get kCrateApiCoreReadImageConstMeta =>
+  TaskConstMeta get kCrateApiImagesReadImageConstMeta =>
       const TaskConstMeta(debugName: "read_image", argNames: ["path"]);
 
   Future<void> Function(int, dynamic)

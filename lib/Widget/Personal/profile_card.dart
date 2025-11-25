@@ -5,8 +5,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter_rating_bar/flutter_rating_bar.dart';
 import 'package:working_system_app/Pages/Personal/employer_ratings.dart';
 import 'package:working_system_app/Types/JSONObject/worker_profile.dart';
+import 'package:working_system_app/src/rust/api/core.dart';
 
-class ProfileCard extends StatelessWidget {
+class ProfileCard extends StatefulWidget {
   final WorkerProfile profile;
   final String sessionKey;
 
@@ -15,6 +16,50 @@ class ProfileCard extends StatelessWidget {
     required this.profile,
     required this.sessionKey,
   });
+
+  @override
+  State<ProfileCard> createState() => _ProfileCardState();
+}
+
+class _ProfileCardState extends State<ProfileCard> {
+  late Future<Uint8List>? _avatarFuture;
+  Uint8List? _avatarData;
+
+  @override
+  void initState() {
+    super.initState();
+    _initializeAvatar();
+  }
+
+  @override
+  void didUpdateWidget(ProfileCard oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    // Only regenerate the avatar if the profile's name changed
+    if (oldWidget.profile.firstName != widget.profile.firstName ||
+        oldWidget.profile.lastName != widget.profile.lastName) {
+      _initializeAvatar();
+    }
+  }
+
+  void _initializeAvatar() {
+    if (widget.profile.profilePhoto == null) {
+      _avatarFuture = AppleLikeAvatarGenerator.generateWithFirstNameLastName(
+        firstName: widget.profile.firstName,
+        lastName: widget.profile.lastName,
+      );
+      // Store the avatar data once it's generated
+      _avatarFuture!.then((data) {
+        if (mounted) {
+          setState(() {
+            _avatarData = data;
+          });
+        }
+      });
+    } else {
+      _avatarFuture = null;
+      _avatarData = null;
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -27,7 +72,11 @@ class ProfileCard extends StatelessWidget {
             MaterialPageRoute(
               builder: (context) =>
                   // ChattingRoom(sessionKey: sessionKey)
-                  EmployerRatings(profile: profile, sessionKey: sessionKey),
+                  EmployerRatings(
+                    profile: widget.profile,
+                    sessionKey: widget.sessionKey,
+                    avatarData: _avatarData,
+                  ),
             ),
           );
         },
@@ -45,7 +94,10 @@ class ProfileCard extends StatelessWidget {
                   crossAxisAlignment: .start,
                   children: [
                     Text(
-                      "${profile.firstName} ${profile.lastName}",
+                      getNameToDisplay(
+                        widget.profile.firstName,
+                        widget.profile.lastName,
+                      ),
                       style: const TextStyle(
                         color: Colors.white,
                         fontSize: 24,
@@ -66,7 +118,7 @@ class ProfileCard extends StatelessWidget {
                         ),
                         const SizedBox(width: 4),
                         RatingBarIndicator(
-                          rating: profile.ratingStats.averageRating,
+                          rating: widget.profile.ratingStats.averageRating,
                           itemBuilder: (context, index) =>
                               Icon(Icons.star, color: Colors.amber),
                           itemCount: 5,
@@ -75,7 +127,7 @@ class ProfileCard extends StatelessWidget {
                         ),
                         const SizedBox(width: 4),
                         Text(
-                          "(${profile.ratingStats.totalRatings})",
+                          "(${widget.profile.ratingStats.totalRatings})",
                           style: TextStyle(
                             color: Colors.white,
                             fontSize: 16,
@@ -93,16 +145,14 @@ class ProfileCard extends StatelessWidget {
               Padding(
                 padding: const .only(right: 16.0),
                 child: ClipOval(
-                  child: profile.profilePhoto != null
+                  child: widget.profile.profilePhoto != null
                       ? Image.network(
-                          profile.profilePhoto!.url,
+                          widget.profile.profilePhoto!.url,
                           width: 70,
                           height: 70,
                         )
                       : FutureBuilder<Uint8List>(
-                          future: AppleLikeAvatarGenerator.generateWithName(
-                            "${profile.firstName}${profile.lastName}",
-                          ),
+                          future: _avatarFuture,
                           builder: (context, snapshot) {
                             if (snapshot.connectionState == .waiting) {
                               return Container(

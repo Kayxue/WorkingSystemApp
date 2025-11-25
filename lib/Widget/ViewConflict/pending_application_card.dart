@@ -98,42 +98,36 @@ class PendingApplicationCard extends StatelessWidget {
                   ),
                 ],
               ),
-              if (_buildActionButtons(context).isNotEmpty)
+              if (app.status == .pendingEmployerReview)
                 Row(
                   mainAxisAlignment: .spaceBetween,
                   children: [
                     SizedBox(),
-                    Row(children: _buildActionButtons(context)),
+                    OutlinedButton(
+                      onPressed: onWithdraw,
+                      child: const Text('取消申請'),
+                    ),
                   ],
                 ),
+              if (app.status == .pendingWorkerConfirmation) ...[
+                SizedBox(height: 8),
+                Row(
+                  mainAxisAlignment: .start,
+                  children: [
+                    Text(
+                      "若要回覆，請前往「未回覆」頁面進行操作",
+                      style: TextStyle(
+                        fontSize: 12,
+                        color: Colors.grey.shade600,
+                      ),
+                    ),
+                  ],
+                ),
+              ],
             ],
           ),
         ),
       ),
     );
-  }
-
-  List<Widget> _buildActionButtons(BuildContext context) {
-    switch (app.status) {
-      case .pendingWorkerConfirmation:
-        return [
-          OutlinedButton(
-            onPressed: onReject,
-            style: OutlinedButton.styleFrom(
-              side: const BorderSide(color: Colors.red),
-            ),
-            child: const Text(
-              '拒絕',
-              style: TextStyle(color: Colors.red, fontWeight: .bold),
-            ),
-          ),
-        ];
-      case .pendingEmployerReview:
-        return [
-          OutlinedButton(onPressed: onWithdraw, child: const Text('取消申請')),
-        ];
-      default:
-        return [];
-    }
   }
 }
