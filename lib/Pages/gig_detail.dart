@@ -131,6 +131,7 @@ class _GigDetailState extends State<GigDetail> {
 
   @override
   Widget build(BuildContext context) {
+    Utils.logger.d(gigdetail?.applicationStatus);
     return Scaffold(
       appBar: AppBar(title: Text(widget.title)),
       body: isLoading
@@ -167,7 +168,9 @@ class _GigDetailState extends State<GigDetail> {
                                     gigdetail!.applicationStatus ==
                                         'pending_employer_review' ||
                                     gigdetail!.applicationStatus ==
-                                        'pending_worker_confirmation'
+                                        'pending_worker_confirmation' ||
+                                    gigdetail!.applicationStatus ==
+                                        'worker_confirmed'
                                 ? null
                                 : () async {
                                     await sendApplication();
