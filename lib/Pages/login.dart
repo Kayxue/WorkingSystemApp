@@ -2,7 +2,7 @@ import 'dart:typed_data';
 
 import 'package:flutter/material.dart';
 import 'package:working_system_app/Others/utils.dart';
-import 'package:working_system_app/Pages/Register.dart';
+import 'package:working_system_app/Pages/register.dart';
 import 'package:working_system_app/Pages/ResetPassword/reset_enter_email.dart';
 import 'package:working_system_app/src/rust/api/captcha.dart';
 
