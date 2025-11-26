@@ -22,11 +22,11 @@ class Login extends StatefulWidget {
 
 class _LoginState extends State<Login> {
   String email = "";
-  String password = "";
   String captchaCode = "";
   Uint8List? captchaImage;
   String? captchaAnswer;
   TextEditingController captchaController = TextEditingController();
+  TextEditingController passwordController = TextEditingController();
 
   @override
   void initState() {
@@ -59,11 +59,11 @@ class _LoginState extends State<Login> {
   }
 
   void login() async {
-    if (email.isNotEmpty && password.isNotEmpty) {
+    if (email.isNotEmpty && passwordController.text.isNotEmpty) {
       if (!checkCaptcha()) {
         return;
       }
-      Map<String, String> body = {"email": email, "password": password};
+      Map<String, String> body = {"email": email, "password": passwordController.text};
       final response = await Utils.client.post(
         "/user/login",
         headers: const .rawMap({"platform": "mobile"}),
@@ -74,6 +74,9 @@ class _LoginState extends State<Login> {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(content: Text("Login failed. Please try again.")),
         );
+        fetchCaptcha();
+        captchaController.clear();
+        passwordController.clear();
         return;
       }
       var cookie = response.headerMap["set-cookie"];
@@ -128,13 +131,11 @@ class _LoginState extends State<Login> {
                   ),
                   SizedBox(height: 16),
                   TextField(
+                    controller: passwordController,
                     decoration: InputDecoration(
                       labelText: "Password",
                       border: OutlineInputBorder(),
                     ),
-                    onChanged: (value) => setState(() {
-                      password = value;
-                    }),
                     obscureText: true,
                     keyboardType: TextInputType.visiblePassword,
                   ),

@@ -7,6 +7,7 @@ import 'package:working_system_app/Types/JSONObject/worker_profile.dart';
 import 'package:multi_dropdown/multi_dropdown.dart';
 import 'package:working_system_app/Widget/UpdateUserInfo/avatar_editor.dart';
 import 'package:working_system_app/Widget/UpdateUserInfo/job_experience_editor.dart';
+import 'package:working_system_app/mixins/waiting_dialog_mixin.dart';
 
 class UpdateUserInfo extends StatefulWidget {
   final String sessionKey;
@@ -35,7 +36,7 @@ class UpdateUserInfo extends StatefulWidget {
 }
 
 class _UpdateUserInfoState extends State<UpdateUserInfo>
-    with TickerProviderStateMixin {
+    with TickerProviderStateMixin, WaitingDialogMixin {
   TextEditingController firstNameController = TextEditingController();
   TextEditingController lastNameController = TextEditingController();
   TextEditingController phoneNumberController = TextEditingController();
@@ -81,12 +82,14 @@ class _UpdateUserInfoState extends State<UpdateUserInfo>
   }
 
   Future<bool> updateProfile() async {
+    showWaitingDialog();
     final response = await Utils.client.put(
       "/user/update/profile",
       headers: .rawMap({"platform": "mobile", "cookie": widget.sessionKey}),
       body: .json(widget.workerProfile.toJson()),
     );
     if (response.statusCode != 200) {
+      hideWaitingDialog();
       return false;
     }
     if (updateAvatar) {
@@ -107,9 +110,11 @@ class _UpdateUserInfoState extends State<UpdateUserInfo>
         body: body,
       );
       if (responseAvatar.statusCode != 200) {
+        hideWaitingDialog();
         return false;
       }
     }
+    hideWaitingDialog();
     return true;
   }
 

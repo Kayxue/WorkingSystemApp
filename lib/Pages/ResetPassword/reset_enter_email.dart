@@ -16,10 +16,9 @@ class ResetEnterEmail extends StatefulWidget {
 
 class _ResetEnterEmailState extends State<ResetEnterEmail>
     with WaitingDialogMixin {
-  String email = '';
-  String captchaCode = "";
   Uint8List? captchaImage;
   String? captchaAnswer;
+  TextEditingController emailController = TextEditingController();
   TextEditingController captchaController = TextEditingController();
 
   @override
@@ -40,7 +39,7 @@ class _ResetEnterEmailState extends State<ResetEnterEmail>
 
   bool checkCaptcha() {
     if (captchaAnswer != null &&
-        captchaCode.toLowerCase() == captchaAnswer!.toLowerCase()) {
+        captchaController.text.toLowerCase() == captchaAnswer!.toLowerCase()) {
       return true;
     } else {
       ScaffoldMessenger.of(context).showSnackBar(
@@ -57,7 +56,7 @@ class _ResetEnterEmailState extends State<ResetEnterEmail>
     final response = await Utils.client.post(
       "/user/pw-reset/request",
       headers: .rawMap({"platform": "mobile"}),
-      body: .json({"email": email}),
+      body: .json({"email": emailController.text}),
     );
     if (!mounted) return false;
     hideWaitingDialog();
@@ -65,12 +64,16 @@ class _ResetEnterEmailState extends State<ResetEnterEmail>
       ScaffoldMessenger.of(
         context,
       ).showSnackBar(SnackBar(content: Text(response.body)));
+      captchaController.clear();
+      fetchCaptcha();
       return false;
     }
     if (response.statusCode == 400) {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(content: Text("Please enter a valid email address.")),
       );
+      captchaController.clear();
+      fetchCaptcha();
       return false;
     }
     if (response.statusCode != 200) {
@@ -102,13 +105,11 @@ class _ResetEnterEmailState extends State<ResetEnterEmail>
                   ),
                   SizedBox(height: 16.0),
                   TextField(
+                    controller: emailController,
                     decoration: InputDecoration(
                       labelText: 'Email',
                       border: OutlineInputBorder(),
                     ),
-                    onChanged: (value) => setState(() {
-                      email = value;
-                    }),
                     onTapOutside: (event) =>
                         FocusManager.instance.primaryFocus?.unfocus(),
                     keyboardType: TextInputType.emailAddress,
@@ -120,9 +121,6 @@ class _ResetEnterEmailState extends State<ResetEnterEmail>
                       labelText: "Captcha Code",
                       border: OutlineInputBorder(),
                     ),
-                    onChanged: (value) => setState(() {
-                      captchaCode = value;
-                    }),
                     keyboardType: TextInputType.text,
                   ),
                   SizedBox(height: 16),
@@ -150,7 +148,7 @@ class _ResetEnterEmailState extends State<ResetEnterEmail>
                 Expanded(
                   child: FilledButton(
                     onPressed: () async {
-                      if (email.isEmpty || !isValidEmail(email)) {
+                      if (emailController.text.isEmpty) {
                         ScaffoldMessenger.of(context).showSnackBar(
                           SnackBar(
                             content: Text(
@@ -158,6 +156,18 @@ class _ResetEnterEmailState extends State<ResetEnterEmail>
                             ),
                           ),
                         );
+                        return;
+                      }
+                      if (!isValidEmail(emailController.text)) {
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          SnackBar(
+                            content: Text(
+                              "Please enter a valid email address.",
+                            ),
+                          ),
+                        );
+                        captchaController.clear();
+                        fetchCaptcha();
                         return;
                       }
                       if (!checkCaptcha()) {
@@ -188,7 +198,7 @@ class _ResetEnterEmailState extends State<ResetEnterEmail>
                         final result = await Navigator.of(context).push<bool>(
                           MaterialPageRoute(
                             builder: (context) =>
-                                ResetVerification(email: email),
+                                ResetVerification(email: emailController.text),
                           ),
                         );
                         if (!context.mounted) return;
