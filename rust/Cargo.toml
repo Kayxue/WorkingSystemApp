@@ -9,10 +9,9 @@ crate-type = ["cdylib", "staticlib"]
 [dependencies]
 anyhow = "1.0.100"
 async-trait = "0.1.89"
-ezsockets = { version = "0.7.0", features = ["native-tls"] }
-openssl = { version = "0.10", features = ["vendored"] }
+ezsockets = { version = "0.7", features = ["rustls"] }
+# openssl = { version = "0.10", features = ["vendored"] }
 flutter_rust_bridge = "=2.11.1"
-# Optimize image crate - only include common formats
 image = { version = "0.25.8", default-features = false, features = ["png", "jpeg", "webp"] }
 log = "0.4.28"
 parking_lot = "0.12.5"
