@@ -19,11 +19,11 @@ email_address = "0.2.4"
 captcha = "1.0.0"
 
 [profile.release]
-opt-level = "z"     # Optimize for size
-lto = true          # Link Time Optimization
-codegen-units = 1   # Better optimization
-strip = true        # Strip symbols
-panic = "abort"     # Smaller panic handler
+opt-level = "z"     # Keep: Good size optimization
+lto = "thin"        # Change: Much faster than 'true', nearly as good for size
+# codegen-units = 1 # Remove: Allows parallel compilation
+strip = true        # Keep: Free size reduction
+panic = "abort"     # Keep: Reduces size and build time
 
 [lints.rust]
 unexpected_cfgs = { level = "warn", check-cfg = ['cfg(frb_expand)'] }
