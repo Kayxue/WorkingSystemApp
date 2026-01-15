@@ -111,7 +111,15 @@ jobs:
           cd /tmp
           wget -q "https://github.com/Kitware/CMake/releases/download/v${CMAKE_VERSION}/${CMAKE_BUILD}.tar.gz"
           tar -xzf "${CMAKE_BUILD}.tar.gz"
-          sudo cp -r "${CMAKE_BUILD}"/* /usr/local/
+          
+          # Handle potential conflicts with existing files in /usr/local
+          sudo rm -f /usr/local/man 2>/dev/null || true
+          sudo mkdir -p /usr/local/man
+          
+          # Copy CMake files carefully
+          sudo cp -rf "${CMAKE_BUILD}/bin"/* /usr/local/bin/ 2>/dev/null || true
+          sudo cp -rf "${CMAKE_BUILD}/share"/* /usr/local/share/ 2>/dev/null || true
+          sudo cp -rf "${CMAKE_BUILD}/man"/* /usr/local/man/ 2>/dev/null || true
           
           # Ensure cmake is in PATH for subsequent steps
           echo "/usr/local/bin" >> $GITHUB_PATH
