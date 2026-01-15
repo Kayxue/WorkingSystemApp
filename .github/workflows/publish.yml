@@ -3,39 +3,39 @@ name: "Build & Release"
 on:
   push:
     tags:
-      - 'v*.*.*'
+      - "v*.*.*"
   workflow_dispatch:
     inputs:
       version:
-        description: 'Release version (e.g., v1.0.0)'
+        description: "Release version (e.g., v1.0.0)"
         required: true
-        default: 'v1.0.0'
+        default: "v1.0.0"
 
 permissions:
   contents: write
-  
+
 jobs:
   build-android:
     name: Build Android (APK & AAB)
-    runs-on: ubuntu-latest
+    runs-on: self-hosted
     environment: BuildEnv
     steps:
-      - name: Maximize build space
-        run: |
-          echo "Removing .NET SDKs..."
-          sudo rm -rf /usr/share/dotnet
-          
-          echo "Removing Haskell (GHC/Cabal)..."
-          sudo rm -rf /usr/share/ghc*
-          sudo rm -rf /usr/local/lib/ghc*
-          sudo rm -rf /opt/ghc
-          sudo rm -rf /opt/cabal
-          
-          echo "Removing CodeQL..."
-          sudo rm -rf /opt/hostedtoolcache/CodeQL
-          
-          echo "Removing all cached Docker images..."
-          docker rmi -f $(docker images -q) || true
+      # - name: Maximize build space
+      #   run: |
+      #     echo "Removing .NET SDKs..."
+      #     sudo rm -rf /usr/share/dotnet
+
+      #     echo "Removing Haskell (GHC/Cabal)..."
+      #     sudo rm -rf /usr/share/ghc*
+      #     sudo rm -rf /usr/local/lib/ghc*
+      #     sudo rm -rf /opt/ghc
+      #     sudo rm -rf /opt/cabal
+
+      #     echo "Removing CodeQL..."
+      #     sudo rm -rf /opt/hostedtoolcache/CodeQL
+
+      #     echo "Removing all cached Docker images..."
+      #     docker rmi -f $(docker images -q) || true
 
       - name: Checkout repository
         uses: actions/checkout@v3
@@ -43,8 +43,8 @@ jobs:
       - name: Set Up Java
         uses: actions/setup-java@v3.12.0
         with:
-          distribution: 'temurin'
-          java-version: '21'
+          distribution: "temurin"
+          java-version: "21"
 
       - name: Accept Android Licenses
         run: |
@@ -55,7 +55,6 @@ jobs:
           echo "ANDROID_NDK=$ANDROID_NDK_LATEST_HOME" >> $GITHUB_ENV
           echo "ANDROID_NDK_HOME=$ANDROID_NDK_LATEST_HOME" >> $GITHUB_ENV
           echo "ANDROID_NDK_ROOT=$ANDROID_NDK_LATEST_HOME" >> $GITHUB_ENV
-
 
       - name: Setup Rust
         uses: dtolnay/rust-toolchain@stable
@@ -70,14 +69,14 @@ jobs:
 
       - name: Check Flutter
         run: flutter doctor
-      
+
       - name: Install Dependencies
         run: flutter pub get
 
       - name: Decode Keystore
         run: |
           echo "${{ secrets.KEYSTORE_BASE64 }}" | base64 --decode > android/app/keystore.jks
-      
+
       - name: Create key.properties
         run: |
           echo "storePassword=${{ secrets.KEYSTORE_PASSWORD }}" > android/key.properties
@@ -106,7 +105,7 @@ jobs:
           echo "Checking for APK files..."
           echo "Contents of build/app/outputs/flutter-apk/:"
           ls -lh build/app/outputs/flutter-apk/
-          
+
           APK_COUNT=$(find build/app/outputs/flutter-apk/ -name "*.apk" -type f | wc -l)
           if [ "$APK_COUNT" -gt 0 ]; then
             echo "✅ Found $APK_COUNT APK file(s):"
@@ -115,7 +114,7 @@ jobs:
             echo "❌ No APK files found"
             exit 1
           fi
-          
+
           echo ""
           echo "Checking for AAB file..."
           if [ -f "build/app/outputs/bundle/release/app-release.aab" ]; then
@@ -156,7 +155,7 @@ jobs:
         with:
           channel: stable
           version: latest
-      
+
       - name: Install Dependencies
         run: flutter pub get
 
@@ -224,7 +223,7 @@ jobs:
           echo "Contents of android-builds directory:"
           find android-builds -type f -name "*.apk" -o -name "*.aab" | head -10
           ls -la android-builds/ || echo "android-builds directory not found"
-          
+
           echo "=== iOS Artifacts ==="
           echo "Contents of ios-builds directory:"
           find ios-builds -type f -name "*.ipa" | head -10
@@ -242,25 +241,25 @@ jobs:
       - name: Prepare Release Files
         run: |
           echo "Preparing release files..."
-          
+
           # Get repository name and version
           REPO_NAME="${{ github.repository }}"
           REPO_NAME=$(echo "$REPO_NAME" | cut -d'/' -f2)  # Extract repo name from owner/repo
           VERSION="${{ steps.version.outputs.version }}"
-          
+
           echo "Repository name: $REPO_NAME"
           echo "Version: $VERSION"
-          
+
           # Find and copy all APK files
           APK_FILES=$(find android-builds -name "*.apk" -type f)
           APK_COUNT=$(echo "$APK_FILES" | wc -l)
-          
+
           if [ "$APK_COUNT" -gt 0 ]; then
             echo "Found $APK_COUNT APK file(s):"
             while IFS= read -r APK_FILE; do
               # Extract the architecture or type from the filename
               BASENAME=$(basename "$APK_FILE" .apk)
-              
+
               # Rename files appropriately
               if [[ "$BASENAME" == *"armeabi-v7a"* ]]; then
                 APK_NAME="${REPO_NAME}-${VERSION}-armeabi-v7a.apk"
@@ -271,7 +270,7 @@ jobs:
               else
                 APK_NAME="${REPO_NAME}-${VERSION}.apk"
               fi
-              
+
               cp "$APK_FILE" "./$APK_NAME"
               echo "✅ APK file prepared as: $APK_NAME"
             done <<< "$APK_FILES"
@@ -279,7 +278,7 @@ jobs:
             echo "❌ No APK files found in android-builds"
             exit 1
           fi
-          
+
           # Find and copy AAB file
           AAB_FILE=$(find android-builds -name "*.aab" -type f | head -1)
           if [ -n "$AAB_FILE" ]; then
@@ -291,7 +290,7 @@ jobs:
             echo "❌ No AAB file found in android-builds"
             exit 1
           fi
-          
+
           # Find and copy IPA file
           IPA_FILE=$(find ios-builds -name "*.ipa" -type f | head -1)
           if [ -n "$IPA_FILE" ]; then
@@ -303,7 +302,7 @@ jobs:
             echo "❌ No IPA file found in ios-builds"
             exit 1
           fi
-          
+
           echo ""
           echo "Release files prepared:"
           ls -lh ${REPO_NAME}-${VERSION}*
