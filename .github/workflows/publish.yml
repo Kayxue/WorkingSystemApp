@@ -53,11 +53,33 @@ jobs:
       #   run: |
       #     yes | $ANDROID_HOME/cmdline-tools/latest/bin/sdkmanager --licenses
 
-      # - name: Update Android NDK Environment Variables
-      #   run: |
-      #     echo "ANDROID_NDK=$ANDROID_NDK_LATEST_HOME" >> $GITHUB_ENV
-      #     echo "ANDROID_NDK_HOME=$ANDROID_NDK_LATEST_HOME" >> $GITHUB_ENV
-      #     echo "ANDROID_NDK_ROOT=$ANDROID_NDK_LATEST_HOME" >> $GITHUB_ENV
+      - name: Update Android NDK Environment Variables
+        run: |
+          # Find the NDK directory (supports multiple NDK versions)
+          if [ -d "$ANDROID_HOME/ndk" ]; then
+            NDK_PATH=$(ls -d $ANDROID_HOME/ndk/* | sort -V | tail -n 1)
+          elif [ -d "$ANDROID_SDK_ROOT/ndk" ]; then
+            NDK_PATH=$(ls -d $ANDROID_SDK_ROOT/ndk/* | sort -V | tail -n 1)
+          elif [ -d "/root/.android/sdk/ndk" ]; then
+            NDK_PATH=$(ls -d /root/.android/sdk/ndk/* | sort -V | tail -n 1)
+          else
+            echo "❌ NDK not found!"
+            exit 1
+          fi
+          
+          echo "Found NDK at: $NDK_PATH"
+          echo "ANDROID_NDK=$NDK_PATH" >> $GITHUB_ENV
+          echo "ANDROID_NDK_HOME=$NDK_PATH" >> $GITHUB_ENV
+          echo "ANDROID_NDK_ROOT=$NDK_PATH" >> $GITHUB_ENV
+          
+          # Set CMake toolchain file for Android builds
+          CMAKE_TOOLCHAIN="$NDK_PATH/build/cmake/android.toolchain.cmake"
+          if [ -f "$CMAKE_TOOLCHAIN" ]; then
+            echo "CMAKE_TOOLCHAIN_FILE=$CMAKE_TOOLCHAIN" >> $GITHUB_ENV
+            echo "Found CMake toolchain at: $CMAKE_TOOLCHAIN"
+          else
+            echo "⚠️  CMake toolchain not found at: $CMAKE_TOOLCHAIN"
+          fi
 
       - name: Setup Rust
         uses: dtolnay/rust-toolchain@stable
@@ -73,8 +95,42 @@ jobs:
       - name: Fix Git Trust for Flutter SDK
         run: git config --global --add safe.directory '*'
 
-      - name: Install CMake
-        run: sudo apt update && sudo apt install -y cmake
+      - name: Install Build Tools (CMake, Make, Ninja)
+        run: |
+          sudo apt update
+          sudo apt install -y cmake make ninja-build
+
+      - name: Verify NDK and Build Environment
+        run: |
+          echo "=== Android NDK Configuration ==="
+          echo "ANDROID_NDK=$ANDROID_NDK"
+          echo "ANDROID_NDK_HOME=$ANDROID_NDK_HOME"
+          echo "ANDROID_NDK_ROOT=$ANDROID_NDK_ROOT"
+          echo "CMAKE_TOOLCHAIN_FILE=$CMAKE_TOOLCHAIN_FILE"
+          
+          echo ""
+          echo "=== Verifying NDK Installation ==="
+          if [ -d "$ANDROID_NDK" ]; then
+            echo "✅ NDK directory exists"
+            ls -la "$ANDROID_NDK" | head -10
+          else
+            echo "❌ NDK directory not found!"
+            exit 1
+          fi
+          
+          echo ""
+          echo "=== Verifying CMake Toolchain ==="
+          if [ -f "$CMAKE_TOOLCHAIN_FILE" ]; then
+            echo "✅ CMake toolchain file exists"
+          else
+            echo "⚠️  CMake toolchain file not found (may cause issues)"
+          fi
+          
+          echo ""
+          echo "=== Build Tools ==="
+          which cmake && cmake --version | head -1
+          which make && make --version | head -1
+          which ninja && ninja --version
 
       - name: Check Flutter
         run: flutter doctor
