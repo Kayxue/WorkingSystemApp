@@ -98,7 +98,36 @@ jobs:
       - name: Install Build Tools (CMake, Make, Ninja)
         run: |
           sudo apt update
-          sudo apt install -y cmake make ninja-build
+          sudo apt install -y make ninja-build wget
+          
+          # Install latest CMake (3.19+ required for Android NDK 29)
+          # Remove old CMake first
+          sudo apt remove -y cmake || true
+          
+          # Download and install CMake 3.28+ directly from Kitware
+          CMAKE_VERSION="3.28.3"
+          CMAKE_BUILD="cmake-${CMAKE_VERSION}-linux-x86_64"
+          
+          cd /tmp
+          wget -q "https://github.com/Kitware/CMake/releases/download/v${CMAKE_VERSION}/${CMAKE_BUILD}.tar.gz"
+          tar -xzf "${CMAKE_BUILD}.tar.gz"
+          sudo cp -r "${CMAKE_BUILD}"/* /usr/local/
+          
+          # Ensure cmake is in PATH for subsequent steps
+          echo "/usr/local/bin" >> $GITHUB_PATH
+          
+          # Verify installation
+          echo "Installed CMake version:"
+          /usr/local/bin/cmake --version
+
+      - name: Set Android Build Environment Variables
+        run: |
+          # Set Android platform and ABI for CMake/Rust builds
+          echo "ANDROID_PLATFORM=android-24" >> $GITHUB_ENV
+          echo "ANDROID_API=24" >> $GITHUB_ENV
+          
+          # These help ensure consistent builds across architectures
+          echo "ANDROID_NDK_VERSION=29" >> $GITHUB_ENV
 
       - name: Verify NDK and Build Environment
         run: |
@@ -107,6 +136,8 @@ jobs:
           echo "ANDROID_NDK_HOME=$ANDROID_NDK_HOME"
           echo "ANDROID_NDK_ROOT=$ANDROID_NDK_ROOT"
           echo "CMAKE_TOOLCHAIN_FILE=$CMAKE_TOOLCHAIN_FILE"
+          echo "ANDROID_PLATFORM=$ANDROID_PLATFORM"
+          echo "ANDROID_API=$ANDROID_API"
           
           echo ""
           echo "=== Verifying NDK Installation ==="
@@ -160,9 +191,15 @@ jobs:
           ls -lh lib/firebase_options.dart
 
       - name: Build APK (Split per ABI)
+        env:
+          # Explicitly set Android ABI for Rust/CMake builds
+          ANDROID_ABI: armeabi-v7a,arm64-v8a
         run: flutter build apk --release --split-per-abi --target-platform android-arm,android-arm64 --build-name="${{ github.event.inputs.version || github.ref_name }}" --build-number="${{ github.run_number }}"
 
       - name: Build App Bundle
+        env:
+          # Explicitly set Android ABI for Rust/CMake builds
+          ANDROID_ABI: armeabi-v7a,arm64-v8a
         run: flutter build appbundle --release --target-platform android-arm,android-arm64 --build-name="${{ github.event.inputs.version || github.ref_name }}" --build-number="${{ github.run_number }}"
 
       - name: Verify Build Outputs
